@@ -1,5 +1,4 @@
-#ifndef __UTILS_H_
-#define __UTILS_H_
+#pragma once
 
 #include <d3d11.h>
 #include <dinput.h>
@@ -25,5 +24,3 @@ namespace gk2
 		static void Delete16Aligned(void* ptr);
 	};
 }
-
-#endif __GK2_UTILS_H_

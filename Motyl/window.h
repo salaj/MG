@@ -1,5 +1,4 @@
-#ifndef __GK2_WINDOW_H_
-#define __GK2_WINDOW_H_
+#pragma once
 
 #include <string>
 #include <Windows.h>
@@ -11,7 +10,7 @@ namespace gk2
 	{
 	public:
 		Window(HINSTANCE hInstance, int width, int height);
-		Window(HINSTANCE hInstance, int width, int height, const std::wstring& title);
+		Window(HINSTANCE hInstance, int width, int height, const std::wstring& title, bool shouldRegister);
 		virtual ~Window();
 
 		virtual void Show(int cmdShow);
@@ -19,6 +18,7 @@ namespace gk2
 		inline HWND getHandle() const { return m_hWnd; }
 		LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 		InputClass* GetInputClass();
+		HWND m_dialog;
 	protected:
 		virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -33,10 +33,12 @@ namespace gk2
 
 		Window(const gk2::Window& other) { /* Do not use!*/ }
 
-		void CreateWindowHandle(int width, int height, const std::wstring& title);
+		void CreateWindowHandle(int width, int height, const std::wstring& title, bool shouldRegister);
 
 		HWND m_hWnd;
+
 		HINSTANCE m_hInstance;
+		//InputClass* input;
 
 		///////////////////
 	};
@@ -46,5 +48,3 @@ namespace gk2
 	static Window* ApplicationHandle = 0;
 
 }
-
-#endif __GK2_WINDOW_H_

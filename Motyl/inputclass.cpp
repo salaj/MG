@@ -49,7 +49,6 @@ void InputClass::SetActiveRadius(ActiveRadius radius)
 }
 
 
-
 void InputClass::Initialize()
 {
 	int i;
@@ -86,4 +85,9 @@ bool InputClass::IsKeyDown(unsigned int key)
 {
 	// Return what state the key is in (pressed/not pressed).
 	return m_keys[key];
+}
+
+void InputClass::setStereorcopy(bool isActive)
+{
+	isStereoscopyActive = isActive;
 }

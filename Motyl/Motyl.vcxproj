@@ -29,6 +29,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -72,6 +73,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -128,15 +130,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="elipsoid.cpp" />
     <ClCompile Include="applicationBase.cpp" />
+    <ClCompile Include="modelsManager.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="deviceHelper.cpp" />
     <ClCompile Include="exceptions.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="sceneHelper.cpp" />
+    <ClCompile Include="service.cpp" />
+    <ClCompile Include="settings.cpp" />
+    <ClCompile Include="simple_point .cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="vertices.cpp" />
-    <ClCompile Include="window.cpp" />
     <ClCompile Include="shader_elipsoid.cpp" />
     <ClCompile Include="shader_torus.cpp" />
     <ClCompile Include="inputclass.cpp" />
@@ -144,14 +151,21 @@
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="shader_base.cpp" />
     <ClCompile Include="torus.cpp" />
+    <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="elipsoid.h" />
     <ClInclude Include="applicationBase.h" />
+    <ClInclude Include="modelsManager.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="deviceHelper.h" />
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="input.h" />
+    <ClInclude Include="sceneHelper.h" />
+    <ClInclude Include="service.h" />
+    <ClInclude Include="settings.h" />
+    <ClInclude Include="simple_point .h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="vertices.h" />
     <ClInclude Include="window.h" />
@@ -164,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Butterfly.hlsl" />
+    <None Include="ribbon1.mfcribbon-ms" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Torus.hlsl">
@@ -175,7 +190,18 @@
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Modelowanie.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="toolbar1.bmp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="Modelowanie.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

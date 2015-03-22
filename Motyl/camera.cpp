@@ -7,7 +7,7 @@ Camera::Camera()
 
 }
 
-Camera::Camera(float minDistance, float maxDistance, float distance)
+Camera::Camera(float minDistance, float maxDistance, float distance )
 	: m_angleX(0.0f), m_angleY(0.0f), m_distance(distance)
 {
 	SetRange(minDistance, maxDistance);

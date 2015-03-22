@@ -1,3 +1,5 @@
+#pragma once
+
 //////////////
 // INCLUDES //
 //////////////
@@ -20,7 +22,11 @@ private:
 
 public:
 	Elipsoid();
-	Elipsoid(std::shared_ptr<ID3D11DeviceContext>, ShaderBase*, gk2::DeviceHelper device, gk2::Camera);
+	Elipsoid(std::shared_ptr<ID3D11DeviceContext>,
+		ShaderBase*,
+		gk2::DeviceHelper device,
+		gk2::Camera camera,
+		InputClass* input);
 	Elipsoid(const Elipsoid&);
 	~Elipsoid();
 
@@ -28,7 +34,7 @@ public:
 	static void operator delete(void* ptr);
 
 	virtual void Initialize();
-	virtual void Draw(bool, bool);
+	virtual void Draw();
 
 
 	Elipsoid& operator=(const Elipsoid& element);

@@ -1,5 +1,4 @@
-#ifndef __APPLICATION_BASE_H_
-#define __APPLICATION_BASE_H_
+#pragma once
 
 #include <d3d11.h>
 #include <D3DX11.h>
@@ -10,6 +9,7 @@
 namespace gk2
 {
 	class Window;
+	class Settings;
 
 	class ApplicationBase
 	{
@@ -17,7 +17,7 @@ namespace gk2
 		ApplicationBase(HINSTANCE hInstance);
 		virtual ~ApplicationBase();
 
-		int Run(gk2::Window* window, int cmdShow);
+		int Run(gk2::Window* window, gk2::Settings* settings, int cmdShow);
 		
 		inline HINSTANCE getHandle() const { return m_hInstance; }
 		inline gk2::Window* getMainWindow() const { return m_mainWindow; }
@@ -48,6 +48,8 @@ namespace gk2
 	private:
 		HINSTANCE m_hInstance;
 		gk2::Window* m_mainWindow;
+		gk2::Settings* m_settings;
+
 
 		void FillSwapChainDesc(DXGI_SWAP_CHAIN_DESC& desc, int width, int height);
 		void CreateDeviceAndSwapChain(SIZE windowSize);
@@ -57,4 +59,3 @@ namespace gk2
 	};
 }
 
-#endif __GK2_APPLICATION_BASE_H_

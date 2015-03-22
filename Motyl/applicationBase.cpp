@@ -1,5 +1,6 @@
 #include "applicationBase.h"
 #include "window.h"
+#include "settings.h"
 
 using namespace std;
 using namespace gk2;
@@ -167,11 +168,13 @@ void ApplicationBase::Shutdown()
 	m_input.m_inputObject.reset();
 }
 
-int ApplicationBase::Run(Window* w, int cmdShow)
+int ApplicationBase::Run(Window* w, Settings* settings, int cmdShow)
 {
 	m_mainWindow = w;
+	m_settings = settings;
 	if (!Initialize())
 		return -1;
 	m_mainWindow->Show(cmdShow);
+	m_settings->Show(cmdShow);
 	return MainLoop();
 }

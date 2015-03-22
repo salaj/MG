@@ -1,5 +1,7 @@
+
 #include "window.h"
 #include "exceptions.h"
+#include "resource.h"
 #include <basetsd.h>
 
 using namespace std;
@@ -22,11 +24,28 @@ void Window::RegisterWindowClass(HINSTANCE hInstance)
 	c.hInstance = hInstance;
 	c.hCursor = LoadCursor(NULL, IDC_ARROW);
 	c.hbrBackground = (HBRUSH) (COLOR_WINDOW + 1);
-	c.lpszMenuName = NULL;
+	c.lpszMenuName = NULL;//MAKEINTRESOURCE(IDR_MENU1); //NULL;
 	c.lpszClassName = m_windowClassName.c_str();
 	c.cbWndExtra = sizeof(LONG_PTR);
+
+
+	//WNDCLASSW d;
+	//ZeroMemory(&d, sizeof(WNDCLASSW));
+
+	////d.cbSize = sizeof(WNDCLASSW);
+	//d.style = CS_HREDRAW | CS_VREDRAW;
+	//d.lpfnWndProc = WndProc;
+	//d.hInstance = hInstance;
+	//d.hCursor = LoadCursor(NULL, IDC_ARROW);
+	//d.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	//d.lpszMenuName = NULL;//MAKEINTRESOURCE(IDR_MENU1); //NULL;
+	//d.lpszClassName = m_windowClassName.c_str();
+	//d.cbWndExtra = sizeof(LONG_PTR);
 	if (!RegisterClassExW(&c))
 		THROW_WINAPI;
+	//if (!RegisterClassW(&d))
+	//	THROW_WINAPI;
+
 }
 bool Window::IsWindowClassRegistered(HINSTANCE hInstance)
 {
@@ -37,25 +56,42 @@ bool Window::IsWindowClassRegistered(HINSTANCE hInstance)
 Window::Window(HINSTANCE hInstance, int width, int height)
 	: m_hInstance(hInstance)
 {
-	CreateWindowHandle(width, height, m_windowClassName);
+	CreateWindowHandle(width, height, m_windowClassName, true);
 }
 
-Window::Window(HINSTANCE hInstance, int width, int height, const std::wstring& title)
+Window::Window(HINSTANCE hInstance, int width, int height, const std::wstring& title, bool shouldRegister = false)
 	: m_hInstance(hInstance)
 {
-	CreateWindowHandle(width, height, title);
+	CreateWindowHandle(width, height, title, shouldRegister);
 }
 
-void Window::CreateWindowHandle(int width, int height, const wstring& title)
+void Window::CreateWindowHandle(int width, int height, const wstring& title, bool shouldRegister)
 {
-	if (!IsWindowClassRegistered(m_hInstance))
+	if (shouldRegister && !IsWindowClassRegistered(m_hInstance))
 		RegisterWindowClass(m_hInstance);
-	RECT rect = { 0, 0, width, height};
-	DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
+	RECT rect = { 0, 0, width, height };
+	DWORD style = WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
 	if (!AdjustWindowRect(&rect, style, FALSE))
 		THROW_WINAPI;
 	m_hWnd = CreateWindowW(m_windowClassName.c_str(), title.c_str(), style, CW_USEDEFAULT, CW_USEDEFAULT,
 		rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, m_hInstance, this);
+
+	//RECT Rect;
+	//GetWindowRect(m_hWnd, &Rect);
+	//MapWindowPoints(HWND_DESKTOP, GetParent(m_hWnd), (LPPOINT)&Rect, 2);
+
+	//m_dialog = CreateWindowW(TEXT("MDICLIENT"), L"Settings",
+	//	WS_OVERLAPPED | WS_VISIBLE,
+	//	Rect.right, Rect.top, 200, rect.bottom - rect.top, m_hWnd, NULL, m_hInstance,
+	//	this);
+
+
+	//CreateWindow(TEXT("button"), TEXT("Stereoscopy active"),
+	//	WS_VISIBLE | WS_CHILD | BS_CHECKBOX,
+	//	20, 20, 150, 35,
+	//	m_dialog, (HMENU)200, m_hInstance, this);
+	//CheckDlgButton(m_dialog, 200, BST_CHECKED);
+
 	if (!m_hWnd)
 		THROW_WINAPI;
 }
@@ -163,17 +199,34 @@ LRESULT Window::WndProc(UINT msg, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT paintStruct;
 	HDC hDC;
 	UINT state;
+	bool checked;
 	switch (msg)
 	{
 	case WM_PAINT:
 		hDC = BeginPaint(m_hWnd, &paintStruct);
 		EndPaint(m_hWnd, &paintStruct);
+
+		//hDC = BeginPaint(m_dialog, &paintStruct);
+		//EndPaint(m_dialog, &paintStruct);
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
-	case WM_COMMAND:
 
+	//case WM_MOUSEFIRST:
+
+	//	checked = IsDlgButtonChecked(m_dialog, 200);
+	//	if (checked) {
+	//		CheckDlgButton(m_dialog, 200, BST_UNCHECKED);
+	//		SetWindowText(m_dialog, TEXT("NIE"));
+	//	}
+	//	else {
+	//		CheckDlgButton(m_dialog, 200, BST_CHECKED);
+	//		SetWindowText(m_dialog, TEXT("TAK"));
+	//	}
+	//	break;
+
+	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
 		case IDM_VIEW_TRANSLATION:
 
@@ -331,9 +384,9 @@ LRESULT Window::WndProc(UINT msg, WPARAM wParam, LPARAM lParam)
 
 		//InitCommonControls();
 
-		ghSb = CreateWindowExW(0, L"TickMenu", NULL,
-			WS_CHILD | WS_VISIBLE, 0, 0, 0, 0, m_hWnd,
-			(HMENU)1, GetModuleHandle(NULL), NULL);
+		//ghSb = CreateWindowExW(0, L"TickMenu", NULL,
+		//	WS_CHILD | WS_VISIBLE, 0, 0, 0, 0, m_hWnd,
+		//	(HMENU)1, GetModuleHandle(NULL), NULL);
 
 		break;
 	default:

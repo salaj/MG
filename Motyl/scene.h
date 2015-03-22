@@ -1,9 +1,9 @@
-#ifndef __SCENE_H_
-#define __SCENE_H_
+#pragma once
 
 #include "applicationBase.h"
 #include "camera.h"
 #include "inputclass.h"
+#include "sceneHelper.h"
 #include <xnamath.h>
 #include "shader_torus.h"
 #include "shader_elipsoid.h"
@@ -98,18 +98,14 @@ namespace gk2
 
 		/////////////////////
 
-
-		void CheckInput();
-
-		InputClass*  m_InputClass;
-
 		TorusShader* m_shader_torus;
 		ElipsoidShader* m_shader_elipsoid;
+		InputClass* m_input_class;
 
-		Torus* m_Torus;
-		Torus* m_Torus2;
-		Elipsoid* m_Elipsoid;
+		//Torus* m_Torus;
+		//Torus* m_Torus2;
+		//Elipsoid* m_Elipsoid;
+
+		SceneHelper m_sceneHelper;
 	};
 }
-
-#endif __GK2_BUTTERFLY_H_

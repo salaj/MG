@@ -1,3 +1,4 @@
+#pragma once
 //////////////
 // INCLUDES //
 //////////////
@@ -13,27 +14,34 @@ class Torus : public ModelClass
 
 private:
 
-	const float R_SMALL_TORUS = 0.1;
-	const float R_BIG_TORUS = 0.5;
-	int N_SEGMENTS_NUMBER = 64;
-	int N_CIRCLE_SEGMENTS_NUMBER = 10;
+	static const float R_SMALL_TORUS;
+	static const float R_BIG_TORUS;
+	static int N_SEGMENTS_NUMBER;
+	static int N_CIRCLE_SEGMENTS_NUMBER;
 
 public:
 	Torus();
-	Torus(std::shared_ptr<ID3D11DeviceContext>, ShaderBase*, gk2::DeviceHelper device, gk2::Camera);
+	Torus(std::shared_ptr<ID3D11DeviceContext>,
+		ShaderBase*,
+		gk2::DeviceHelper device,
+		gk2::Camera camera,
+		InputClass* input);
 	Torus(const Torus&);
+	Torus(Service& servie);
 	~Torus();
 
 	static void* operator new(size_t size);
 	static void operator delete(void* ptr);
 
 	virtual void Initialize();
-	virtual void Draw(bool, bool);
+	virtual void Draw();
 
-	void decrementN_SEGMENTS_NUMBER();
-	void incrementN_SEGMENTS_NUMBER();
-	void decrementN_CIRCLE_SEGMENTS_NUMBER();
-	void incrementN_CIRCLE_SEGMENTS_NUMBER();
+	static void decrementN_SEGMENTS_NUMBER();
+	static void incrementN_SEGMENTS_NUMBER();
+	static void decrementN_CIRCLE_SEGMENTS_NUMBER();
+	static void incrementN_CIRCLE_SEGMENTS_NUMBER();
+
+	void setStereoscopy(bool);
 
 	Torus& operator=(const Torus& element);
 
@@ -44,4 +52,6 @@ private:
 
 	virtual void setTriangleTopology();
 	virtual void setLineTopology();
+
+	bool m_isStereoscopic = true;
 };

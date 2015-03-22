@@ -25,15 +25,14 @@ void Scene::operator delete(void* ptr)
 Scene::Scene(HINSTANCE hInstance, InputClass* inputClass)
 	: ApplicationBase(hInstance), m_camera(0.01f, 100.0f)
 {
-	m_InputClass = inputClass;
+	m_input_class = inputClass;
 }
 
 Scene::~Scene()
 {
-	delete m_InputClass;
 	delete m_shader_torus;
 	delete m_shader_elipsoid;
-	delete m_Torus;
+	//delete m_Torus;
 }
 
 void Scene::InitializeRenderStates()
@@ -71,16 +70,27 @@ void Scene::InitializeCamera()
 
 bool Scene::LoadContent()
 {
-
 	m_shader_torus = new TorusShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 	m_shader_elipsoid = new ElipsoidShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 
-	m_Torus = new Torus(m_context, m_shader_torus, m_device, m_camera);
-	m_Torus2 = new Torus(m_context, m_shader_torus, m_device, m_camera);
-	m_Elipsoid = new Elipsoid(m_context, m_shader_elipsoid, m_device, m_camera);
-	//InitializeShaders();
+	Service service;
+	service.Context = m_context;
+	service.Camera = m_camera;
+	service.Device = m_device;
+	service.InputClass = m_input_class;
+	service.Shader = new ShaderBase*[2]
+	{
+		m_shader_torus,
+		m_shader_elipsoid
+	};
+	m_sceneHelper.Initialize(service);
 
-	//InitializeConstantBuffers();
+
+	m_sceneHelper.CreateModels();
+
+	//m_Torus = new Torus(m_context, m_shader_torus, m_device, m_camera);
+	//m_Torus2 = new Torus(m_context, m_shader_torus, m_device, m_camera);
+	//m_Elipsoid = new Elipsoid(m_context, m_shader_elipsoid, m_device, m_camera);
 
 	m_shader_torus->LoadContent();
 	m_shader_elipsoid->LoadContent();
@@ -88,28 +98,15 @@ bool Scene::LoadContent()
 	InitializeRenderStates();
 	InitializeCamera();
 
-	m_Torus -> Initialize();
-	m_Torus2 -> Initialize();
-	m_Elipsoid -> Initialize();
-
-	//InitializeButterfly();
-
-	//SetShaders();
-	//SetConstantBuffers();
-
-
-	//kolejnoœæ ma znaczenie co siê wyrysuje
-	//m_shader_torus->SetContent();
-	//m_shader_elipsoid->SetContent();
-
+	//m_Torus -> Initialize();
+	//m_Torus2 -> Initialize();
+	//m_Elipsoid -> Initialize();
+	m_sceneHelper.InitializeModels();
 	return true;
 }
 
 void Scene::UnloadContent()
 {
-	//m_vertexShader.reset();
-	//m_pixelShader.reset();
-	//m_inputLayout.reset();
 	m_shader_torus->UnloadContent();
 	m_shader_elipsoid->UnloadContent();
 
@@ -141,140 +138,6 @@ void Scene::UpdateCamera(XMMATRIX& viewMtx)
 
 
 int counter = 0;
-void Scene::CheckInput()
-{
-	ActiveFeature feature = m_InputClass->getActiveFeature();
-	ActiveAxis axis = m_InputClass->getActiveAxis();
-	ActiveRadius radius = m_InputClass->getActiveRadius();
-	float rotation = (float)XM_PI * 0.001f;
-	float factor = 0.01f;
-	float factorScale = 0.01f;
-
-
-	//if (m_InputClass->IsKeyDown(VK_OEM_PLUS))
-	//{
-	//	intensity += 3.0f;
-	//	m_context->UpdateSubresource(m_lightIntensity.get(), 0, 0, new XMFLOAT4(intensity, 0.0f, 0.0f, 0.0f), 0, 0);
-	//}
-	//if (m_InputClass->IsKeyDown(VK_OEM_MINUS))
-	//{
-	//	intensity -= 3.0f;
-	//	m_context->UpdateSubresource(m_lightIntensity.get(), 0, 0, new XMFLOAT4(intensity, 0.0f, 0.0f, 0.0f), 0, 0);
-	//}
-
-	//if (radius == BigRadius)
-	//{
-	//	if (m_InputClass->IsKeyDown(VK_LEFT))
-	//	{
-	//		a -= factor;
-	//	}
-	//	if (m_InputClass->IsKeyDown(VK_RIGHT))
-	//	{
-	//		a += factor;
-	//	}
-	//}
-
-	//if (radius == SmallRadius)
-	//{
-	//	if (m_InputClass->IsKeyDown(VK_LEFT))
-	//	{
-	//		b -= factor;
-	//	}
-	//	if (m_InputClass->IsKeyDown(VK_RIGHT))
-	//	{
-	//		b += factor;
-	//	}	
-	//}
-
-	//if (counter++ < 100){
-	//	XMMATRIX* rotationMatrix = CreateYAxisRotationMatrix(rotation);
-	//	rotate(m_elipsoidModel, *rotationMatrix);
-	//}
-	
-
-	if (feature == Translation)
-	{
-		if (axis == AxisZ)
-		{
-			if (m_InputClass->IsKeyDown(VK_UP)){
-				XMFLOAT3 offset = XMFLOAT3(0, 0, factor);
-				m_Torus->Translate(offset);
-			}
-			if (m_InputClass->IsKeyDown(VK_DOWN)){
-				XMFLOAT3 offset = XMFLOAT3(0, 0, -factor);
-				m_Torus->Translate(offset);
-			}
-		}
-		else if (axis == AxisY)
-		{
-			if (m_InputClass->IsKeyDown(VK_UP)){
-				XMFLOAT3 offset = XMFLOAT3(0, factor, 0);
-				m_Torus->Translate(offset);
-			}
-			if (m_InputClass->IsKeyDown(VK_DOWN)){
-				XMFLOAT3 offset = XMFLOAT3(0, -factor, 0);
-				m_Torus->Translate(offset);
-			}
-		}
-		else if (axis == AxisX)
-		{
-			if (m_InputClass->IsKeyDown(VK_UP)){
-				XMFLOAT3 offset = XMFLOAT3(factor, 0, 0);
-				m_Torus->Translate(offset);
-			}
-			if (m_InputClass->IsKeyDown(VK_DOWN)){
-				XMFLOAT3 offset = XMFLOAT3(-factor, 0, 0);
-				m_Torus->Translate(offset);
-			}
-		}
-	}
-
-	if (feature == Rotation)
-	{
-		if (axis == AxisZ)
-		{
-			if (m_InputClass->IsKeyDown(VK_UP)){
-				m_Torus->RotateZ(rotation);
-			}
-			if (m_InputClass->IsKeyDown(VK_DOWN)){
-				m_Torus->RotateZ(-rotation);
-			}
-		}
-		else if (axis == AxisY)
-		{
-			if (m_InputClass->IsKeyDown(VK_UP)){
-				m_Torus->RotateY(rotation);
-				m_Torus2->RotateY(rotation);
-			}
-			if (m_InputClass->IsKeyDown(VK_DOWN)){
-				m_Torus->RotateY(-rotation);
-				m_Torus2->RotateY(-rotation);
-			}
-		}
-		else if (axis == AxisX)
-		{
-			if (m_InputClass->IsKeyDown(VK_UP)){
-				m_Torus->RotateX(rotation);
-			}
-			if (m_InputClass->IsKeyDown(VK_DOWN)){
-				m_Torus->RotateX(-rotation);
-			}
-		}
-	}
-
-	if (feature == Scale)
-	{
-		if (m_InputClass->IsKeyDown(VK_UP)){
-			//scale(m_elipsoidModel, 1 - factorScale);
-			m_Torus->Scale(1 - factorScale);
-		}
-		if (m_InputClass->IsKeyDown(VK_DOWN)){
-			//scale(m_elipsoidModel, 1 + factorScale);
-			m_Torus->Scale(1 + factorScale);
-		}
-	}
-
-}
 
 void Scene::Update(float dt)
 {
@@ -300,7 +163,7 @@ void Scene::Update(float dt)
 		UpdateCamera();
 
 
-	CheckInput();
+	m_sceneHelper.CheckInput();
 }
 
 //void Butterfly::DrawButterfly()
@@ -324,13 +187,12 @@ void Scene::Render()
 
 	//m_context->UpdateSubresource(m_.get(), 0, 0, &m_elipsoidModel, 0, 0);
 
-	//rysowanie torusów
 	m_shader_torus->SetContent();
 	m_context->OMSetDepthStencilState(m_dssWrite.get(), 0);
 	m_context->OMSetBlendState(m_bsAlpha.get(), 0, BS_MASK);
 
-	m_Torus -> Draw(true, false);
-	m_Torus2 -> Draw(true, true);
+	m_sceneHelper.DrawModels();
+
 
 	m_context->RSSetState(NULL);
 	m_context->OMSetDepthStencilState(NULL, 0);

@@ -10,8 +10,7 @@ const unsigned int ModelClass::VB_OFFSET = 0;
 
 ModelClass::ModelClass(std::shared_ptr<ID3D11DeviceContext> deviceContext,
 	ShaderBase* shader_base,
-	gk2::DeviceHelper device,
-	gk2::Camera camera)
+	gk2::DeviceHelper device, gk2::Camera camera, InputClass* input)
 {
 	m_vertexBuffer = 0;
 	m_indexBuffer = 0;
@@ -19,6 +18,7 @@ ModelClass::ModelClass(std::shared_ptr<ID3D11DeviceContext> deviceContext,
 	m_context = deviceContext;
 	m_shader_base = shader_base;
 	m_camera = camera;
+	m_input = input;
 }
 
 
@@ -26,6 +26,16 @@ ModelClass::ModelClass(const ModelClass& other)
 {
 }
 
+ModelClass::ModelClass(Service& service)
+{
+	m_vertexBuffer = 0;
+	m_indexBuffer = 0;
+	m_device = service.Device;
+	m_context = service.Context;
+	m_shader_base = service.Shader[0];
+	m_camera = service.Camera;
+	m_input = service.InputClass;
+}
 
 ModelClass::~ModelClass()
 {
@@ -108,7 +118,7 @@ XMMATRIX* ModelClass::CreateScaleMatrix(float s)
 
 XMMATRIX ModelClass::createStereoscopicProjMatrixLeft()
 {
-	double r = 10;// m_camera.GetMinDistance() - m_camera.GetPosition().z;
+	double r = 10;
 	double e = diametryE;
 	double val = -e / (2 * r);
 	XMMATRIX ret = XMMATRIX(
@@ -122,7 +132,7 @@ XMMATRIX ModelClass::createStereoscopicProjMatrixLeft()
 
 XMMATRIX ModelClass::createStereoscopicProjMatrixRight()
 {
-	double r = 10;// m_camera.GetMinDistance() - m_camera.GetPosition().z;
+	double r = 10;
 	double e = diametryE;
 	return XMMATRIX(
 		1, 0, 0, 0,

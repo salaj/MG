@@ -1,17 +1,14 @@
-#include "torus.h"
+#include "simple_point .h"
 #include "shader_torus.h"
 
 using namespace gk2;
 
-const float Torus::R_SMALL_TORUS = 0.1f;
-const float Torus::R_BIG_TORUS = 0.5;
-int Torus::N_SEGMENTS_NUMBER = 64;
-int Torus::N_CIRCLE_SEGMENTS_NUMBER = 10;
+const float SimplePoint::R_SMALL_TORUS = 0.1f;
+const float SimplePoint::R_BIG_TORUS = 0.5;
+int SimplePoint::N_SEGMENTS_NUMBER = 64;
+int SimplePoint::N_CIRCLE_SEGMENTS_NUMBER = 10;
 
-const double delta = 0.05f;
-double sum = 0;
-
-Torus::Torus(std::shared_ptr<ID3D11DeviceContext> deviceContext,
+SimplePoint::SimplePoint(std::shared_ptr<ID3D11DeviceContext> deviceContext,
 	ShaderBase* shader_base,
 	gk2::DeviceHelper device,
 	gk2::Camera camera,
@@ -20,81 +17,37 @@ Torus::Torus(std::shared_ptr<ID3D11DeviceContext> deviceContext,
 	ModelClass::Initialize();
 }
 
-Torus::Torus(Service& service) : ModelClass(service)
+SimplePoint::SimplePoint(Service& service) : ModelClass(service)
 {
 	ModelClass::Initialize();
 }
 
-Torus::Torus(const Torus& other) : ModelClass(other)
+SimplePoint::SimplePoint(const SimplePoint& other) : ModelClass(other)
 {
 }
 
 
-Torus::~Torus()
+SimplePoint::~SimplePoint()
 {
 }
 
-Torus::Torus()
+SimplePoint::SimplePoint()
 {
 }
 
-void* Torus::operator new(size_t size)
+void* SimplePoint::operator new(size_t size)
 {
 	return Utils::New16Aligned(size);
 }
 
 
-void Torus::operator delete(void* ptr)
+void SimplePoint::operator delete(void* ptr)
 {
 	Utils::Delete16Aligned(ptr);
 }
 
 
-void Torus::decrementN_SEGMENTS_NUMBER()
-{
-	sum += delta;
-	if (sum < 1.0f)
-		return;
-	sum = 0.0f;
-	if (N_SEGMENTS_NUMBER < 5)
-		return;
-	N_SEGMENTS_NUMBER--;
-}
-
-void Torus::incrementN_SEGMENTS_NUMBER()
-{
-	sum += delta;
-	if (sum < 1.0f)
-		return;
-	sum = 0.0f;
-	if (N_SEGMENTS_NUMBER > 200)
-		return;
-	N_SEGMENTS_NUMBER++;
-}
-
-void Torus::decrementN_CIRCLE_SEGMENTS_NUMBER()
-{
-	sum += delta;
-	if (sum < 1.0f)
-		return;
-	sum = 0.0f;
-	if (N_CIRCLE_SEGMENTS_NUMBER < 3)
-		return;
-	N_CIRCLE_SEGMENTS_NUMBER--;
-}
-
-void Torus::incrementN_CIRCLE_SEGMENTS_NUMBER()
-{
-	sum += delta;
-	if (sum < 1.0f)
-		return;
-	sum = 0.0f;
-	if (N_CIRCLE_SEGMENTS_NUMBER > 20)
-		return;
-	N_CIRCLE_SEGMENTS_NUMBER++;
-}
-
-XMFLOAT3 Torus::TorusPos(float a, float t)
+XMFLOAT3 SimplePoint::TorusPos(float a, float t)
 {
 	float xt = (R_BIG_TORUS + R_SMALL_TORUS * cosf(a)) * cosf(t);
 	float yt = (R_BIG_TORUS + R_SMALL_TORUS * cosf(a)) * sinf(t);
@@ -102,7 +55,7 @@ XMFLOAT3 Torus::TorusPos(float a, float t)
 	return XMFLOAT3(xt, yt, zt);
 }
 
-XMFLOAT3 Torus::TorusDt(float a, float t)
+XMFLOAT3 SimplePoint::TorusDt(float a, float t)
 {
 	float xt = -sinf(t);
 	float yt = cosf(t);
@@ -110,7 +63,7 @@ XMFLOAT3 Torus::TorusDt(float a, float t)
 	return XMFLOAT3(xt, yt, zt);
 }
 
-XMFLOAT3 Torus::TorusDa(float a, float t)
+XMFLOAT3 SimplePoint::TorusDa(float a, float t)
 {
 	float xt = -sinf(a) * cosf(t);
 	float yt = -sinf(a) * sinf(t);
@@ -118,7 +71,7 @@ XMFLOAT3 Torus::TorusDa(float a, float t)
 	return XMFLOAT3(xt, yt, zt);
 }
 
-void Torus::Initialize()
+void SimplePoint::Initialize()
 {
 
 	VertexPosNormal* vertices;
@@ -154,7 +107,7 @@ void Torus::Initialize()
 	setLineTopology();
 }
 
-void Torus::setLineTopology()
+void SimplePoint::setLineTopology()
 {
 	int numberOfVerticesInSquare = 6;
 
@@ -200,7 +153,7 @@ void Torus::setLineTopology()
 	indices = 0;
 }
 
-void Torus::setTriangleTopology()
+void SimplePoint::setTriangleTopology()
 {
 	unsigned short* indices;
 
@@ -260,13 +213,13 @@ void Torus::setTriangleTopology()
 	indices = 0;
 }
 
-void Torus::setStereoscopy(bool isStereoscopic)
+void SimplePoint::setStereoscopy(bool isStereoscopic)
 {
 	m_isStereoscopic = isStereoscopic;
 }
 
 
-void Torus::Draw()
+void SimplePoint::Draw()
 {
 	TorusShader* shader = dynamic_cast<TorusShader*>(m_shader_base);
 	m_context->UpdateSubresource(shader->GetCBWorldMatrix().get(), 0, 0, &m_modelMatrix, 0, 0);

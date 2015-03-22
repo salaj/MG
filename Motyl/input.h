@@ -1,5 +1,4 @@
-#ifndef __INPUT_H_
-#define __INPUT_H_
+#pragma once
 
 #include <dinput.h>
 #include <cassert>
@@ -187,5 +186,3 @@ namespace gk2
 																const DIDATAFORMAT& dataFormat);
 	};
 }
-
-#endif __GK2_INPUT_H_

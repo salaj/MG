@@ -1,5 +1,6 @@
 #include "scene.h"
 #include "window.h"
+#include "settings.h"
 #include "exceptions.h"
 
 using namespace std;
@@ -11,13 +12,15 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine,
 	UNREFERENCED_PARAMETER(cmdLine);
 	shared_ptr<ApplicationBase> app;
 	shared_ptr<Window> w;
+	shared_ptr<Settings> settings;
 	int exitCode = 0;
 	try
 	{
-		w.reset(new Window(hInstance, 800, 600, L"Geometric modelling"));
+		w.reset(new Window(hInstance, 600, 600, L"Geometric modelling", true));
 		InputClass* input = w->GetInputClass();
+		settings.reset(new Settings(hInstance, 600, 600, L"Settings",input, false));
 		app.reset(new Scene(hInstance, input));
-		exitCode = app->Run(w.get(), cmdShow);
+		exitCode = app->Run(w.get(), settings.get(), cmdShow);
 	}
 	catch (Exception& e)
 	{

@@ -49,6 +49,18 @@
     <Filter Include="Source Files\helpers">
       <UniqueIdentifier>{49dec36e-d572-467a-b7ba-56569e8997cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\base\managers">
+      <UniqueIdentifier>{48d97308-b11a-4614-8b8f-71ad580a5b6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\base\managers">
+      <UniqueIdentifier>{2555786a-6ccb-4ab9-b864-b296bb492ffd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\base\containers">
+      <UniqueIdentifier>{77155405-0496-40d3-80c4-77423bbbfd49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\base\containers">
+      <UniqueIdentifier>{509ec556-1359-4ce9-b759-fd988f41853a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -75,9 +87,6 @@
     <ClCompile Include="camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>Source Files\base</Filter>
-    </ClCompile>
     <ClCompile Include="applicationBase.cpp">
       <Filter>Source Files\base</Filter>
     </ClCompile>
@@ -102,8 +111,26 @@
     <ClCompile Include="inputclass.cpp">
       <Filter>Source Files\controls</Filter>
     </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="sceneHelper.cpp">
+      <Filter>Source Files\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="modelsManager.cpp">
+      <Filter>Source Files\base\managers</Filter>
+    </ClCompile>
+    <ClCompile Include="service.cpp">
+      <Filter>Source Files\base\containers</Filter>
+    </ClCompile>
     <ClCompile Include="window.cpp">
       <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="settings.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_point .cpp">
+      <Filter>Source Files\models</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -125,9 +152,6 @@
     <ClInclude Include="shader_elipsoid.h">
       <Filter>Header Files\shaders</Filter>
     </ClInclude>
-    <ClInclude Include="camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="deviceHelper.h">
       <Filter>Header Files\helpers</Filter>
     </ClInclude>
@@ -139,9 +163,6 @@
     </ClInclude>
     <ClInclude Include="vertices.h">
       <Filter>Header Files\helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="camera.h">
-      <Filter>Header Files\base</Filter>
     </ClInclude>
     <ClInclude Include="applicationBase.h">
       <Filter>Header Files\base</Filter>
@@ -158,6 +179,24 @@
     <ClInclude Include="window.h">
       <Filter>Header Files\ui</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sceneHelper.h">
+      <Filter>Header Files\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="modelsManager.h">
+      <Filter>Header Files\base\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="settings.h">
+      <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="service.h">
+      <Filter>Header Files\base\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_point .h">
+      <Filter>Header Files\models</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Butterfly.hlsl">
@@ -169,5 +208,18 @@
     <None Include="resources\shaders\Elipsoid.hlsl">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="ribbon1.mfcribbon-ms">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Modelowanie.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="toolbar1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

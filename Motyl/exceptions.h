@@ -1,5 +1,4 @@
-#ifndef __GK2_EXCEPTIONS_H_
-#define __GK2_EXCEPTIONS_H_
+#pragma once
 
 #include <Windows.h>
 #include <string>
@@ -53,4 +52,3 @@ namespace gk2
 #define THROW_WINAPI throw gk2::WinAPIException(__AT__)
 #define THROW_DX11(hr) throw gk2::Dx11Exception(__AT__, hr)
 
-#endif __GK2_EXCEPTIONS_H_

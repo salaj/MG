@@ -1,5 +1,4 @@
-#ifndef __GK2_VERTICES_H_
-#define __GK2_VERTICES_H_
+#pragma once
 
 #include <d3d11.h>
 #include <xnamath.h>
@@ -23,4 +22,3 @@ namespace gk2
 	};
 }
 
-#endif __GK2_VERTICES_H_

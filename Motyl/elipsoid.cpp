@@ -5,7 +5,7 @@ using namespace gk2;
 
 Elipsoid::Elipsoid(std::shared_ptr<ID3D11DeviceContext> deviceContext,
 	ShaderBase* shader_base,
-	gk2::DeviceHelper device, gk2::Camera camera) : ModelClass(deviceContext, shader_base, device, camera)
+	gk2::DeviceHelper device, gk2::Camera camera, InputClass* input) : ModelClass(deviceContext, shader_base, device, camera, input)
 {
 }
 
@@ -182,7 +182,7 @@ void Elipsoid::resetSize()
 	square_Y = 40;
 }
 
-void Elipsoid::Draw(bool isStereoscopic = false, bool isLeft = true)
+void Elipsoid::Draw()
 {
 	Initialize();
 	m_context->UpdateSubresource(m_shader_base->GetCBWorldMatrix().get(), 0, 0, &m_modelMatrix, 0, 0);
