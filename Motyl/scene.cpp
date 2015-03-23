@@ -32,7 +32,7 @@ Scene::~Scene()
 {
 	delete m_shader_torus;
 	delete m_shader_elipsoid;
-	//delete m_Torus;
+	delete m_shader_simple_point;
 }
 
 void Scene::InitializeRenderStates()
@@ -72,16 +72,20 @@ bool Scene::LoadContent()
 {
 	m_shader_torus = new TorusShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 	m_shader_elipsoid = new ElipsoidShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	m_shader_simple_point = new SimplePointShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_shader_cursor = new CursorShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 
 	Service service;
 	service.Context = m_context;
 	service.Camera = m_camera;
 	service.Device = m_device;
 	service.InputClass = m_input_class;
-	service.Shader = new ShaderBase*[2]
+	service.Shader = new ShaderBase*[4]
 	{
 		m_shader_torus,
-		m_shader_elipsoid
+		m_shader_elipsoid,
+		m_shader_simple_point,
+		m_shader_cursor
 	};
 	m_sceneHelper.Initialize(service);
 
@@ -94,6 +98,8 @@ bool Scene::LoadContent()
 
 	m_shader_torus->LoadContent();
 	m_shader_elipsoid->LoadContent();
+	m_shader_simple_point->LoadContent();
+	m_shader_cursor->LoadContent();
 
 	InitializeRenderStates();
 	InitializeCamera();
@@ -187,7 +193,8 @@ void Scene::Render()
 
 	//m_context->UpdateSubresource(m_.get(), 0, 0, &m_elipsoidModel, 0, 0);
 
-	m_shader_torus->SetContent();
+	//m_shader_torus->SetContent();
+
 	m_context->OMSetDepthStencilState(m_dssWrite.get(), 0);
 	m_context->OMSetBlendState(m_bsAlpha.get(), 0, BS_MASK);
 

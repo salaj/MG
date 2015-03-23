@@ -1,30 +1,31 @@
 #pragma once
 
 #include "applicationBase.h"
-#include "modelclass.h"
 #include "shader_base.h"
 #include "camera.h"
 #include "inputclass.h"
 
 using namespace std;
 
-class Service
-{
-public:
+namespace gk2{
 
-	Service();
-	virtual ~Service();
+	class Service
+	{
+	public:
 
-	static void* operator new(size_t size);
-	static void operator delete(void* ptr);
+		Service();
+		virtual ~Service();
 
-	std::shared_ptr<ID3D11DeviceContext> Context;
-	ShaderBase** Shader;
-	gk2::DeviceHelper Device;
-	gk2::Camera Camera;
+		static void* operator new(size_t size);
+		static void operator delete(void* ptr);
 
-	InputClass* InputClass;
+		shared_ptr<ID3D11DeviceContext> Context;
+		ShaderBase** Shader;
+		int shaderIndex;
+		gk2::DeviceHelper Device;
+		gk2::Camera Camera;
 
-private:
+		InputClass* InputClass;
 
-};
+	};
+}

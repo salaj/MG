@@ -29,11 +29,14 @@ class SceneHelper
 		void CreateModels();
 		void InitializeModels();
 		void DrawModels();
+		void AddModel();
 
 
 	private:
 		InputClass*  m_InputClass;
 		ModelsManager m_modelsManager;
+
+		bool m_CanAdd = true;
 
 		void translateModels(vector<ModelClass*>& models, XMFLOAT3 offset);
 

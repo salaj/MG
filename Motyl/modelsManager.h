@@ -7,10 +7,20 @@
 #include <xnamath.h>
 #include "torus.h"
 #include "elipsoid.h"
+#include "simple_point .h"
+#include "cursor.h"
 #include "shader_torus.h"
 #include "shader_elipsoid.h"
+#include "shader_simple_point.h"
+#include "shader_cursor.h"
 
 using namespace std;
+
+enum ModelType{
+	TorusType,
+	ElipsoidType,
+	SimplePointType
+};
 
 class ModelsManager
 {
@@ -28,7 +38,14 @@ public:
 	void InitializeModels();
 	void DrawModels();
 
+	void SetModelAtOtherModelPosition(ModelClass *model, ModelClass *relative_model);
+	void AddModel(ModelType);
+
+	void setModelToPosition(ModelClass*, XMFLOAT3);
+
 private:
 	vector<ModelClass*> m_models;
 	Service m_service;
+
+	ModelClass* getCursorModel();
 };

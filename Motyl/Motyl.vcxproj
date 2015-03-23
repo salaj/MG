@@ -131,6 +131,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="cursor.cpp" />
     <ClCompile Include="elipsoid.cpp" />
     <ClCompile Include="applicationBase.cpp" />
     <ClCompile Include="modelsManager.cpp" />
@@ -141,6 +142,8 @@
     <ClCompile Include="sceneHelper.cpp" />
     <ClCompile Include="service.cpp" />
     <ClCompile Include="settings.cpp" />
+    <ClCompile Include="shader_cursor.cpp" />
+    <ClCompile Include="shader_simple_point.cpp" />
     <ClCompile Include="simple_point .cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="vertices.cpp" />
@@ -154,6 +157,7 @@
     <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cursor.h" />
     <ClInclude Include="elipsoid.h" />
     <ClInclude Include="applicationBase.h" />
     <ClInclude Include="modelsManager.h" />
@@ -165,6 +169,8 @@
     <ClInclude Include="sceneHelper.h" />
     <ClInclude Include="service.h" />
     <ClInclude Include="settings.h" />
+    <ClInclude Include="shader_cursor.h" />
+    <ClInclude Include="shader_simple_point.h" />
     <ClInclude Include="simple_point .h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="vertices.h" />
@@ -195,6 +201,19 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="toolbar1.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\SimplePoint.hlsl">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </AdditionalIncludeDirectories>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">VS_Main</EntryPointName>
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\Cursor.hlsl">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

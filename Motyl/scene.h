@@ -7,6 +7,8 @@
 #include <xnamath.h>
 #include "shader_torus.h"
 #include "shader_elipsoid.h"
+#include "shader_simple_point.h"
+#include "shader_cursor.h"
 #include "torus.h"
 #include "elipsoid.h"
 
@@ -100,6 +102,8 @@ namespace gk2
 
 		TorusShader* m_shader_torus;
 		ElipsoidShader* m_shader_elipsoid;
+		SimplePointShader* m_shader_simple_point;
+		CursorShader* m_shader_cursor;
 		InputClass* m_input_class;
 
 		//Torus* m_Torus;

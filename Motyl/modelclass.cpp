@@ -32,7 +32,7 @@ ModelClass::ModelClass(Service& service)
 	m_indexBuffer = 0;
 	m_device = service.Device;
 	m_context = service.Context;
-	m_shader_base = service.Shader[0];
+	m_shader_base = service.Shader[service.shaderIndex];
 	m_camera = service.Camera;
 	m_input = service.InputClass;
 }

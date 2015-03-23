@@ -10,7 +10,8 @@
 #include "deviceHelper.h"
 #include "shader_base.h"
 #include "camera.h"
-
+#include "inputclass.h"
+#include "service.h"
 #include <d3d11.h>
 #include <d3dx10math.h>
 #include <xnamath.h>
@@ -20,18 +21,23 @@
 // Class name: ModelClass
 ////////////////////////////////////////////////////////////////////////////////
 
+using namespace gk2;
+using namespace std;
+
+
+
 class ModelClass
 {
 
 public:
 	ModelClass();
-	ModelClass(std::shared_ptr<ID3D11DeviceContext>,
-		ShaderBase*, 
-		gk2::DeviceHelper device,
-		gk2::Camera camera,
+	ModelClass(std::shared_ptr<ID3D11DeviceContext>deviceContext,
+		ShaderBase* shaderBase,
+		DeviceHelper deviceHelper,
+		Camera camera,
 		InputClass* input);
 	ModelClass(const ModelClass&);
-	ModelClass(Service& servie);
+	ModelClass(Service& service);
 	~ModelClass();
 
 	static void* operator new(size_t size);
@@ -55,11 +61,12 @@ public:
 	void Translate(XMFLOAT3&);
 	void Scale(float);
 
+	XMMATRIX m_modelMatrix;
+
 
 protected:
 	std::shared_ptr<ID3D11Buffer> m_vertexBuffer, m_indexBuffer;
 	int m_vertexCount, m_indexCount;
-	XMMATRIX m_modelMatrix;
 	gk2::DeviceHelper m_device;
 	std::shared_ptr<ID3D11DeviceContext> m_context;
 	ShaderBase* m_shader_base;

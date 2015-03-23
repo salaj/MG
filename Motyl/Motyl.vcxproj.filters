@@ -132,6 +132,15 @@
     <ClCompile Include="simple_point .cpp">
       <Filter>Source Files\models</Filter>
     </ClCompile>
+    <ClCompile Include="shader_simple_point.cpp">
+      <Filter>Source Files\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="cursor.cpp">
+      <Filter>Source Files\models</Filter>
+    </ClCompile>
+    <ClCompile Include="shader_cursor.cpp">
+      <Filter>Source Files\shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="modelclass.h">
@@ -197,6 +206,15 @@
     <ClInclude Include="simple_point .h">
       <Filter>Header Files\models</Filter>
     </ClInclude>
+    <ClInclude Include="shader_simple_point.h">
+      <Filter>Header Files\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="cursor.h">
+      <Filter>Header Files\models</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_cursor.h">
+      <Filter>Header Files\shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Butterfly.hlsl">
@@ -209,6 +227,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="ribbon1.mfcribbon-ms">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resources\shaders\SimplePoint.hlsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resources\shaders\Cursor.hlsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

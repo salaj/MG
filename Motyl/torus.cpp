@@ -271,6 +271,7 @@ void Torus::Draw()
 	TorusShader* shader = dynamic_cast<TorusShader*>(m_shader_base);
 	m_context->UpdateSubresource(shader->GetCBWorldMatrix().get(), 0, 0, &m_modelMatrix, 0, 0);
 
+	shader->SetContent();
 
 	ID3D11Buffer* b = m_vertexBuffer.get();
 	m_context->IASetVertexBuffers(0, 1, &b, &VB_STRIDE, &VB_OFFSET);

@@ -1,5 +1,5 @@
 #include "simple_point .h"
-#include "shader_torus.h"
+#include "shader_simple_point.h"
 
 using namespace gk2;
 
@@ -73,144 +73,88 @@ XMFLOAT3 SimplePoint::TorusDa(float a, float t)
 
 void SimplePoint::Initialize()
 {
-
-	VertexPosNormal* vertices;
 	// Set the number of vertices in the vertex array.
-	m_vertexCount = N_SEGMENTS_NUMBER * N_CIRCLE_SEGMENTS_NUMBER;
+	m_vertexCount = 24;
 
-	// Create the vertex array.
-	vertices = new VertexPosNormal[m_vertexCount];
-
-	for (int i = 0; i < N_SEGMENTS_NUMBER; i++)
+	VertexPosNormal vertices[] =
 	{
-		FLOAT t = (2 * D3DX_PI * i) / (N_SEGMENTS_NUMBER);
-		for (int j = 0; j < N_CIRCLE_SEGMENTS_NUMBER; j++)
-		{
-			FLOAT a = (2 * D3DX_PI * j) / (N_CIRCLE_SEGMENTS_NUMBER);
-			vertices[N_CIRCLE_SEGMENTS_NUMBER * i + j].Pos = TorusPos(a, t);
-			XMVECTOR output = XMVector3Cross(XMLoadFloat3(&TorusDt(a, t)), (XMLoadFloat3(&TorusDa(a, t))) );
-			XMVECTOR outputNormalize = XMVector3Normalize(output);
-			XMStoreFloat3( &(vertices[N_CIRCLE_SEGMENTS_NUMBER * i + j].Normal), outputNormalize);
-			//XMStoreFloat3( &(vertices[N_CIRCLE_SEGMENTS_NUMBER * i + j].Color), outputNormalize);
-			//vertices[N_CIRCLE_SEGMENTS_NUMBER * i + j].Normal = XMFLOAT3(1.0f, 1.0f, 1.0f);
-			/*vertices[N_CIRCLE_SEGMENTS_NUMBER * i + j].Color = XMFLOAT3(1.0f, 0.0f, 0.0f);*/
-		}
-	}
+		//Front face
+		{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3(0.5f, 0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3(-0.5f, 0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
 
+		//Left face
+		{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(-0.5f, 0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(-0.5f, 0.5f, 0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(-0.5f, -0.5f, 0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
+
+		//Bottom face
+		{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
+		{ XMFLOAT3(-0.5f, -0.5f, 0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
+		{ XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
+		{ XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
+
+		//Back face
+		{ XMFLOAT3(-0.5f, -0.5f, 0.5f), XMFLOAT3(0.0f, 0.0f, -1.0f) },
+		{ XMFLOAT3(-0.5f, 0.5f, 0.5f), XMFLOAT3(0.0f, 0.0f, -1.0f) },
+		{ XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT3(0.0f, 0.0f, -1.0f) },
+		{ XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT3(0.0f, 0.0f, -1.0f) },
+
+		//Right face
+		{ XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(-1.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT3(-1.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT3(-1.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(0.5f, 0.5f, -0.5f), XMFLOAT3(-1.0f, 0.0f, 0.0f) },
+
+		//Top face
+		{ XMFLOAT3(-0.5f, 0.5f, -0.5f), XMFLOAT3(0.0f, -1.0f, 0.0f) },
+		{ XMFLOAT3(0.5f, 0.5f, -0.5f), XMFLOAT3(0.0f, -1.0f, 0.0f) },
+		{ XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT3(0.0f, -1.0f, 0.0f) },
+		{ XMFLOAT3(-0.5f, 0.5f, 0.5f), XMFLOAT3(0.0f, -1.0f, 0.0f) },
+	};
 	m_vertexBuffer = m_device.CreateVertexBuffer(vertices, m_vertexCount);
+	//m_vertexBuffer = m_device.CreateVertexBuffer(vertices, m_vertexCount);
 
-	// Release the arrays now that the vertex and index buffers have been created and loaded.
-	delete[] vertices;
-	vertices = 0;
 
-	//setTriangleTopology();
-	setLineTopology();
+	setTriangleTopology();
+	//setLineTopology();
 }
 
 void SimplePoint::setLineTopology()
 {
-	int numberOfVerticesInSquare = 6;
-
-	unsigned short* indices;
 
 	// Set the number of indices in the index array.
-	m_indexCount = N_SEGMENTS_NUMBER * N_CIRCLE_SEGMENTS_NUMBER * numberOfVerticesInSquare;
+	m_indexCount = 60;
 
-	// Create the index array.
-	indices = new unsigned short[m_indexCount];
-
-	for (int j = 0; j < N_CIRCLE_SEGMENTS_NUMBER; j++)
+	unsigned short indices[] =
 	{
-		for (int i = 0; i < N_SEGMENTS_NUMBER; i++)
-		{
-			int firstRight = (i * N_CIRCLE_SEGMENTS_NUMBER + j) % (N_CIRCLE_SEGMENTS_NUMBER * N_SEGMENTS_NUMBER);
-			int secondRight = ((i + 1) * N_CIRCLE_SEGMENTS_NUMBER + j) % (N_CIRCLE_SEGMENTS_NUMBER * N_SEGMENTS_NUMBER);
-			int thirdRight;
-			if (j == N_CIRCLE_SEGMENTS_NUMBER - 1) 
-				thirdRight = ((i)* N_CIRCLE_SEGMENTS_NUMBER + j + 1) % (N_CIRCLE_SEGMENTS_NUMBER * N_SEGMENTS_NUMBER);
-			else
-				thirdRight = ((i + 1) * N_CIRCLE_SEGMENTS_NUMBER + j + 1) % (N_CIRCLE_SEGMENTS_NUMBER * N_SEGMENTS_NUMBER);
-
-
-			//FIRST EDGE
-			indices[(j * N_SEGMENTS_NUMBER + i) * numberOfVerticesInSquare] = firstRight;
-			indices[(j * N_SEGMENTS_NUMBER + i) * numberOfVerticesInSquare + 1] = secondRight;
-
-			//SECOND EDGE
-			indices[(j * N_SEGMENTS_NUMBER + i) * numberOfVerticesInSquare + 2] = secondRight;
-			indices[(j * N_SEGMENTS_NUMBER + i) * numberOfVerticesInSquare + 3] = thirdRight;
-
-				//THIRD EDGE
-			indices[(j * N_SEGMENTS_NUMBER + i) * numberOfVerticesInSquare + 4] = thirdRight;
-			indices[(j * N_SEGMENTS_NUMBER + i) * numberOfVerticesInSquare + 5] = firstRight;
-		}
-	}
-
-	unsigned int wartosc = (unsigned int)m_indexCount;
-	m_indexBuffer = m_device.CreateIndexBuffer(indices, (unsigned int)m_indexCount);
-
-	delete[] indices;
-	indices = 0;
+		0, 1, 1, 2, 2, 0, 0, 2, 2, 3,//Front face
+		4, 5, 5, 6, 6, 4, 4, 6, 6, 7,//Left face
+		8, 9, 9, 10, 10, 8, 8, 10, 10, 11,	//Botton face
+		12, 13, 13, 14, 14, 12, 12, 14, 14, 15,	//Back face
+		16, 17, 17, 18, 18, 16, 16, 18, 18, 19,	//Right face
+		20, 21, 21, 22, 22, 20, 20, 22, 22, 23	//Top face
+	};
+	m_indexBuffer = m_device.CreateIndexBuffer(indices, 60);
 }
 
 void SimplePoint::setTriangleTopology()
 {
-	unsigned short* indices;
-
 	// Set the number of indices in the index array.
-	m_indexCount = N_SEGMENTS_NUMBER * N_CIRCLE_SEGMENTS_NUMBER * 3 * 2;
+	m_indexCount = 36;
 
-	// Create the index array.
-	indices = new unsigned short[m_indexCount];
-
-	for (int j = 0; j < N_CIRCLE_SEGMENTS_NUMBER; j++)
+	unsigned short indices[] =
 	{
-		for (int i = 0; i < N_SEGMENTS_NUMBER; i++)
-		{
-			indices[(j * N_SEGMENTS_NUMBER + i) * 3] = (i * N_CIRCLE_SEGMENTS_NUMBER + j) % (N_CIRCLE_SEGMENTS_NUMBER * N_SEGMENTS_NUMBER);
-			indices[(j * N_SEGMENTS_NUMBER + i) * 3 + 1] = ((i + 1) * N_CIRCLE_SEGMENTS_NUMBER + j) % (N_CIRCLE_SEGMENTS_NUMBER * N_SEGMENTS_NUMBER);
-			if (j == N_CIRCLE_SEGMENTS_NUMBER - 1) //last iteration
-				indices[(j * N_SEGMENTS_NUMBER + i) * 3 + 2] = ((i)* N_CIRCLE_SEGMENTS_NUMBER + j + 1) % (N_CIRCLE_SEGMENTS_NUMBER * N_SEGMENTS_NUMBER);
-			else
-				indices[(j * N_SEGMENTS_NUMBER + i) * 3 + 2] = ((i + 1) * N_CIRCLE_SEGMENTS_NUMBER + j + 1) % (N_CIRCLE_SEGMENTS_NUMBER * N_SEGMENTS_NUMBER);
-		}
-	}
-
-	int offset = N_CIRCLE_SEGMENTS_NUMBER * N_SEGMENTS_NUMBER * 3;
-
-	for (int j = 0; j < N_CIRCLE_SEGMENTS_NUMBER; j++)
-	{
-		for (int i = 0; i < N_SEGMENTS_NUMBER; i++)
-		{
-			int firstLeft = offset + (j * N_SEGMENTS_NUMBER + i) * 3;
-			int firstRight = (i * N_CIRCLE_SEGMENTS_NUMBER + j) % (N_CIRCLE_SEGMENTS_NUMBER * N_SEGMENTS_NUMBER);
-			indices[firstLeft] = firstRight;
-			int secondLeft = offset + (j * N_SEGMENTS_NUMBER + i) * 3 + 1;
-			int secondRight = ((i + 1) * N_CIRCLE_SEGMENTS_NUMBER + j) % (N_CIRCLE_SEGMENTS_NUMBER * N_SEGMENTS_NUMBER);
-			indices[secondLeft] = secondRight;
-			int thirdLeft = offset + (j * N_SEGMENTS_NUMBER + i) * 3 + 2;
-			int thirdRight = (i* N_CIRCLE_SEGMENTS_NUMBER + j - 1) % (N_CIRCLE_SEGMENTS_NUMBER * N_SEGMENTS_NUMBER);
-			if (j == 0)//first interation
-			{
-				if (i == N_SEGMENTS_NUMBER - 1)
-					int b = 1;
-				thirdRight = N_CIRCLE_SEGMENTS_NUMBER * (i + 1) - 1;
-			}
-			if (j == N_CIRCLE_SEGMENTS_NUMBER - 1)
-				int a = 1;
-			indices[thirdLeft] = thirdRight;
-
-			indices[firstLeft] = secondRight;
-			indices[secondLeft] = firstRight;
-
-		}
-	}
-
-	unsigned int wartosc = (unsigned int)m_indexCount;
-	m_indexBuffer = m_device.CreateIndexBuffer(indices, (unsigned int)m_indexCount);
-
-	delete[] indices;
-	indices = 0;
+		0, 1, 2, 0, 2, 3,		//Front face
+		4, 5, 6, 4, 6, 7,		//Left face
+		8, 9, 10, 8, 10, 11,	//Botton face
+		12, 13, 14, 12, 14, 15,	//Back face
+		16, 17, 18, 16, 18, 19,	//Right face
+		20, 21, 22, 20, 22, 23	//Top face
+	};
+	m_indexBuffer = m_device.CreateIndexBuffer(indices, m_indexCount);
 }
 
 void SimplePoint::setStereoscopy(bool isStereoscopic)
@@ -221,9 +165,10 @@ void SimplePoint::setStereoscopy(bool isStereoscopic)
 
 void SimplePoint::Draw()
 {
-	TorusShader* shader = dynamic_cast<TorusShader*>(m_shader_base);
+	SimplePointShader* shader = dynamic_cast<SimplePointShader*>(m_shader_base);
 	m_context->UpdateSubresource(shader->GetCBWorldMatrix().get(), 0, 0, &m_modelMatrix, 0, 0);
 
+	shader->SetContent();
 
 	ID3D11Buffer* b = m_vertexBuffer.get();
 	m_context->IASetVertexBuffers(0, 1, &b, &VB_STRIDE, &VB_OFFSET);

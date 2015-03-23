@@ -82,9 +82,17 @@ void SceneHelper::rotateModels(vector<ModelClass*>& models, float rotation, Acti
 	}
 }
 
+void SceneHelper::AddModel()
+{
+	m_modelsManager.AddModel(SimplePointType);
+}
+
 void SceneHelper::CheckInput()
 {
 	vector<ModelClass*>& models = m_modelsManager.GetModels();
+	vector<ModelClass*> activeModels;
+	activeModels.push_back(models[0]);
+
 	ActiveFeature feature = m_InputClass->getActiveFeature();
 	ActiveAxis axis = m_InputClass->getActiveAxis();
 	ActiveRadius radius = m_InputClass->getActiveRadius();
@@ -103,6 +111,58 @@ void SceneHelper::CheckInput()
 	//	intensity -= 3.0f;
 	//	m_context->UpdateSubresource(m_lightIntensity.get(), 0, 0, new XMFLOAT4(intensity, 0.0f, 0.0f, 0.0f), 0, 0);
 	//}
+
+	if (m_InputClass->IsKeyDown(0x57)) //W
+	{
+		XMFLOAT3 offset = XMFLOAT3(0, factor, 0);
+		translateModels(activeModels, offset);
+	}
+
+	if (m_InputClass->IsKeyDown(0x53)) //S
+	{
+		XMFLOAT3 offset = XMFLOAT3(0, -factor, 0);
+		translateModels(activeModels, offset);
+	}
+
+	if (m_InputClass->IsKeyDown(0x41)) //A
+	{
+		XMFLOAT3 offset = XMFLOAT3(-factor, 0, 0);
+		translateModels(activeModels, offset);
+	}
+
+
+	if (m_InputClass->IsKeyDown(0x44)) //D
+	{
+		XMFLOAT3 offset = XMFLOAT3(factor, 0, 0);
+		translateModels(activeModels, offset);
+	}
+
+	if (m_InputClass->IsKeyDown(0x5A)) //Z
+	{
+		XMFLOAT3 offset = XMFLOAT3(0, 0, -factor);
+		translateModels(activeModels, offset);
+	}
+
+	if (m_InputClass->IsKeyDown(0x58)) //X
+	{
+		XMFLOAT3 offset = XMFLOAT3(0, 0, factor);
+		translateModels(activeModels, offset);
+	}
+
+
+
+	if (m_InputClass->IsKeyDown(VK_RETURN))
+	{
+		if (m_CanAdd)
+		{
+			m_CanAdd = false;
+			AddModel();
+		}
+	}
+	else
+	{
+		m_CanAdd = true;
+	}
 
 	if (radius == BigRadius)
 	{
