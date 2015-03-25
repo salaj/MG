@@ -4,6 +4,7 @@
 #include "shader_base.h"
 #include "camera.h"
 #include "inputclass.h"
+#include "guiUpdater.h"
 
 using namespace std;
 
@@ -16,8 +17,8 @@ namespace gk2{
 		Service();
 		virtual ~Service();
 
-		static void* operator new(size_t size);
-		static void operator delete(void* ptr);
+		//static void* operator new(size_t size);
+		//static void operator delete(void* ptr);
 
 		shared_ptr<ID3D11DeviceContext> Context;
 		ShaderBase** Shader;
@@ -26,6 +27,8 @@ namespace gk2{
 		gk2::Camera Camera;
 
 		InputClass* InputClass;
+		GUIUpdater* GUIUpdater;
+		shared_ptr<Mouse> Mouse;
 
 	};
 }

@@ -14,7 +14,9 @@ void SceneHelper::operator delete(void* ptr)
 
 void SceneHelper::Initialize(Service& service)
 {
+	selected = NULL;
 	m_InputClass = service.InputClass;
+	m_GUIUpdater = service.GUIUpdater;
 	m_modelsManager.Initialize(service);
 }
 
@@ -44,8 +46,87 @@ void SceneHelper::DrawModels()
 	m_modelsManager.DrawModels();
 }
 
+void SceneHelper::selectNewModel(ModelClass* model)
+{
+	float scaleFactor = 2.0f;
+	if (selected != NULL)
+	{
+		selected->Scale(1 / scaleFactor);
+		selected->m_selected = false;
+		m_modelsManager.RemoveActiveModel(selected->m_id);
+	}
+	model->Scale(scaleFactor);
+	model->m_selected = true;
+	selected = model;
+	m_modelsManager.AddActiveModel(model->m_id);
+}
 
-void SceneHelper::translateModels(vector<ModelClass*>& models, XMFLOAT3 offset)
+XMFLOAT2 translatePoint(POINT mousePosition)
+{
+	XMFLOAT2 ret;
+	mousePosition.x = mousePosition.x - 300.0f;
+	mousePosition.y = 300.0f - mousePosition.y;
+	ret.x = (float)mousePosition.x / 300.0f;
+	ret.y = (float)mousePosition.y / 300.0f;
+	return ret;
+}
+
+void SceneHelper::findClosestModelWithMouse(POINT mousePosition)
+{
+	XMFLOAT2 translatedMousePosition = translatePoint(mousePosition);
+	Cursor cursor = Cursor(); //tmp cursor
+	ModelsManager::setModelToPosition(dynamic_cast<ModelClass*>(&cursor),
+		XMFLOAT3(translatedMousePosition.x, translatedMousePosition.y, 0));
+
+	vector<ModelClass*>& models = m_modelsManager.GetModels();
+	float minSquareDistance = 0.02f;
+	float minVal = FLT_MAX;
+	int index = -1;
+	for (int i = 1; i < models.size(); i++)//we omit cursor
+	{
+		ModelClass* model = models[i];
+		if (model->m_Type != ModelType::SimplePointType)
+			continue;
+		float val = ModelClass::GetSquareDistanceBetweenModels(&cursor, model);
+		if (val < minVal)
+		{
+			index = i;
+			minVal = val;
+		}
+	}
+	if (minVal < minSquareDistance)
+	{
+		selectNewModel(models[index]);
+	}
+}
+
+void SceneHelper::findClosestModelWithCursor()
+{
+	ModelClass* cursor = m_modelsManager.GetCursor();
+	vector<ModelClass*>& models = m_modelsManager.GetModels();
+	float minSquareDistance = 0.02f;
+	float minVal = FLT_MAX;
+	int index = -1;
+	for (int i = 1; i < models.size(); i++)//we omit cursor
+	{
+		ModelClass* model = models[i];
+		if (model->m_Type != ModelType::SimplePointType)
+			continue;
+		float val = ModelClass::GetSquareDistanceBetweenModels(cursor, model);
+		if (val < minVal)
+		{
+			index = i; 
+			minVal = val;
+		}
+	}
+	if (minVal < minSquareDistance)
+	{
+		selectNewModel(models[index]);
+	}
+}
+
+
+void SceneHelper::translateModels(vector<ModelClass*>& models, XMFLOAT4 offset)
 {
 	for (int i = 0; i < models.size(); i++)
 	{
@@ -82,22 +163,38 @@ void SceneHelper::rotateModels(vector<ModelClass*>& models, float rotation, Acti
 	}
 }
 
-void SceneHelper::AddModel()
+void SceneHelper::AddModel(ModelType type)
 {
-	m_modelsManager.AddModel(SimplePointType);
+	ModelClass* createdModel = m_modelsManager.AddModel(type);
+	if (createdModel != NULL)
+	{
+		if (createdModel->m_Type != ModelType::CursorType)
+			selectNewModel(createdModel);
+		//set position on gui side
+		XMFLOAT4 position = m_modelsManager.GetModels()[0]->GetTranslatedPosition(m_modelsManager.GetCursor());
+		m_GUIUpdater->AddModel(position);
+	}
+}
+
+void SceneHelper::RemoveModel(ModelClass* model)
+{
+	m_modelsManager.RemoveModel(model->m_id);
 }
 
 void SceneHelper::CheckInput()
 {
 	vector<ModelClass*>& models = m_modelsManager.GetModels();
+
+	ModelClass* cursor = m_modelsManager.GetCursor();
+
 	vector<ModelClass*> activeModels;
-	activeModels.push_back(models[0]);
+	activeModels.push_back(cursor);
 
 	ActiveFeature feature = m_InputClass->getActiveFeature();
 	ActiveAxis axis = m_InputClass->getActiveAxis();
 	ActiveRadius radius = m_InputClass->getActiveRadius();
 	float rotation = (float)XM_PI * 0.0002f;
-	float factor = 0.0005f;
+	float factor = 0.005f;
 	float factorScale = factor;
 
 
@@ -112,43 +209,87 @@ void SceneHelper::CheckInput()
 	//	m_context->UpdateSubresource(m_lightIntensity.get(), 0, 0, new XMFLOAT4(intensity, 0.0f, 0.0f, 0.0f), 0, 0);
 	//}
 
+	if (m_InputClass->IsKeyDown(VK_SPACE))
+	{
+		if (m_CanSelect)
+		{
+			findClosestModelWithCursor();
+			m_CanSelect = false;
+		}
+	}
+	else
+	{
+		m_CanSelect = true;
+	}
+
+	if (m_InputClass->IsKeyDown(VK_DELETE))
+	{
+		if (m_CanDelete)
+		{
+			if (selected != NULL)
+			{
+				m_CanDelete = false;
+				RemoveModel(selected);
+				vector<ModelClass*> newModels = m_modelsManager.GetModels();
+				ModelClass* newModel = newModels.size() > 1 ? newModels[1] : NULL;
+				if (newModel != NULL)
+				{
+					selectNewModel(newModel);
+				}
+			}
+		}
+	}
+	else
+	{
+		m_CanDelete = true;
+	}
+
+
 	if (m_InputClass->IsKeyDown(0x57)) //W
 	{
-		XMFLOAT3 offset = XMFLOAT3(0, factor, 0);
+		XMFLOAT4 offset = XMFLOAT4(0, factor, 0, 0);
 		translateModels(activeModels, offset);
+		m_GUIUpdater->SetCursorPosition(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
 	}
 
 	if (m_InputClass->IsKeyDown(0x53)) //S
 	{
-		XMFLOAT3 offset = XMFLOAT3(0, -factor, 0);
+		XMFLOAT4 offset = XMFLOAT4(0, -factor, 0, 0);
 		translateModels(activeModels, offset);
+		m_GUIUpdater->SetCursorPosition(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
 	}
 
 	if (m_InputClass->IsKeyDown(0x41)) //A
 	{
-		XMFLOAT3 offset = XMFLOAT3(-factor, 0, 0);
+		XMFLOAT4 offset = XMFLOAT4(-factor, 0, 0, 0);
 		translateModels(activeModels, offset);
+		m_GUIUpdater->SetCursorPosition(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
 	}
 
 
 	if (m_InputClass->IsKeyDown(0x44)) //D
 	{
-		XMFLOAT3 offset = XMFLOAT3(factor, 0, 0);
+		XMFLOAT4 offset = XMFLOAT4(factor, 0, 0, 0);
 		translateModels(activeModels, offset);
+		m_GUIUpdater->SetCursorPosition(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
 	}
 
 	if (m_InputClass->IsKeyDown(0x5A)) //Z
 	{
-		XMFLOAT3 offset = XMFLOAT3(0, 0, -factor);
+		XMFLOAT4 offset = XMFLOAT4(0, 0, -factor, 0);
 		translateModels(activeModels, offset);
+		m_GUIUpdater->SetCursorPosition(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
 	}
 
 	if (m_InputClass->IsKeyDown(0x58)) //X
 	{
-		XMFLOAT3 offset = XMFLOAT3(0, 0, factor);
+		XMFLOAT4 offset = XMFLOAT4(0, 0, factor, 0);
 		translateModels(activeModels, offset);
+		m_GUIUpdater->SetCursorPosition(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
 	}
 
+
+	activeModels = m_modelsManager.GetActiveModels();
 
 
 	if (m_InputClass->IsKeyDown(VK_RETURN))
@@ -156,7 +297,8 @@ void SceneHelper::CheckInput()
 		if (m_CanAdd)
 		{
 			m_CanAdd = false;
-			AddModel();
+			ModelType type = ModelType::SimplePointType;
+			AddModel(type);
 		}
 	}
 	else
@@ -203,35 +345,35 @@ void SceneHelper::CheckInput()
 		if (axis == AxisZ)
 		{
 			if (m_InputClass->IsKeyDown(VK_UP)){
-				XMFLOAT3 offset = XMFLOAT3(0, 0, factor);
-				translateModels(models, offset);
+				XMFLOAT4 offset = XMFLOAT4(0, 0, factor, 0);
+				translateModels(activeModels, offset);
 			}
 			if (m_InputClass->IsKeyDown(VK_DOWN)){
-				XMFLOAT3 offset = XMFLOAT3(0, 0, -factor);
+				XMFLOAT4 offset = XMFLOAT4(0, 0, -factor, 0);
 				//m_Torus->Translate(offset);
-				translateModels(models, offset);
+				translateModels(activeModels, offset);
 			}
 		}
 		else if (axis == AxisY)
 		{
 			if (m_InputClass->IsKeyDown(VK_UP)){
-				XMFLOAT3 offset = XMFLOAT3(0, factor, 0);
-				translateModels(models, offset);
+				XMFLOAT4 offset = XMFLOAT4(0, factor, 0, 0);
+				translateModels(activeModels, offset);
 			}
 			if (m_InputClass->IsKeyDown(VK_DOWN)){
-				XMFLOAT3 offset = XMFLOAT3(0, -factor, 0);
-				translateModels(models, offset);
+				XMFLOAT4 offset = XMFLOAT4(0, -factor, 0, 0);
+				translateModels(activeModels, offset);
 			}
 		}
 		else if (axis == AxisX)
 		{
 			if (m_InputClass->IsKeyDown(VK_UP)){
-				XMFLOAT3 offset = XMFLOAT3(factor, 0, 0);
-				translateModels(models, offset);
+				XMFLOAT4 offset = XMFLOAT4(factor, 0, 0, 0);
+				translateModels(activeModels, offset);
 			}
 			if (m_InputClass->IsKeyDown(VK_DOWN)){
-				XMFLOAT3 offset = XMFLOAT3(-factor, 0, 0);
-				translateModels(models, offset);
+				XMFLOAT4 offset = XMFLOAT4(-factor, 0, 0, 0);
+				translateModels(activeModels, offset);
 			}
 		}
 	}
@@ -241,28 +383,28 @@ void SceneHelper::CheckInput()
 		if (axis == AxisZ)
 		{
 			if (m_InputClass->IsKeyDown(VK_UP)){
-				rotateModels(models, rotation, axis);
+				rotateModels(activeModels, rotation, axis);
 			}
 			if (m_InputClass->IsKeyDown(VK_DOWN)){
-				rotateModels(models, -rotation, axis);
+				rotateModels(activeModels, -rotation, axis);
 			}
 		}
 		else if (axis == AxisY)
 		{
 			if (m_InputClass->IsKeyDown(VK_UP)){
-				rotateModels(models, rotation, axis);
+				rotateModels(activeModels, rotation, axis);
 			}
 			if (m_InputClass->IsKeyDown(VK_DOWN)){
-				rotateModels(models, -rotation, axis);
+				rotateModels(activeModels, -rotation, axis);
 			}
 		}
 		else if (axis == AxisX)
 		{
 			if (m_InputClass->IsKeyDown(VK_UP)){
-				rotateModels(models, rotation, axis);
+				rotateModels(activeModels, rotation, axis);
 			}
 			if (m_InputClass->IsKeyDown(VK_DOWN)){
-				rotateModels(models, -rotation, axis);
+				rotateModels(activeModels, -rotation, axis);
 			}
 		}
 	}
@@ -270,11 +412,22 @@ void SceneHelper::CheckInput()
 	if (feature == Scale)
 	{
 		if (m_InputClass->IsKeyDown(VK_UP)){
-			scaleModels(models, (1 - factorScale));
+			scaleModels(activeModels, (1 - factorScale));
 		}
 		if (m_InputClass->IsKeyDown(VK_DOWN)){
-			scaleModels(models, (1 + factorScale));
+			scaleModels(activeModels, (1 + factorScale));
 		}
 	}
+}
 
+void SceneHelper::CheckMouse()
+{
+	if (m_InputClass->IsMouseButtonDown())
+	{
+		POINT position = m_InputClass->GetMousePosition();
+		if (m_previousPoint.x == position.x && m_previousPoint.y == position.y)
+			return;
+		m_previousPoint = position;
+		findClosestModelWithMouse(position);
+	}
 }

@@ -3,6 +3,7 @@
 #include <string>
 #include <Windows.h>
 #include "inputclass.h"
+#include "Windowsx.h"
 
 namespace gk2
 {
@@ -38,6 +39,7 @@ namespace gk2
 		HWND m_hWnd;
 
 		HINSTANCE m_hInstance;
+		bool isLeftButtonPressed = false;
 		//InputClass* input;
 
 		///////////////////

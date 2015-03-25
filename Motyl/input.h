@@ -65,6 +65,13 @@ namespace gk2
 
 		DIMOUSESTATE m_state;
 
+		POINT m_mousePosition;
+
+		POINT getMousePosition() const
+		{
+			return m_mousePosition;
+		}
+
 		MouseState()
 		{
 			ZeroMemory(&m_state, sizeof(DIMOUSESTATE));

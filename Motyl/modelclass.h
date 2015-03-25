@@ -16,6 +16,7 @@
 #include <d3dx10math.h>
 #include <xnamath.h>
 #include <memory>
+#include <algorithm>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: ModelClass
@@ -30,6 +31,9 @@ class ModelClass
 {
 
 public:
+
+	static int m_counter;
+
 	ModelClass();
 	ModelClass(std::shared_ptr<ID3D11DeviceContext>deviceContext,
 		ShaderBase* shaderBase,
@@ -58,11 +62,19 @@ public:
 	void RotateX(double);
 	void RotateY(double);
 	void RotateZ(double);
-	void Translate(XMFLOAT3&);
+	void Translate(XMFLOAT4&);
 	void Scale(float);
 
-	XMMATRIX m_modelMatrix;
+	XMFLOAT4 GetPosition();
+	XMFLOAT4 GetNormalizedPosition();
+	XMFLOAT4 GetTranslatedPosition(ModelClass* cursor);
+	void SetPosition(XMFLOAT4 position);
+	static float GetSquareDistanceBetweenModels(ModelClass*, ModelClass*);
 
+	XMMATRIX m_modelMatrix;
+	bool m_selected;
+	int m_id;
+	ModelType m_Type = ModelType::Undecided;
 
 protected:
 	std::shared_ptr<ID3D11Buffer> m_vertexBuffer, m_indexBuffer;
@@ -82,6 +94,7 @@ protected:
 	virtual void setLineTopology() = 0;
 
 private:
+	static int counter;
 	//const float rotation = (float)XM_PI * 0.05f;
 
 	gk2::Camera m_camera;
@@ -91,6 +104,9 @@ private:
 	XMMATRIX* CreateXAxisRotationMatrix(float angle);
 	XMMATRIX* CreateYAxisRotationMatrix(float angle);
 	XMMATRIX* CreateZAxisRotationMatrix(float angle);
-	XMMATRIX* CreateTranslationMatrix(XMFLOAT3 offset);
+	XMMATRIX* CreateTranslationMatrix(XMFLOAT4 offset);
 	XMMATRIX* CreateScaleMatrix(float s);
+	void updatePosition(XMMATRIX* transform);
+
+	XMFLOAT4 m_position;
 };

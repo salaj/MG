@@ -6,6 +6,7 @@
 #include "service.h"
 #include "modelclass.h"
 #include "modelsManager.h"
+#include "guiUpdater.h"
 #include <vector>
 #include <xnamath.h>
 
@@ -23,25 +24,40 @@ class SceneHelper
 
 		//for checking input - shall be new class 
 		void CheckInput();
+		void CheckMouse();
 
 		//for modelmanager class
 		vector<ModelClass*>& GetModels();
 		void CreateModels();
 		void InitializeModels();
 		void DrawModels();
-		void AddModel();
+		void AddModel(ModelType type);
+		void RemoveModel(ModelClass*);
+
 
 
 	private:
 		InputClass*  m_InputClass;
+		GUIUpdater* m_GUIUpdater;
 		ModelsManager m_modelsManager;
 
-		bool m_CanAdd = true;
+		POINT m_previousPoint;
 
-		void translateModels(vector<ModelClass*>& models, XMFLOAT3 offset);
+		bool m_CanAdd = true;
+		bool m_CanSelect = true;
+		bool m_CanDelete = true;
+
+		void translateModels(vector<ModelClass*>& models, XMFLOAT4 offset);
 
 		void scaleModels(vector<ModelClass*>& models, float scale);
 
 		void rotateModels(vector<ModelClass*>& models, float rotation, ActiveAxis axis);
+
+		ModelClass* selected;
+
+		void selectNewModel(ModelClass* model);
+
+		void findClosestModelWithCursor();
+		void findClosestModelWithMouse(POINT mousePosition);
 };
 

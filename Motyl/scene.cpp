@@ -22,10 +22,12 @@ void Scene::operator delete(void* ptr)
 	Utils::Delete16Aligned(ptr);
 }
 
-Scene::Scene(HINSTANCE hInstance, InputClass* inputClass)
-	: ApplicationBase(hInstance), m_camera(0.01f, 100.0f)
+Scene::Scene(HINSTANCE hInstance, InputClass* inputClass, GUIUpdater* guiUpdater)
+	: ApplicationBase(hInstance),
+	m_camera(0.01f, 100.0f),
+	m_input_class(inputClass),
+	m_GUIUpdater(guiUpdater)
 {
-	m_input_class = inputClass;
 }
 
 Scene::~Scene()
@@ -79,7 +81,9 @@ bool Scene::LoadContent()
 	service.Context = m_context;
 	service.Camera = m_camera;
 	service.Device = m_device;
+	service.Mouse = m_mouse;
 	service.InputClass = m_input_class;
+	service.GUIUpdater = m_GUIUpdater;
 	service.Shader = new ShaderBase*[4]
 	{
 		m_shader_torus,
@@ -107,7 +111,7 @@ bool Scene::LoadContent()
 	//m_Torus -> Initialize();
 	//m_Torus2 -> Initialize();
 	//m_Elipsoid -> Initialize();
-	m_sceneHelper.InitializeModels();
+	//m_sceneHelper.InitializeModels();
 	return true;
 }
 
@@ -147,28 +151,28 @@ int counter = 0;
 
 void Scene::Update(float dt)
 {
-	static MouseState prevState;
-	MouseState currentState;
-	if (!m_mouse->GetState(currentState))
-		return;
-	bool change = true;
-	if (prevState.isButtonDown(0))
-	{
-		POINT d = currentState.getMousePositionChange();
-		m_camera.Rotate(d.y / 300.f, d.x / 300.f);
-	}
-	else if (prevState.isButtonDown(1))
-	{
-		POINT d = currentState.getMousePositionChange();
-		m_camera.Zoom(d.y / 10.0f);
-	}
-	else
-		change = false;
-	prevState = currentState;
-	if (change)
-		UpdateCamera();
+	//static MouseState prevState;
+	//MouseState currentState;
+	//if (!m_mouse->GetState(currentState))
+	//	return;
+	//bool change = true;
+	//if (prevState.isButtonDown(0))
+	//{
+	//	POINT d = currentState.getMousePositionChange();
+	//	m_camera.Rotate(d.y / 300.f, d.x / 300.f);
+	//}
+	//else if (prevState.isButtonDown(1))
+	//{
+	//	POINT d = currentState.getMousePositionChange();
+	//	m_camera.Zoom(d.y / 10.0f);
+	//}
+	//else
+	//	change = false;
+	//prevState = currentState;
+	//if (change)
+	//	UpdateCamera();
 
-
+	m_sceneHelper.CheckMouse();
 	m_sceneHelper.CheckInput();
 }
 

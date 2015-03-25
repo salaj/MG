@@ -226,6 +226,25 @@ LRESULT Window::WndProc(UINT msg, WPARAM wParam, LPARAM lParam)
 	//	}
 	//	break;
 
+	case WM_LBUTTONDOWN:
+	{
+		if (!isLeftButtonPressed)
+		{
+			isLeftButtonPressed = true;
+			input->SetMousePressing(isLeftButtonPressed);
+			float xPos = GET_X_LPARAM(lParam);
+			float yPos = GET_Y_LPARAM(lParam);
+			input->SetMousePosition(xPos, yPos);
+		}
+		return false;
+	}
+	case WM_LBUTTONUP:
+	{
+		isLeftButtonPressed = false;
+		input->SetMousePressing(isLeftButtonPressed);
+		return false;
+	}
+
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
 		case IDM_VIEW_TRANSLATION:

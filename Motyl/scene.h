@@ -17,7 +17,7 @@ namespace gk2
 	class Scene : public gk2::ApplicationBase
 	{
 	public:
-		Scene(HINSTANCE hInstance, InputClass* inputClass);
+		Scene(HINSTANCE hInstance, InputClass* inputClas, GUIUpdater* m_GUIUpdater);
 		virtual ~Scene();
 
 		//Niektóre struktury xnamath.h wymagaj¹ (np. XMMATRIX czy XMVECTOR) wymagaj¹, aby adresy zmiennych
@@ -105,6 +105,7 @@ namespace gk2
 		SimplePointShader* m_shader_simple_point;
 		CursorShader* m_shader_cursor;
 		InputClass* m_input_class;
+		GUIUpdater* m_GUIUpdater;
 
 		//Torus* m_Torus;
 		//Torus* m_Torus2;

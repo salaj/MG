@@ -61,6 +61,12 @@
     <Filter Include="Source Files\base\containers">
       <UniqueIdentifier>{509ec556-1359-4ce9-b759-fd988f41853a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\treeview">
+      <UniqueIdentifier>{76c0732f-b8a9-4d9a-902d-01dff2809dce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\treeView">
+      <UniqueIdentifier>{368b7115-e56b-46e4-87ad-ab27d02982b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -141,6 +147,30 @@
     <ClCompile Include="shader_cursor.cpp">
       <Filter>Source Files\shaders</Filter>
     </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>Source Files\treeView</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerMain.cpp">
+      <Filter>Source Files\treeView</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogWindow.cpp">
+      <Filter>Source Files\treeView</Filter>
+    </ClCompile>
+    <ClCompile Include="procedure.cpp">
+      <Filter>Source Files\treeView</Filter>
+    </ClCompile>
+    <ClCompile Include="View.cpp">
+      <Filter>Source Files\treeView</Filter>
+    </ClCompile>
+    <ClCompile Include="wcharUtil.cpp">
+      <Filter>Source Files\treeView</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowTree.cpp">
+      <Filter>Source Files\treeView</Filter>
+    </ClCompile>
+    <ClCompile Include="guiUpdater.cpp">
+      <Filter>Source Files\controls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="modelclass.h">
@@ -215,6 +245,33 @@
     <ClInclude Include="shader_cursor.h">
       <Filter>Header Files\shaders</Filter>
     </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>Header Files\treeview</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerMain.h">
+      <Filter>Header Files\treeview</Filter>
+    </ClInclude>
+    <ClInclude Include="Controls.h">
+      <Filter>Header Files\treeview</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogWindow.h">
+      <Filter>Header Files\treeview</Filter>
+    </ClInclude>
+    <ClInclude Include="procedure.h">
+      <Filter>Header Files\treeview</Filter>
+    </ClInclude>
+    <ClInclude Include="View.h">
+      <Filter>Header Files\treeview</Filter>
+    </ClInclude>
+    <ClInclude Include="wcharUtil.h">
+      <Filter>Header Files\treeview</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowTree.h">
+      <Filter>Header Files\treeview</Filter>
+    </ClInclude>
+    <ClInclude Include="guiUpdater.h">
+      <Filter>Header Files\controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Butterfly.hlsl">
@@ -243,6 +300,12 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="toolbar1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="folderOpen.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="folderClosed.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

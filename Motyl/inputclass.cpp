@@ -3,6 +3,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "inputclass.h"
 
+using namespace gk2;
+using namespace std;
 
 InputClass::InputClass()
 {
@@ -90,4 +92,30 @@ bool InputClass::IsKeyDown(unsigned int key)
 void InputClass::setStereorcopy(bool isActive)
 {
 	isStereoscopyActive = isActive;
+}
+
+void InputClass::AddModel(ModelType type)
+{
+	
+}
+
+void InputClass::SetMousePosition(float x, float y)
+{
+	m_MousePosition.x = x;
+	m_MousePosition.y = y;
+}
+
+void InputClass::SetMousePressing(bool isPressed)
+{
+	m_isMouseButtonDown = isPressed;
+}
+
+bool InputClass::IsMouseButtonDown()
+{
+	return m_isMouseButtonDown;
+}
+
+POINT InputClass::GetMousePosition()
+{
+	return m_MousePosition;
 }

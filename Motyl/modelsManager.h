@@ -4,6 +4,7 @@
 #include "modelclass.h"
 #include "service.h"
 #include <vector>
+#include <map>
 #include <xnamath.h>
 #include "torus.h"
 #include "elipsoid.h"
@@ -16,11 +17,6 @@
 
 using namespace std;
 
-enum ModelType{
-	TorusType,
-	ElipsoidType,
-	SimplePointType
-};
 
 class ModelsManager
 {
@@ -34,18 +30,25 @@ public:
 	static void operator delete(void* ptr);
 
 	vector<ModelClass*>& GetModels();
+	vector<ModelClass*>& GetActiveModels();
 	void CreateModels();
+	void SetActiveModels(int*, int n);
+	void AddActiveModel(int);
+	void RemoveActiveModel(int);
 	void InitializeModels();
 	void DrawModels();
 
 	void SetModelAtOtherModelPosition(ModelClass *model, ModelClass *relative_model);
-	void AddModel(ModelType);
+	void CopyOtherModelAfinityMatrix(ModelClass *model, ModelClass *relative_model);
+	ModelClass* AddModel(ModelType);
+	void RemoveModel(int);
 
-	void setModelToPosition(ModelClass*, XMFLOAT3);
+	static void setModelToPosition(ModelClass*, XMFLOAT3);
+
+	ModelClass* GetCursor();
 
 private:
 	vector<ModelClass*> m_models;
+	map<int, ModelClass*> m_active_models;
 	Service m_service;
-
-	ModelClass* getCursorModel();
 };

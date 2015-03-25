@@ -19,6 +19,7 @@ SimplePoint::SimplePoint(std::shared_ptr<ID3D11DeviceContext> deviceContext,
 
 SimplePoint::SimplePoint(Service& service) : ModelClass(service)
 {
+	m_Type = ModelType::SimplePointType;
 	ModelClass::Initialize();
 }
 
@@ -173,7 +174,7 @@ void SimplePoint::Draw()
 	ID3D11Buffer* b = m_vertexBuffer.get();
 	m_context->IASetVertexBuffers(0, 1, &b, &VB_STRIDE, &VB_OFFSET);
 	m_context->IASetIndexBuffer(m_indexBuffer.get(), DXGI_FORMAT_R16_UINT, 0);
-	
+
 	if (m_input->isStereoscopyActive)
 	{
 		m_context->UpdateSubresource(shader->GetCBProjMatrix().get(), 0, 0, &createStereoscopicProjMatrixLeft(), 0, 0);

@@ -1,9 +1,18 @@
 
 #pragma once
+#include "input.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: InputClass
 ////////////////////////////////////////////////////////////////////////////////
 
+enum ModelType{
+	TorusType,
+	ElipsoidType,
+	SimplePointType,
+	CursorType,
+	Undecided
+};
 
 enum ActiveFeature{
 	Translation,
@@ -30,7 +39,6 @@ public:
 	InputClass();
 	InputClass(const InputClass&);
 	~InputClass();
-
 	void Initialize();
 
 	void KeyDown(unsigned int);
@@ -47,8 +55,15 @@ public:
 	void setStereorcopy(bool isActive);
 
 	bool isStereoscopyActive;
+	void AddModel(ModelType);
+	void SetMousePosition(float x, float y);
+	void SetMousePressing(bool isPressed);
+	bool IsMouseButtonDown();
+	POINT GetMousePosition();
 
 private:
+	POINT m_MousePosition;
+	bool m_isMouseButtonDown = false;
 	bool m_keys[256];
 	ActiveFeature m_activeFeature;
 	ActiveAxis m_activeAxis;

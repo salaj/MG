@@ -78,7 +78,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>d3d11.lib;d3dx11.lib;dxerr.lib;dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;d3d11.lib;d3dx11.lib;dxerr.lib;dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -131,10 +131,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="ControllerMain.cpp" />
     <ClCompile Include="cursor.cpp" />
+    <ClCompile Include="DialogWindow.cpp" />
     <ClCompile Include="elipsoid.cpp" />
     <ClCompile Include="applicationBase.cpp" />
+    <ClCompile Include="guiUpdater.cpp" />
     <ClCompile Include="modelsManager.cpp" />
+    <ClCompile Include="procedure.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="deviceHelper.cpp" />
     <ClCompile Include="exceptions.cpp" />
@@ -154,13 +159,22 @@
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="shader_base.cpp" />
     <ClCompile Include="torus.cpp" />
+    <ClCompile Include="View.cpp" />
+    <ClCompile Include="wcharUtil.cpp" />
     <ClCompile Include="window.cpp" />
+    <ClCompile Include="WindowTree.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Controller.h" />
+    <ClInclude Include="ControllerMain.h" />
+    <ClInclude Include="Controls.h" />
     <ClInclude Include="cursor.h" />
+    <ClInclude Include="DialogWindow.h" />
     <ClInclude Include="elipsoid.h" />
     <ClInclude Include="applicationBase.h" />
+    <ClInclude Include="guiUpdater.h" />
     <ClInclude Include="modelsManager.h" />
+    <ClInclude Include="procedure.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="deviceHelper.h" />
@@ -174,6 +188,8 @@
     <ClInclude Include="simple_point .h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="vertices.h" />
+    <ClInclude Include="View.h" />
+    <ClInclude Include="wcharUtil.h" />
     <ClInclude Include="window.h" />
     <ClInclude Include="shader_elipsoid.h" />
     <ClInclude Include="shader_torus.h" />
@@ -181,6 +197,7 @@
     <ClInclude Include="modelclass.h" />
     <ClInclude Include="shader_base.h" />
     <ClInclude Include="torus.h" />
+    <ClInclude Include="WindowTree.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Butterfly.hlsl" />
@@ -200,6 +217,8 @@
     <ResourceCompile Include="Modelowanie.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="folderClosed.ico" />
+    <Image Include="folderOpen.ico" />
     <Image Include="toolbar1.bmp" />
   </ItemGroup>
   <ItemGroup>
