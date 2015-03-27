@@ -28,7 +28,17 @@ void GUIUpdater::AddModel(XMFLOAT4 position)
 	m_settings->insertItemExternally(TEXT("Point"));
 }
 
-void GUIUpdater::SetCursorPosition(XMFLOAT4 position)
+void GUIUpdater::RemoveModels(int parentID)
 {
-	m_settings->setCursorPosition(position);
+	m_settings->removeItem(parentID);
+}
+
+void GUIUpdater::setCursorPositionWorld(XMFLOAT4 position)
+{
+	m_settings->setCursorPositionWorld(position);
+}
+
+void GUIUpdater::setCursorPositionScreen(XMFLOAT4 position)
+{
+	m_settings->setCursorPositionScreen(position);
 }

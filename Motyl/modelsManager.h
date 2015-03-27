@@ -37,6 +37,7 @@ public:
 	void RemoveActiveModel(int);
 	void InitializeModels();
 	void DrawModels();
+	ModelClass* GetModelById(int);
 
 	void SetModelAtOtherModelPosition(ModelClass *model, ModelClass *relative_model);
 	void CopyOtherModelAfinityMatrix(ModelClass *model, ModelClass *relative_model);

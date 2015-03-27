@@ -22,7 +22,9 @@ public:
 	~GUIUpdater();
 	void Initialize();
 	void AddModel(XMFLOAT4 position);
-	void SetCursorPosition(XMFLOAT4 position);
+	void setCursorPositionWorld(XMFLOAT4 position);
+	void setCursorPositionScreen(XMFLOAT4 position);
+	void RemoveModels(int parentID);
 
 private:
 	Settings* m_settings;

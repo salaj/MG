@@ -25,6 +25,7 @@ class SceneHelper
 		//for checking input - shall be new class 
 		void CheckInput();
 		void CheckMouse();
+		void CheckSelectedByTreeView();
 
 		//for modelmanager class
 		vector<ModelClass*>& GetModels();

@@ -179,6 +179,7 @@ void SceneHelper::AddModel(ModelType type)
 void SceneHelper::RemoveModel(ModelClass* model)
 {
 	m_modelsManager.RemoveModel(model->m_id);
+	m_GUIUpdater->RemoveModels(model->m_id);
 }
 
 void SceneHelper::CheckInput()
@@ -249,21 +250,24 @@ void SceneHelper::CheckInput()
 	{
 		XMFLOAT4 offset = XMFLOAT4(0, factor, 0, 0);
 		translateModels(activeModels, offset);
-		m_GUIUpdater->SetCursorPosition(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
+		m_GUIUpdater->setCursorPositionWorld(m_modelsManager.GetCursor()->GetPosition());
+		m_GUIUpdater->setCursorPositionScreen(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
 	}
 
 	if (m_InputClass->IsKeyDown(0x53)) //S
 	{
 		XMFLOAT4 offset = XMFLOAT4(0, -factor, 0, 0);
 		translateModels(activeModels, offset);
-		m_GUIUpdater->SetCursorPosition(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
+		m_GUIUpdater->setCursorPositionWorld(m_modelsManager.GetCursor()->GetPosition());
+		m_GUIUpdater->setCursorPositionScreen(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
 	}
 
 	if (m_InputClass->IsKeyDown(0x41)) //A
 	{
 		XMFLOAT4 offset = XMFLOAT4(-factor, 0, 0, 0);
 		translateModels(activeModels, offset);
-		m_GUIUpdater->SetCursorPosition(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
+		m_GUIUpdater->setCursorPositionWorld(m_modelsManager.GetCursor()->GetPosition());
+		m_GUIUpdater->setCursorPositionScreen(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
 	}
 
 
@@ -271,23 +275,25 @@ void SceneHelper::CheckInput()
 	{
 		XMFLOAT4 offset = XMFLOAT4(factor, 0, 0, 0);
 		translateModels(activeModels, offset);
-		m_GUIUpdater->SetCursorPosition(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
+		m_GUIUpdater->setCursorPositionWorld(m_modelsManager.GetCursor()->GetPosition());
+		m_GUIUpdater->setCursorPositionScreen(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
 	}
 
 	if (m_InputClass->IsKeyDown(0x5A)) //Z
 	{
 		XMFLOAT4 offset = XMFLOAT4(0, 0, -factor, 0);
 		translateModels(activeModels, offset);
-		m_GUIUpdater->SetCursorPosition(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
+		m_GUIUpdater->setCursorPositionWorld(m_modelsManager.GetCursor()->GetPosition());
+		m_GUIUpdater->setCursorPositionScreen(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
 	}
 
 	if (m_InputClass->IsKeyDown(0x58)) //X
 	{
 		XMFLOAT4 offset = XMFLOAT4(0, 0, factor, 0);
 		translateModels(activeModels, offset);
-		m_GUIUpdater->SetCursorPosition(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
+		m_GUIUpdater->setCursorPositionWorld(m_modelsManager.GetCursor()->GetPosition());
+		m_GUIUpdater->setCursorPositionScreen(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
 	}
-
 
 	activeModels = m_modelsManager.GetActiveModels();
 
@@ -429,5 +435,14 @@ void SceneHelper::CheckMouse()
 			return;
 		m_previousPoint = position;
 		findClosestModelWithMouse(position);
+	}
+}
+
+void SceneHelper::CheckSelectedByTreeView()
+{
+	int id = m_InputClass->GetSelectedModel();
+	if (id != -1)
+	{
+		selectNewModel(m_modelsManager.GetModelById(id));
 	}
 }

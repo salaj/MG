@@ -309,7 +309,7 @@ namespace Win
                                                     { SendMessage(handle, TVM_SELECTITEM, (WPARAM)flag, (LPARAM)item); }
 
         // insert new item. the associated image, parent and insertAfter item are optional. It returns HTREEITEM
-        HTREEITEM insertItem(const wchar_t* str, HTREEITEM parent=TVI_ROOT, HTREEITEM insertAfter=TVI_LAST, int imageIndex=0, int selectedImageIndex=0) const
+        HTREEITEM* insertItem(const wchar_t* str, HTREEITEM parent=TVI_ROOT, HTREEITEM insertAfter=TVI_LAST, int imageIndex=0, int selectedImageIndex=0) const
                               { // build TVINSERTSTRUCT
                                 TVINSERTSTRUCT insertStruct;
                                 insertStruct.hParent = parent;
@@ -328,7 +328,7 @@ namespace Win
                                 HTREEITEM hParentItem = getParent(hTreeItem);
                                 if(hParentItem) expand(hParentItem);
 
-                                return hTreeItem;
+                                return &hTreeItem;
                               }
 
         // remove an item from TreeView. If a parent item is deleted, all the children of it are also deleted.

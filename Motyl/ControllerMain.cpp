@@ -75,6 +75,7 @@ int ControllerMain::command(int id, int command, LPARAM message)
 
 
 
+
 ///////////////////////////////////////////////////////////////////////////////
 // handle WM_NOTIFY
 // The id is not guaranteed to be unique, so use NMHDR.hwndFrom and NMHDR.idFrom.
@@ -83,7 +84,7 @@ int ControllerMain::notify(int id, LPARAM lParam)
 {
     // first cast lParam to NMHDR* to know what the control is
     NMHDR* nmhdr = (NMHDR*)lParam;
-	int w;
+	int w,a;
 
     switch(nmhdr->code)
     {
@@ -132,7 +133,8 @@ int ControllerMain::notify(int id, LPARAM lParam)
         break;
 
     case TVN_SELCHANGED:        // the item selection has changed: NM_TREEVIEW.action=(TVC_UNKNOWN, TVC_BYMOUSE, TVC_BYKEYBOARD)
-        break;
+		m_selectedTreeViewItem = view.getIdOfSelected();
+		break;
 
     case TVN_SELCHANGING:       // the item selection is about to change
         break;
@@ -146,12 +148,23 @@ int ControllerMain::notify(int id, LPARAM lParam)
 }
 
 
-HTREEITEM ControllerMain::insertItem(const wchar_t* str, HTREEITEM parent , HTREEITEM insertAfter, int imageIndex, int selectedImageIndex ) const
+HTREEITEM ControllerMain::insertItem(const wchar_t* str, HTREEITEM parent , HTREEITEM insertAfter, int imageIndex, int selectedImageIndex )
 {
 	return view.insertItem(str, parent, TVI_LAST, 0, 1);
 }
 
+int ControllerMain::getSelectetTreeViewItem()
+{
+	if (m_selectedTreeViewItem == m_previousSelectedTreeViewItem)
+		return -1; // do not want to notify
+	m_previousSelectedTreeViewItem = m_selectedTreeViewItem;
+	return m_selectedTreeViewItem;
+}
 
+void ControllerMain::removeItem(int id)
+{
+	view.removeItem(id);
+}
 ///////////////////////////////////////////////////////////////////////////////
 // handle mouse move
 ///////////////////////////////////////////////////////////////////////////////

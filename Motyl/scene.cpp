@@ -174,6 +174,7 @@ void Scene::Update(float dt)
 
 	m_sceneHelper.CheckMouse();
 	m_sceneHelper.CheckInput();
+	m_sceneHelper.CheckSelectedByTreeView();
 }
 
 //void Butterfly::DrawButterfly()

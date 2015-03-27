@@ -119,3 +119,25 @@ POINT InputClass::GetMousePosition()
 {
 	return m_MousePosition;
 }
+
+void InputClass::SetSelectedModel(int id)
+{
+	m_selectedTreeViewItem = id;
+	if (m_selectedTreeViewItem == m_previousSelectedTreeViewItem)
+	{
+		change = false;
+		return;
+	}
+	m_previousSelectedTreeViewItem = m_selectedTreeViewItem;
+	change = true;	//we want to notify
+}
+
+int InputClass:: GetSelectedModel()
+{
+	if (change)
+	{
+		change = false;
+		return m_selectedTreeViewItem;
+	}
+	return -1;
+}

@@ -60,6 +60,9 @@ public:
 	void SetMousePressing(bool isPressed);
 	bool IsMouseButtonDown();
 	POINT GetMousePosition();
+	int GetSelectedModel();
+	
+	void SetSelectedModel(int id);
 
 private:
 	POINT m_MousePosition;
@@ -68,4 +71,8 @@ private:
 	ActiveFeature m_activeFeature;
 	ActiveAxis m_activeAxis;
 	ActiveRadius m_activeRadius;
+
+	int m_selectedTreeViewItem;
+	int m_previousSelectedTreeViewItem;
+	bool change = false;
 };
