@@ -10,10 +10,12 @@
 #include "elipsoid.h"
 #include "simple_point .h"
 #include "cursor.h"
+#include "bezier_curve.h"
 #include "shader_torus.h"
 #include "shader_elipsoid.h"
 #include "shader_simple_point.h"
 #include "shader_cursor.h"
+#include "shader_bezier_curve.h"
 
 using namespace std;
 
@@ -31,10 +33,13 @@ public:
 
 	vector<ModelClass*>& GetModels();
 	vector<ModelClass*>& GetActiveModels();
+	vector<BezierCurve*>& GetBezierCurves();
 	void CreateModels();
 	void SetActiveModels(int*, int n);
 	void AddActiveModel(int);
+	void AddBezierCurve(BezierCurve*);
 	void RemoveActiveModel(int);
+	void RemoveBezierCurve(int);
 	void InitializeModels();
 	void DrawModels();
 	ModelClass* GetModelById(int);
@@ -51,5 +56,6 @@ public:
 private:
 	vector<ModelClass*> m_models;
 	map<int, ModelClass*> m_active_models;
+	map<int, BezierCurve*> m_bezier_curves;
 	Service m_service;
 };

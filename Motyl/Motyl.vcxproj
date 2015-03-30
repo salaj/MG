@@ -130,6 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bezier_curve.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="ControllerMain.cpp" />
@@ -147,6 +148,7 @@
     <ClCompile Include="sceneHelper.cpp" />
     <ClCompile Include="service.cpp" />
     <ClCompile Include="settings.cpp" />
+    <ClCompile Include="shader_bezier_curve.cpp" />
     <ClCompile Include="shader_cursor.cpp" />
     <ClCompile Include="shader_simple_point.cpp" />
     <ClCompile Include="simple_point .cpp" />
@@ -165,6 +167,7 @@
     <ClCompile Include="WindowTree.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bezier_curve.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="ControllerMain.h" />
     <ClInclude Include="Controls.h" />
@@ -183,6 +186,7 @@
     <ClInclude Include="sceneHelper.h" />
     <ClInclude Include="service.h" />
     <ClInclude Include="settings.h" />
+    <ClInclude Include="shader_bezier_curve.h" />
     <ClInclude Include="shader_cursor.h" />
     <ClInclude Include="shader_simple_point.h" />
     <ClInclude Include="simple_point .h" />
@@ -231,6 +235,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Cursor.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\BezierCurve.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

@@ -46,7 +46,7 @@ void SceneHelper::DrawModels()
 	m_modelsManager.DrawModels();
 }
 
-void SceneHelper::selectNewModel(ModelClass* model)
+void SceneHelper::selectNewAndDeselectOldModel(ModelClass* model)
 {
 	float scaleFactor = 2.0f;
 	if (selected != NULL)
@@ -57,8 +57,23 @@ void SceneHelper::selectNewModel(ModelClass* model)
 	}
 	model->Scale(scaleFactor);
 	model->m_selected = true;
+	//setting cursor to selected position
+	ModelClass* cursor = m_modelsManager.GetCursor();
+	cursor->SetPosition(model->GetPosition());
 	selected = model;
 	m_modelsManager.AddActiveModel(model->m_id);
+}
+
+void SceneHelper::deselectCurrentModel()
+{
+	float scaleFactor = 2.0f;
+	if (selected != NULL)
+	{
+		selected->Scale(1 / scaleFactor);
+		selected->m_selected = false;
+		m_modelsManager.RemoveActiveModel(selected->m_id);
+		selected = NULL;
+	}
 }
 
 XMFLOAT2 translatePoint(POINT mousePosition)
@@ -96,7 +111,7 @@ void SceneHelper::findClosestModelWithMouse(POINT mousePosition)
 	}
 	if (minVal < minSquareDistance)
 	{
-		selectNewModel(models[index]);
+		selectNewAndDeselectOldModel(models[index]);
 	}
 }
 
@@ -121,16 +136,37 @@ void SceneHelper::findClosestModelWithCursor()
 	}
 	if (minVal < minSquareDistance)
 	{
-		selectNewModel(models[index]);
+		selectNewAndDeselectOldModel(models[index]);
 	}
 }
 
 
 void SceneHelper::translateModels(vector<ModelClass*>& models, XMFLOAT4 offset)
 {
+	ModelClass* cursor = m_modelsManager.GetCursor();
 	for (int i = 0; i < models.size(); i++)
 	{
-		models[i] -> Translate(offset);
+		XMFLOAT4 scale = ModelClass::GetRelativeScaleVector(cursor, models[i]);
+		models[i]->Translate(XMFLOAT4(
+			offset.x * scale.x,
+			offset.y * scale.y,
+			offset.z * scale.z,
+			offset.w * scale.w
+			));
+	}
+	translatePostActions(models);
+}
+
+void SceneHelper::translatePostActions(vector<ModelClass*>& models)
+{
+	vector<BezierCurve*> curves = m_modelsManager.GetBezierCurves();
+	for (int i = 0; i < curves.size(); i++)
+	{
+		int changedNodeId = curves[i]->CheckIfNodesHaveChanged(models);
+		if (changedNodeId != -1)
+		{
+			curves[i]->Reset();
+		}
 	}
 }
 
@@ -169,7 +205,7 @@ void SceneHelper::AddModel(ModelType type)
 	if (createdModel != NULL)
 	{
 		if (createdModel->m_Type != ModelType::CursorType)
-			selectNewModel(createdModel);
+			selectNewAndDeselectOldModel(createdModel);
 		//set position on gui side
 		XMFLOAT4 position = m_modelsManager.GetModels()[0]->GetTranslatedPosition(m_modelsManager.GetCursor());
 		m_GUIUpdater->AddModel(position);
@@ -188,7 +224,10 @@ void SceneHelper::CheckInput()
 
 	ModelClass* cursor = m_modelsManager.GetCursor();
 
-	vector<ModelClass*> activeModels;
+	//vector<ModelClass*> activeModels;
+	//activeModels.push_back(cursor);
+
+	vector<ModelClass*>activeModels = m_modelsManager.GetActiveModels();
 	activeModels.push_back(cursor);
 
 	ActiveFeature feature = m_InputClass->getActiveFeature();
@@ -214,7 +253,14 @@ void SceneHelper::CheckInput()
 	{
 		if (m_CanSelect)
 		{
-			findClosestModelWithCursor();
+			if (selected == NULL)
+			{
+				findClosestModelWithCursor();
+			}
+			else
+			{
+				deselectCurrentModel();
+			}
 			m_CanSelect = false;
 		}
 	}
@@ -235,7 +281,7 @@ void SceneHelper::CheckInput()
 				ModelClass* newModel = newModels.size() > 1 ? newModels[1] : NULL;
 				if (newModel != NULL)
 				{
-					selectNewModel(newModel);
+					selectNewAndDeselectOldModel(newModel);
 				}
 			}
 		}
@@ -443,6 +489,6 @@ void SceneHelper::CheckSelectedByTreeView()
 	int id = m_InputClass->GetSelectedModel();
 	if (id != -1)
 	{
-		selectNewModel(m_modelsManager.GetModelById(id));
+		selectNewAndDeselectOldModel(m_modelsManager.GetModelById(id));
 	}
 }

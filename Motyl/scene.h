@@ -9,6 +9,7 @@
 #include "shader_elipsoid.h"
 #include "shader_simple_point.h"
 #include "shader_cursor.h"
+#include "shader_bezier_curve.h"
 #include "torus.h"
 #include "elipsoid.h"
 
@@ -104,6 +105,8 @@ namespace gk2
 		ElipsoidShader* m_shader_elipsoid;
 		SimplePointShader* m_shader_simple_point;
 		CursorShader* m_shader_cursor;
+		BezierCurveShader* m_shader_bezier_curve;
+
 		InputClass* m_input_class;
 		GUIUpdater* m_GUIUpdater;
 

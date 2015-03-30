@@ -67,6 +67,12 @@
     <Filter Include="Source Files\treeView">
       <UniqueIdentifier>{368b7115-e56b-46e4-87ad-ab27d02982b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\shaders">
+      <UniqueIdentifier>{b6acd761-997b-4019-abe4-63bb17bf67d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\images">
+      <UniqueIdentifier>{bf9e4ce4-f380-4403-94f4-2b1c22d4dd23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -171,6 +177,12 @@
     <ClCompile Include="guiUpdater.cpp">
       <Filter>Source Files\controls</Filter>
     </ClCompile>
+    <ClCompile Include="bezier_curve.cpp">
+      <Filter>Source Files\models</Filter>
+    </ClCompile>
+    <ClCompile Include="shader_bezier_curve.cpp">
+      <Filter>Source Files\shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="modelclass.h">
@@ -272,25 +284,34 @@
     <ClInclude Include="guiUpdater.h">
       <Filter>Header Files\controls</Filter>
     </ClInclude>
+    <ClInclude Include="bezier_curve.h">
+      <Filter>Header Files\models</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_bezier_curve.h">
+      <Filter>Header Files\shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\shaders\Butterfly.hlsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="resources\shaders\Torus.hlsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="resources\shaders\Elipsoid.hlsl">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="ribbon1.mfcribbon-ms">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="resources\shaders\SimplePoint.hlsl">
-      <Filter>Resource Files</Filter>
+    <None Include="resources\shaders\BezierCurve.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\Butterfly.hlsl">
+      <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="resources\shaders\Cursor.hlsl">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\Elipsoid.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\Torus.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\SimplePoint.hlsl">
+      <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -299,14 +320,14 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="toolbar1.bmp">
-      <Filter>Resource Files</Filter>
+    <Image Include="folderClosed.ico">
+      <Filter>Resource Files\images</Filter>
     </Image>
     <Image Include="folderOpen.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\images</Filter>
     </Image>
-    <Image Include="folderClosed.ico">
-      <Filter>Resource Files</Filter>
+    <Image Include="toolbar1.bmp">
+      <Filter>Resource Files\images</Filter>
     </Image>
   </ItemGroup>
 </Project>

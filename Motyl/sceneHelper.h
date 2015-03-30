@@ -49,14 +49,15 @@ class SceneHelper
 		bool m_CanDelete = true;
 
 		void translateModels(vector<ModelClass*>& models, XMFLOAT4 offset);
-
+		void translatePostActions(vector<ModelClass*>& models);
 		void scaleModels(vector<ModelClass*>& models, float scale);
 
 		void rotateModels(vector<ModelClass*>& models, float rotation, ActiveAxis axis);
 
 		ModelClass* selected;
 
-		void selectNewModel(ModelClass* model);
+		void selectNewAndDeselectOldModel(ModelClass* model);
+		void deselectCurrentModel();
 
 		void findClosestModelWithCursor();
 		void findClosestModelWithMouse(POINT mousePosition);

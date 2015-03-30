@@ -74,6 +74,7 @@ bool Scene::LoadContent()
 {
 	m_shader_torus = new TorusShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 	m_shader_elipsoid = new ElipsoidShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	m_shader_bezier_curve = new BezierCurveShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	m_shader_simple_point = new SimplePointShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_shader_cursor = new CursorShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 
@@ -84,12 +85,13 @@ bool Scene::LoadContent()
 	service.Mouse = m_mouse;
 	service.InputClass = m_input_class;
 	service.GUIUpdater = m_GUIUpdater;
-	service.Shader = new ShaderBase*[4]
+	service.Shader = new ShaderBase*[5]
 	{
 		m_shader_torus,
 		m_shader_elipsoid,
 		m_shader_simple_point,
-		m_shader_cursor
+		m_shader_cursor,
+		m_shader_bezier_curve
 	};
 	m_sceneHelper.Initialize(service);
 
@@ -104,6 +106,7 @@ bool Scene::LoadContent()
 	m_shader_elipsoid->LoadContent();
 	m_shader_simple_point->LoadContent();
 	m_shader_cursor->LoadContent();
+	m_shader_bezier_curve->LoadContent();
 
 	InitializeRenderStates();
 	InitializeCamera();

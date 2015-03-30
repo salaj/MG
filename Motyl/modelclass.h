@@ -70,6 +70,7 @@ public:
 	XMFLOAT4 GetTranslatedPosition(ModelClass* cursor);
 	void SetPosition(XMFLOAT4 position);
 	static float GetSquareDistanceBetweenModels(ModelClass*, ModelClass*);
+	static XMFLOAT4 GetRelativeScaleVector(ModelClass*, ModelClass*);
 
 	XMMATRIX m_modelMatrix;
 	bool m_selected;

@@ -84,7 +84,8 @@ void ModelClass::Initialize()
 
 void ModelClass::SetPosition(XMFLOAT4 position)
 {
-	m_position = position;
+	m_modelMatrix._41 = position.x;
+	m_modelMatrix._42 = position.y;
 }
 
 float ModelClass::GetSquareDistanceBetweenModels(ModelClass* first, ModelClass*second)
@@ -95,6 +96,29 @@ float ModelClass::GetSquareDistanceBetweenModels(ModelClass* first, ModelClass*s
 	float squareY = (firstPos.y - secondPos.y) * (firstPos.y - secondPos.y);
 	float squareZ = (firstPos.z - secondPos.z) * (firstPos.z - secondPos.z);
 	return squareX + squareY + squareZ;
+}
+
+XMFLOAT4 ModelClass::GetRelativeScaleVector(ModelClass* first, ModelClass*second)
+{
+	XMFLOAT4 firstScale = XMFLOAT4(
+		first->m_modelMatrix._11,
+		first->m_modelMatrix._22,
+		first->m_modelMatrix._33,
+		first->m_modelMatrix._44
+		);
+	XMFLOAT4 secondScale = XMFLOAT4(
+		second->m_modelMatrix._11,
+		second->m_modelMatrix._22,
+		second->m_modelMatrix._33,
+		second->m_modelMatrix._44
+		);
+
+	return XMFLOAT4(
+			firstScale.x / secondScale.x,
+			firstScale.y / secondScale.y,
+			firstScale.z / secondScale.z,
+			firstScale.w / secondScale.w
+		);
 }
 
 void ModelClass::updatePosition(XMMATRIX* transform)
