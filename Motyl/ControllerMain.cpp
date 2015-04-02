@@ -133,7 +133,8 @@ int ControllerMain::notify(int id, LPARAM lParam)
         break;
 
     case TVN_SELCHANGED:        // the item selection has changed: NM_TREEVIEW.action=(TVC_UNKNOWN, TVC_BYMOUSE, TVC_BYKEYBOARD)
-		m_selectedTreeViewItem = view.getIdOfSelected();
+		//m_selectedTreeViewItem = view.getIdOfSelected();
+		view.OnSelectedChanged();
 		break;
 
     case TVN_SELCHANGING:       // the item selection is about to change
@@ -147,10 +148,15 @@ int ControllerMain::notify(int id, LPARAM lParam)
     return 1;
 }
 
-
-HTREEITEM ControllerMain::insertItem(const wchar_t* str, HTREEITEM parent , HTREEITEM insertAfter, int imageIndex, int selectedImageIndex )
+void ControllerMain::SetEngineNotifier(EngineNotifier* engineNotifier)
 {
-	return view.insertItem(str, parent, TVI_LAST, 0, 1);
+	view.SetEngineNotifier(engineNotifier);
+}
+
+
+HTREEITEM ControllerMain::insertItem(const wchar_t* str, ItemType type, HTREEITEM parent, HTREEITEM insertAfter, int imageIndex, int selectedImageIndex)
+{
+	return view.insertItem(str, type, parent, TVI_LAST, 0, 1);
 }
 
 int ControllerMain::getSelectetTreeViewItem()

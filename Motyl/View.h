@@ -14,6 +14,9 @@
 #include <map>
 #include <vector>
 #include "Controls.h"
+
+#include "scene_service.h"
+#include "engine_Notifier.h"
 #include "TreeItem.h"
 
 namespace Win
@@ -37,9 +40,11 @@ namespace Win
         void tvDragItem(HWND parent, int x, int y);
         void tvDropItem();
         bool isTreeViewItemDragged() const { return tvItemDragged; };
-		HTREEITEM insertItem(const wchar_t* str, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
+		HTREEITEM insertItem(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
 		void removeItem(int id);
-		int getIdOfSelected();
+		void OnSelectedChanged();
+
+		void SetEngineNotifier(EngineNotifier*);
     private:
         // member functions
         void moveTreeViewItem(TreeView* tv, HTREEITEM dragged, HTREEITEM target);
@@ -58,11 +63,15 @@ namespace Win
         HIMAGELIST tvDraggedImageList;          // handle to LmageList created for dragging
         bool tvItemDragged;
         std::vector <TreeItem> items;           // container for items to be moved
+
+		//HTREEITEM getHandle();
+		void addRecursivelyChildItems(vector<int>&, HTREEITEM);
 		
 		static int counter;
 		
 		//HTREEITEM treeItems[100];
-		TreeItem allItems[100];
+		vector<TreeItem> allItems[100];
+		EngineNotifier* m_engineNotifier;
     };
 }
 

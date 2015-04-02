@@ -1,6 +1,7 @@
 #pragma once
 
 #include "applicationBase.h"
+#include "scene_service.h"
 #include "camera.h"
 #include "inputclass.h"
 #include "sceneHelper.h"
@@ -27,6 +28,10 @@ namespace gk2
 		//pola jednego z tych typów, aby zapewniæ odpowiednie wyrówanie po³o¿enia obiektu w pamiêci.
 		static void* operator new(size_t size);
 		static void operator delete(void* ptr);
+
+
+		//for injection
+		SceneService* GetSceneService();
 
 	protected:
 		virtual bool LoadContent();
@@ -115,5 +120,6 @@ namespace gk2
 		//Elipsoid* m_Elipsoid;
 
 		SceneHelper m_sceneHelper;
+		SceneService m_SceneService;
 	};
 }

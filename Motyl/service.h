@@ -4,7 +4,7 @@
 #include "shader_base.h"
 #include "camera.h"
 #include "inputclass.h"
-#include "guiUpdater.h"
+//#include "guiUpdater.h"
 
 using namespace std;
 
@@ -27,7 +27,7 @@ namespace gk2{
 		gk2::Camera Camera;
 
 		InputClass* InputClass;
-		GUIUpdater* GUIUpdater;
+		//GUIUpdater* GUIUpdater;
 		shared_ptr<Mouse> Mouse;
 
 	};

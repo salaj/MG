@@ -16,7 +16,7 @@ BezierCurve::BezierCurve(std::shared_ptr<ID3D11DeviceContext> deviceContext,
 
 BezierCurve::BezierCurve(Service& service) : ModelClass(service)
 {
-	m_Type = ModelType::SimplePointType;
+	m_Type = ModelType::BezierType;
 	ModelClass::Initialize();
 }
 
@@ -44,9 +44,17 @@ void BezierCurve::operator delete(void* ptr)
 	Utils::Delete16Aligned(ptr);
 }
 
-void BezierCurve::SetNodes(vector<SimplePoint*> nodes)
+void BezierCurve::SetNodes(vector<ModelClass*> nodes)
 {
-	m_nodes = nodes;
+	vector<SimplePoint*> simplePoints = vector<SimplePoint*>();
+	for (int i = 0; i < nodes.size(); i++)
+	{
+		simplePoints.push_back(dynamic_cast<SimplePoint*>(nodes[i]));
+	}
+	m_nodes = simplePoints;
+	int index = CheckIfNodesHaveChanged(nodes);
+	if (index != -1)
+		Reset();
 }
 
 void BezierCurve::InsertNodeAfter(SimplePoint* node, SimplePoint* after)
@@ -142,6 +150,17 @@ int BezierCurve::CheckIfNodesHaveChanged(vector<ModelClass*>& models)
 
 void BezierCurve::Initialize()
 {
+	////////////////FIXME////////
+	if (m_nodes.size() < 4)
+	{
+		m_vertexCount = 1;
+		VertexPosNormal* vertices = new VertexPosNormal[m_vertexCount];
+		m_vertexBuffer = m_device.CreateVertexBuffer(vertices, m_vertexCount);
+		setPointTopology();
+		delete vertices;
+		return;
+	}
+	/////////////////////////////
 	A = XMLoadFloat4(&m_nodes[0]->GetPosition());
 	B = XMLoadFloat4(&m_nodes[1]->GetPosition());
 	C = XMLoadFloat4(&m_nodes[2]->GetPosition());

@@ -138,6 +138,7 @@
     <ClCompile Include="DialogWindow.cpp" />
     <ClCompile Include="elipsoid.cpp" />
     <ClCompile Include="applicationBase.cpp" />
+    <ClCompile Include="engine_Notifier.cpp" />
     <ClCompile Include="guiUpdater.cpp" />
     <ClCompile Include="modelsManager.cpp" />
     <ClCompile Include="procedure.cpp" />
@@ -146,8 +147,10 @@
     <ClCompile Include="exceptions.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="sceneHelper.cpp" />
+    <ClCompile Include="scene_service.cpp" />
     <ClCompile Include="service.cpp" />
     <ClCompile Include="settings.cpp" />
+    <ClCompile Include="settingsHelper.cpp" />
     <ClCompile Include="shader_bezier_curve.cpp" />
     <ClCompile Include="shader_cursor.cpp" />
     <ClCompile Include="shader_simple_point.cpp" />
@@ -165,6 +168,7 @@
     <ClCompile Include="wcharUtil.cpp" />
     <ClCompile Include="window.cpp" />
     <ClCompile Include="WindowTree.cpp" />
+    <ClCompile Include="window_service.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bezier_curve.h" />
@@ -175,6 +179,7 @@
     <ClInclude Include="DialogWindow.h" />
     <ClInclude Include="elipsoid.h" />
     <ClInclude Include="applicationBase.h" />
+    <ClInclude Include="engine_Notifier.h" />
     <ClInclude Include="guiUpdater.h" />
     <ClInclude Include="modelsManager.h" />
     <ClInclude Include="procedure.h" />
@@ -184,8 +189,10 @@
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="sceneHelper.h" />
+    <ClInclude Include="scene_service.h" />
     <ClInclude Include="service.h" />
     <ClInclude Include="settings.h" />
+    <ClInclude Include="settingsHelper.h" />
     <ClInclude Include="shader_bezier_curve.h" />
     <ClInclude Include="shader_cursor.h" />
     <ClInclude Include="shader_simple_point.h" />
@@ -202,6 +209,7 @@
     <ClInclude Include="shader_base.h" />
     <ClInclude Include="torus.h" />
     <ClInclude Include="WindowTree.h" />
+    <ClInclude Include="window_service.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Butterfly.hlsl" />

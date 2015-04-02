@@ -18,10 +18,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine,
 {
 	UNREFERENCED_PARAMETER(prevInstance);
 	UNREFERENCED_PARAMETER(cmdLine);
-	shared_ptr<ApplicationBase> app;
+	shared_ptr<Scene> scene;
 	shared_ptr<Window> w;
 	shared_ptr<Settings> settings;
 	shared_ptr<GUIUpdater> guiUpdater;
+	shared_ptr<EngineNotifier> engineNotifier;
 	int exitCode = 0;
 	try
 	{
@@ -31,11 +32,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine,
 		//InitCommonControlsEx(&commonCtrls);
 
 		w.reset(new Window(hInstance, 600, 600, L"Geometric modelling", true));
-		InputClass* input = w->GetInputClass();
-		settings.reset(new Settings(hInstance, 600, 600, L"Settings",input, false));
+		WindowService* windowService = w->GetWindowService();
+		settings.reset(new Settings(hInstance, 600, 600, L"Settings", windowService->InputClass, false));
 		guiUpdater.reset(new GUIUpdater(settings.get()));
-		app.reset(new Scene(hInstance, input, guiUpdater.get()));
-
+		scene.reset(new Scene(hInstance, windowService->InputClass, guiUpdater.get()));
+		SceneService* sceneService = scene.get()->GetSceneService();
+		engineNotifier.reset(new EngineNotifier(sceneService));
+		settings.get()->SetEngineNotifier(engineNotifier.get());
 		//////
 		//// register TreeView from comctl32.dll before creating windows
 
@@ -48,7 +51,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine,
 		//////
 
 
-		exitCode = app->Run(w.get(), settings.get(), cmdShow);
+		exitCode = scene->Run(w.get(), settings.get(), cmdShow);
 	}
 	catch (Exception& e)
 	{
@@ -61,7 +64,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine,
 		exitCode = -1;
 	}
 	w.reset();
-	app.reset();
+	scene.reset();
 
 	return exitCode;
 }

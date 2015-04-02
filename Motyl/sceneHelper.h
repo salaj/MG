@@ -18,17 +18,20 @@ class SceneHelper
 		SceneHelper();
 		virtual ~SceneHelper();
 
-		void Initialize(Service& service);
+		void Initialize(Service& service, GUIUpdater*);
 		static void* operator new(size_t size);
 		static void operator delete(void* ptr);
+
+		//for injection
+		ModelsManager* GetModelsManager();
 
 		//for checking input - shall be new class 
 		void CheckInput();
 		void CheckMouse();
-		void CheckSelectedByTreeView();
+		//void CheckSelectedByTreeView();
 
 		//for modelmanager class
-		vector<ModelClass*>& GetModels();
+		map<int, ModelClass*>& GetModels();
 		void CreateModels();
 		void InitializeModels();
 		void DrawModels();
@@ -54,7 +57,7 @@ class SceneHelper
 
 		void rotateModels(vector<ModelClass*>& models, float rotation, ActiveAxis axis);
 
-		ModelClass* selected;
+		//ModelClass* selected;
 
 		void selectNewAndDeselectOldModel(ModelClass* model);
 		void deselectCurrentModel();

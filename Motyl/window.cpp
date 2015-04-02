@@ -189,9 +189,10 @@ LRESULT CALLBACK Window::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPA
 	}
 }
 
-InputClass* Window::GetInputClass()
+WindowService* Window::GetWindowService()
 {
-	return input;
+	m_WindowService.InputClass = input;
+	return &m_WindowService;
 }
 
 LRESULT Window::WndProc(UINT msg, WPARAM wParam, LPARAM lParam)

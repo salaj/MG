@@ -84,7 +84,6 @@ bool Scene::LoadContent()
 	service.Device = m_device;
 	service.Mouse = m_mouse;
 	service.InputClass = m_input_class;
-	service.GUIUpdater = m_GUIUpdater;
 	service.Shader = new ShaderBase*[5]
 	{
 		m_shader_torus,
@@ -93,7 +92,7 @@ bool Scene::LoadContent()
 		m_shader_cursor,
 		m_shader_bezier_curve
 	};
-	m_sceneHelper.Initialize(service);
+	m_sceneHelper.Initialize(service, m_GUIUpdater);
 
 
 	m_sceneHelper.CreateModels();
@@ -177,9 +176,14 @@ void Scene::Update(float dt)
 
 	m_sceneHelper.CheckMouse();
 	m_sceneHelper.CheckInput();
-	m_sceneHelper.CheckSelectedByTreeView();
+	//m_sceneHelper.CheckSelectedByTreeView();
 }
 
+SceneService* Scene::GetSceneService()
+{
+	m_SceneService.ModelsManager = m_sceneHelper.GetModelsManager();
+	return &m_SceneService;
+}
 //void Butterfly::DrawButterfly()
 ////Draw the butterfly
 //{

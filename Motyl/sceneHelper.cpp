@@ -12,11 +12,10 @@ void SceneHelper::operator delete(void* ptr)
 	Utils::Delete16Aligned(ptr);
 }
 
-void SceneHelper::Initialize(Service& service)
+void SceneHelper::Initialize(Service& service, GUIUpdater* guiUpdater)
 {
-	selected = NULL;
 	m_InputClass = service.InputClass;
-	m_GUIUpdater = service.GUIUpdater;
+	m_GUIUpdater = guiUpdater;
 	m_modelsManager.Initialize(service);
 }
 
@@ -29,7 +28,12 @@ SceneHelper::~SceneHelper()
 	delete m_InputClass;
 }
 
-vector<ModelClass*>& SceneHelper::GetModels()
+ModelsManager* SceneHelper :: GetModelsManager()
+{
+	return &m_modelsManager;
+}
+
+map<int, ModelClass*>& SceneHelper::GetModels()
 {
 	return m_modelsManager.GetModels();
 }
@@ -48,32 +52,15 @@ void SceneHelper::DrawModels()
 
 void SceneHelper::selectNewAndDeselectOldModel(ModelClass* model)
 {
-	float scaleFactor = 2.0f;
-	if (selected != NULL)
-	{
-		selected->Scale(1 / scaleFactor);
-		selected->m_selected = false;
-		m_modelsManager.RemoveActiveModel(selected->m_id);
-	}
-	model->Scale(scaleFactor);
-	model->m_selected = true;
-	//setting cursor to selected position
-	ModelClass* cursor = m_modelsManager.GetCursor();
-	cursor->SetPosition(model->GetPosition());
-	selected = model;
-	m_modelsManager.AddActiveModel(model->m_id);
+	vector<int> single = vector<int>();
+	single.push_back(model->m_id);
+	m_modelsManager.SetActiveModels(single);
 }
 
 void SceneHelper::deselectCurrentModel()
 {
-	float scaleFactor = 2.0f;
-	if (selected != NULL)
-	{
-		selected->Scale(1 / scaleFactor);
-		selected->m_selected = false;
-		m_modelsManager.RemoveActiveModel(selected->m_id);
-		selected = NULL;
-	}
+	vector<int> single = vector<int>();
+	m_modelsManager.SetActiveModels(single);
 }
 
 XMFLOAT2 translatePoint(POINT mousePosition)
@@ -93,19 +80,20 @@ void SceneHelper::findClosestModelWithMouse(POINT mousePosition)
 	ModelsManager::setModelToPosition(dynamic_cast<ModelClass*>(&cursor),
 		XMFLOAT3(translatedMousePosition.x, translatedMousePosition.y, 0));
 
-	vector<ModelClass*>& models = m_modelsManager.GetModels();
+	map<int, ModelClass*>& models = m_modelsManager.GetModels();
 	float minSquareDistance = 0.02f;
 	float minVal = FLT_MAX;
 	int index = -1;
-	for (int i = 1; i < models.size(); i++)//we omit cursor
+	for (map<int, ModelClass*> ::iterator it = ++(models.begin()); it != models.end(); it++)
+	//for (int i = 1; i < models.size(); i++)//we omit cursor
 	{
-		ModelClass* model = models[i];
+		ModelClass* model = (*it).second;// models[i];
 		if (model->m_Type != ModelType::SimplePointType)
 			continue;
 		float val = ModelClass::GetSquareDistanceBetweenModels(&cursor, model);
 		if (val < minVal)
 		{
-			index = i;
+			index = (*it).first;
 			minVal = val;
 		}
 	}
@@ -118,19 +106,20 @@ void SceneHelper::findClosestModelWithMouse(POINT mousePosition)
 void SceneHelper::findClosestModelWithCursor()
 {
 	ModelClass* cursor = m_modelsManager.GetCursor();
-	vector<ModelClass*>& models = m_modelsManager.GetModels();
+	map<int, ModelClass*>& models = m_modelsManager.GetModels();
 	float minSquareDistance = 0.02f;
 	float minVal = FLT_MAX;
 	int index = -1;
-	for (int i = 1; i < models.size(); i++)//we omit cursor
+	//for (int i = 1; i < models.size(); i++)//we omit cursor
+	for (map<int, ModelClass*> ::iterator it = ++(models.begin()); it != models.end(); it++)
 	{
-		ModelClass* model = models[i];
+		ModelClass* model = (*it).second;//models[i];
 		if (model->m_Type != ModelType::SimplePointType)
 			continue;
 		float val = ModelClass::GetSquareDistanceBetweenModels(cursor, model);
 		if (val < minVal)
 		{
-			index = i; 
+			index = (*it).first; 
 			minVal = val;
 		}
 	}
@@ -201,26 +190,20 @@ void SceneHelper::rotateModels(vector<ModelClass*>& models, float rotation, Acti
 
 void SceneHelper::AddModel(ModelType type)
 {
-	ModelClass* createdModel = m_modelsManager.AddModel(type);
-	if (createdModel != NULL)
-	{
-		if (createdModel->m_Type != ModelType::CursorType)
-			selectNewAndDeselectOldModel(createdModel);
-		//set position on gui side
-		XMFLOAT4 position = m_modelsManager.GetModels()[0]->GetTranslatedPosition(m_modelsManager.GetCursor());
-		m_GUIUpdater->AddModel(position);
-	}
+	XMFLOAT4 position = m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor());
+	m_GUIUpdater->AddModel(position);
 }
 
 void SceneHelper::RemoveModel(ModelClass* model)
 {
+	deselectCurrentModel();
 	m_modelsManager.RemoveModel(model->m_id);
 	m_GUIUpdater->RemoveModels(model->m_id);
 }
 
 void SceneHelper::CheckInput()
 {
-	vector<ModelClass*>& models = m_modelsManager.GetModels();
+	//map<int, ModelClass*>& models = m_modelsManager.GetModels();
 
 	ModelClass* cursor = m_modelsManager.GetCursor();
 
@@ -253,7 +236,7 @@ void SceneHelper::CheckInput()
 	{
 		if (m_CanSelect)
 		{
-			if (selected == NULL)
+			if (m_modelsManager.selected == NULL)
 			{
 				findClosestModelWithCursor();
 			}
@@ -273,16 +256,16 @@ void SceneHelper::CheckInput()
 	{
 		if (m_CanDelete)
 		{
-			if (selected != NULL)
+			if (m_modelsManager.selected != NULL)
 			{
 				m_CanDelete = false;
-				RemoveModel(selected);
-				vector<ModelClass*> newModels = m_modelsManager.GetModels();
-				ModelClass* newModel = newModels.size() > 1 ? newModels[1] : NULL;
-				if (newModel != NULL)
-				{
-					selectNewAndDeselectOldModel(newModel);
-				}
+				RemoveModel(m_modelsManager.selected);
+				//vector<ModelClass*> newModels = m_modelsManager.GetModels();
+				//ModelClass* newModel = newModels.size() > 1 ? newModels[1] : NULL;
+				//if (newModel != NULL)
+				//{
+				//	selectNewAndDeselectOldModel(newModel);
+				//}
 			}
 		}
 	}
@@ -484,11 +467,11 @@ void SceneHelper::CheckMouse()
 	}
 }
 
-void SceneHelper::CheckSelectedByTreeView()
-{
-	int id = m_InputClass->GetSelectedModel();
-	if (id != -1)
-	{
-		selectNewAndDeselectOldModel(m_modelsManager.GetModelById(id));
-	}
-}
+//void SceneHelper::CheckSelectedByTreeView()
+//{
+//	//int id = m_InputClass->GetSelectedModel();
+//	//if (id != -1)
+//	//{
+//	//	selectNewAndDeselectOldModel(m_modelsManager.GetModelById(id));
+//	//}
+//}

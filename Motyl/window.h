@@ -2,7 +2,7 @@
 
 #include <string>
 #include <Windows.h>
-#include "inputclass.h"
+#include "window_service.h"
 #include "Windowsx.h"
 
 namespace gk2
@@ -18,7 +18,7 @@ namespace gk2
 		SIZE getClientSize() const;
 		inline HWND getHandle() const { return m_hWnd; }
 		LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
-		InputClass* GetInputClass();
+		WindowService* GetWindowService();
 		HWND m_dialog;
 	protected:
 		virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
@@ -41,6 +41,7 @@ namespace gk2
 		HINSTANCE m_hInstance;
 		bool isLeftButtonPressed = false;
 		//InputClass* input;
+		WindowService m_WindowService;
 
 		///////////////////
 	};

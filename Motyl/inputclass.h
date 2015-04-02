@@ -11,6 +11,7 @@ enum ModelType{
 	ElipsoidType,
 	SimplePointType,
 	CursorType,
+	BezierType,
 	Undecided
 };
 

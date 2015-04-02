@@ -31,11 +31,11 @@ public:
 	static void* operator new(size_t size);
 	static void operator delete(void* ptr);
 
-	vector<ModelClass*>& GetModels();
+	map<int, ModelClass*>& GetModels();
 	vector<ModelClass*>& GetActiveModels();
 	vector<BezierCurve*>& GetBezierCurves();
 	void CreateModels();
-	void SetActiveModels(int*, int n);
+	void SetActiveModels(vector<int>&);
 	void AddActiveModel(int);
 	void AddBezierCurve(BezierCurve*);
 	void RemoveActiveModel(int);
@@ -52,9 +52,10 @@ public:
 	static void setModelToPosition(ModelClass*, XMFLOAT3);
 
 	ModelClass* GetCursor();
+	ModelClass* selected = NULL;
 
 private:
-	vector<ModelClass*> m_models;
+	map<int, ModelClass*> m_models;
 	map<int, ModelClass*> m_active_models;
 	map<int, BezierCurve*> m_bezier_curves;
 	Service m_service;
