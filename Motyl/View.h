@@ -66,6 +66,7 @@ namespace Win
 
 		//HTREEITEM getHandle();
 		void addRecursivelyChildItems(vector<int>&, HTREEITEM);
+		void onItemChanged(HTREEITEM& item);
 		
 		static int counter;
 		

@@ -52,9 +52,7 @@ void BezierCurve::SetNodes(vector<ModelClass*> nodes)
 		simplePoints.push_back(dynamic_cast<SimplePoint*>(nodes[i]));
 	}
 	m_nodes = simplePoints;
-	int index = CheckIfNodesHaveChanged(nodes);
-	if (index != -1)
-		Reset();
+	Reset();
 }
 
 void BezierCurve::InsertNodeAfter(SimplePoint* node, SimplePoint* after)
@@ -110,7 +108,6 @@ void BezierCurve::UpdateNode(SimplePoint* point)
 
 void BezierCurve::Reset()
 {
-	//Initialize();
 	list<VertexPosNormal*> vertices = list<VertexPosNormal*>();
 	//we start from Second Point cause we want segments continuity C0
 	int index = 0;
@@ -161,7 +158,6 @@ void BezierCurve::Reset()
 		vertices.splice(vertices.end(), singleSegmentPoints);
 		//delete m_segments[i];
 	}
-	/*m_segments.clear();*/
 	if (vertices.size() == 0)
 	{
 		//there must be only one point, create fake point to draw, but not segment
@@ -187,20 +183,6 @@ void BezierCurve::Reset()
 	//setLineTopology();
 	setPointTopology();
 }
-
-int BezierCurve::CheckIfNodesHaveChanged(vector<ModelClass*>& models)
-{
-	for (int i = 0; i < m_nodes.size(); i++)
-	{
-		for (int j = 0; j < models.size(); j++)
-		{
-			if (models[j]->m_id == m_nodes[i]->m_id)
-				return models[j]->m_id;
-		}
-	}
-	return -1;
-}
-
 
 void BezierCurve::Initialize()
 {
