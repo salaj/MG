@@ -195,6 +195,9 @@
     <ClCompile Include="scene_service.cpp">
       <Filter>Source Files\base\containers</Filter>
     </ClCompile>
+    <ClCompile Include="bezier_segment.cpp">
+      <Filter>Source Files\models</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="modelclass.h">
@@ -313,6 +316,9 @@
     </ClInclude>
     <ClInclude Include="scene_service.h">
       <Filter>Header Files\base\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="bezier_segment.h">
+      <Filter>Header Files\models</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

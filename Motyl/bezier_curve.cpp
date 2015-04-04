@@ -85,53 +85,107 @@ void BezierCurve::RemoveNodeAt(int position)
 	m_nodes.erase(m_nodes.begin() + position);
 }
 
-
-double BezierCurve::bezier_length()
+void BezierCurve::UpdateNode(SimplePoint* point)
 {
-	double t;
-	int i;
-	int steps = 10;
-	int estimation = 2;
-	int screenWidth = 300;
-	XMFLOAT3 dot;
-	XMFLOAT3 previous_dot;
-	double length = 0.0;
-	for (i = 0; i <= steps; i++) {
-		t = (double)i / (double)steps;
-		dot = calculateInPowerBase(t);
-		if (i > 0) {
-			double x_diff = dot.x - previous_dot.x;
-			double y_diff = dot.y - previous_dot.y;
-			length += sqrt(x_diff * x_diff + y_diff * y_diff);
-		}
-		previous_dot = dot;
+	list<VertexPosNormal*> vertices;
+	for (int i = 0; i < m_segments.size(); i++)
+	{
+		if (m_segments[i]->Contain(point))
+			m_segments[i]->calculate(nullptr);
+		list<VertexPosNormal*> singleSegmentPoints = m_segments[i]->GetSegmentPoints();
+		//concatenate segment points with target vertices
+		vertices.splice(vertices.end(), singleSegmentPoints);
 	}
-	return length * screenWidth * estimation;
-}
-
-XMFLOAT3 BezierCurve::calculateInPowerBase(float t)
-{
-	float u = 1 - t;
-	float uu = u * u;
-	float uuu = uu * u;
-	float tt = t * t;
-	float ttt = tt * t;
-
-	XMVECTOR result = uuu * A; //first term in equation
-	result += 3 * uu * t * B;  //second term in equation
-	result += 3 * u * tt * C; //third term in equation
-	result += ttt * D;
-
-	return XMFLOAT3(
-		XMVectorGetX(result),
-		XMVectorGetY(result),
-		XMVectorGetZ(result)
-		);
+	m_vertexCount = vertices.size();
+	VertexPosNormal *arr = new VertexPosNormal[m_vertexCount];
+	int ind = 0;
+	for (list<VertexPosNormal*>::iterator it = vertices.begin(); it != vertices.end(); it++)
+	{
+		arr[ind++] = *(*it);
+	}
+	m_vertexBuffer = m_device.CreateVertexBuffer(arr, m_vertexCount);
+	delete arr;
+	setPointTopology();
 }
 
 void BezierCurve::Reset()
 {
-	Initialize();
+	//Initialize();
+	list<VertexPosNormal*> vertices = list<VertexPosNormal*>();
+	//we start from Second Point cause we want segments continuity C0
+	int index = 0;
+	int numberOfControlPoints = m_nodes.size() - 1;
+	int segmentLength = 0;
+	m_segments.clear();
+	while (numberOfControlPoints > 0)
+	{
+		BezierSegment* segment = new BezierSegment();
+		vector<SimplePoint*>* internalSegmentNodes = new vector<SimplePoint*>();
+		internalSegmentNodes->push_back(m_nodes[index]);
+		if (numberOfControlPoints / 3 >= 1)
+		{
+			//there are at least 3 points more so create Cubic Segment
+			internalSegmentNodes->push_back(m_nodes[index+1]);
+			internalSegmentNodes->push_back(m_nodes[index+2]);
+			internalSegmentNodes->push_back(m_nodes[index+3]);
+			numberOfControlPoints -= 3;
+			index += 3;
+			segment->m_nodes = *internalSegmentNodes;
+			segment->calculate(&BezierSegment::calculateCubic);
+		}
+		else if (numberOfControlPoints == 2)
+		{
+			//there are only 2 point left so create Square Segment
+			internalSegmentNodes->push_back(m_nodes[index + 1]);
+			internalSegmentNodes->push_back(m_nodes[index + 2]);
+			numberOfControlPoints -= 2;
+			index += 2;
+			segment->m_nodes = *internalSegmentNodes;
+			segment->calculate(&BezierSegment::calculateSquare);
+		}
+		else if (numberOfControlPoints == 1)
+		{
+			//there is only 1 point left so create Line Segment
+			internalSegmentNodes->push_back(m_nodes[index + 1]);
+			numberOfControlPoints -= 1;
+			index += 1;
+			segment->m_nodes = *internalSegmentNodes;
+			segment->calculate(&BezierSegment::calculateLine);
+		}
+		m_segments.push_back(segment);
+	}
+	for (int i = 0; i < m_segments.size(); i++)
+	{
+		list<VertexPosNormal*> singleSegmentPoints = m_segments[i]->GetSegmentPoints();
+		//concatenate segment points with target vertices
+		vertices.splice(vertices.end(), singleSegmentPoints);
+		//delete m_segments[i];
+	}
+	/*m_segments.clear();*/
+	if (vertices.size() == 0)
+	{
+		//there must be only one point, create fake point to draw, but not segment
+		vertices.push_back(new VertexPosNormal{
+			XMFLOAT3(m_nodes[index]->GetPosition().x,
+			m_nodes[index]->GetPosition().y,
+			m_nodes[index]->GetPosition().z), //position of single point = A
+			XMFLOAT3(0.0f, 0.0f, 1.0f)
+		});
+	}
+
+
+	m_vertexCount = vertices.size();
+	VertexPosNormal *arr = new VertexPosNormal[m_vertexCount];
+	int ind = 0;
+	for (list<VertexPosNormal*>::iterator it=vertices.begin(); it != vertices.end(); it++)
+	{
+		arr[ind++] = *(*it);
+	}
+	m_vertexBuffer = m_device.CreateVertexBuffer(arr, m_vertexCount);
+	delete arr;
+	//setTriangleTopology();
+	//setLineTopology();
+	setPointTopology();
 }
 
 int BezierCurve::CheckIfNodesHaveChanged(vector<ModelClass*>& models)
@@ -160,32 +214,34 @@ void BezierCurve::Initialize()
 		delete vertices;
 		return;
 	}
-	/////////////////////////////
-	A = XMLoadFloat4(&m_nodes[0]->GetPosition());
-	B = XMLoadFloat4(&m_nodes[1]->GetPosition());
-	C = XMLoadFloat4(&m_nodes[2]->GetPosition());
-	D = XMLoadFloat4(&m_nodes[3]->GetPosition());
+	///////////////////////////////
+	//XMVECTOR A = XMLoadFloat4(&m_nodes[0]->GetPosition());
+	//XMVECTOR B = XMLoadFloat4(&m_nodes[1]->GetPosition());
+	//XMVECTOR C = XMLoadFloat4(&m_nodes[2]->GetPosition());
+	//XMVECTOR D = XMLoadFloat4(&m_nodes[3]->GetPosition());
 
-	// Set the number of vertices in the vertex array.
-	m_vertexCount = bezier_length();// 20;//m_nodes.size();
 
-	VertexPosNormal* vertices = new VertexPosNormal[m_vertexCount];
 
-	for (int i = 0; i < m_vertexCount; i++)
-	{
-		vertices[i] = {
-			calculateInPowerBase((float)i / (float)(m_vertexCount-1)),
-			XMFLOAT3(0.0f, 0.0f, 1.0f) 
-		};
+	//// Set the number of vertices in the vertex array.
+	////m_vertexCount = bezier_length();// 20;//m_nodes.size();
 
-	}
+	//VertexPosNormal* vertices = new VertexPosNormal[m_vertexCount];
 
-	m_vertexBuffer = m_device.CreateVertexBuffer(vertices, m_vertexCount);
-	delete vertices;
+	//for (int i = 0; i < m_vertexCount; i++)
+	//{
+	//	vertices[i] = {
+	//		calculateCubic((float)i / (float)(m_vertexCount - 1)),
+	//		XMFLOAT3(0.0f, 0.0f, 1.0f) 
+	//	};
 
-	//setTriangleTopology();
-	//setLineTopology();
-	setPointTopology();
+	//}
+
+	//m_vertexBuffer = m_device.CreateVertexBuffer(vertices, m_vertexCount);
+	//delete vertices;
+
+	////setTriangleTopology();
+	////setLineTopology();
+	//setPointTopology();
 }
 
 void BezierCurve::setPointTopology()

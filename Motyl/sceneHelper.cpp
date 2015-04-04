@@ -151,10 +151,10 @@ void SceneHelper::translatePostActions(vector<ModelClass*>& models)
 	vector<BezierCurve*> curves = m_modelsManager.GetBezierCurves();
 	for (int i = 0; i < curves.size(); i++)
 	{
-		int changedNodeId = curves[i]->CheckIfNodesHaveChanged(models);
-		if (changedNodeId != -1)
+		for (int j = 0; j < models.size(); j++)
 		{
-			curves[i]->Reset();
+			if (models[j]->m_Type == ModelType::SimplePointType)
+				curves[i]->UpdateNode(dynamic_cast<SimplePoint*>(models[j]));
 		}
 	}
 }
