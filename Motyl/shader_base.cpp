@@ -76,6 +76,11 @@ void ShaderBase::UnloadContent()
 	m_cbView.reset();
 	m_cbProj.reset();
 }
+
+D3D11_PRIMITIVE_TOPOLOGY ShaderBase::getTopology()
+{
+	return m_topology;
+}
 //
 //void ShaderBase::InitializeConstantBuffers()
 //{

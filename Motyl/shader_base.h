@@ -45,7 +45,8 @@ public:
 	void LoadContent();
 	void SetContent();
 	void UnloadContent();
-
+	
+	D3D11_PRIMITIVE_TOPOLOGY getTopology();
 protected:
 	//Shader's constant buffer containing Local -> World matrix
 	std::shared_ptr<ID3D11Buffer> m_cbWorld;

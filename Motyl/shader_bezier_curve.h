@@ -35,6 +35,15 @@ public:
 
 	std::shared_ptr<ID3D11Buffer>& GetCBColor();
 
+
+	//POLYGON based contours
+	//Shader's
+	std::shared_ptr<ID3D11VertexShader> m_vertexShaderContour;
+	std::shared_ptr<ID3D11PixelShader> m_pixelShaderContour;
+	//VertexPosNormal input layout
+	std::shared_ptr<ID3D11InputLayout> m_inputLayoutContour;
+	D3D11_PRIMITIVE_TOPOLOGY m_NodesTopology = D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINELIST;
+
 private:
 	//Path to the shaders' file
 	static const std::wstring ShaderFile;

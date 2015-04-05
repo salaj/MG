@@ -88,6 +88,9 @@ void BezierCurve::UpdateNode(SimplePoint* point)
 	if (m_segments.size() == 0)
 		return;
 	list<VertexPosNormal*> vertices;
+	m_vertexCountContour = m_nodes.size() * 2 - 2;
+	int internalNodesCounter = 0;
+	VertexPosNormal* verticesContour = new VertexPosNormal[m_vertexCountContour];
 	for (int i = 0; i < m_segments.size(); i++)
 	{
 		if (m_segments[i]->Contain(point))
@@ -95,6 +98,22 @@ void BezierCurve::UpdateNode(SimplePoint* point)
 		list<VertexPosNormal*> singleSegmentPoints = m_segments[i]->GetSegmentPoints();
 		//concatenate segment points with target vertices
 		vertices.splice(vertices.end(), singleSegmentPoints);
+
+		int numberOfInternalNodesPerSegment = m_segments[i]->m_nodes.size();
+		for (int j = 0; j < numberOfInternalNodesPerSegment; j++)
+		{
+			verticesContour[internalNodesCounter++] = {
+				XMFLOAT3(m_segments[i]->m_nodes[j]->GetPosition().x,
+				m_segments[i]->m_nodes[j]->GetPosition().y,
+				m_segments[i]->m_nodes[j]->GetPosition().z),
+				XMFLOAT3(0.0f, 0.0f, 1.0f)
+			};
+			if (j > 0 && j < numberOfInternalNodesPerSegment - 1)
+			{
+				verticesContour[internalNodesCounter] = verticesContour[internalNodesCounter - 1];
+				internalNodesCounter++;
+			}
+		}
 	}
 	if (vertices.size() == 0)
 	{
@@ -115,7 +134,9 @@ void BezierCurve::UpdateNode(SimplePoint* point)
 		arr[ind++] = *(*it);
 	}
 	m_vertexBuffer = m_device.CreateVertexBuffer(arr, m_vertexCount);
+	m_vertexBufferContour = m_device.CreateVertexBuffer(verticesContour, m_vertexCount);
 	delete arr;
+	delete verticesContour;
 	setPointTopology();
 }
 
@@ -165,13 +186,34 @@ void BezierCurve::Reset()
 		m_segments.push_back(segment);
 	}
 
-	for (int i = 0; i < m_segments.size(); i++)
+	int segmentCount = m_segments.size();
+	m_vertexCountContour = m_nodes.size() * 2 - 2;
+	VertexPosNormal* verticesContour = new VertexPosNormal[m_vertexCountContour];
+	int internalNodesCounter = 0;
+	for (int i = 0; i < segmentCount; i++)
 	{
 		list<VertexPosNormal*> singleSegmentPoints = m_segments[i]->GetSegmentPoints();
 		//concatenate segment points with target vertices
 		vertices.splice(vertices.end(), singleSegmentPoints);
 		//delete m_segments[i];
-	}
+
+		int numberOfInternalNodesPerSegment = m_segments[i]->m_nodes.size();
+		for (int j = 0; j < numberOfInternalNodesPerSegment; j++)
+		{
+			verticesContour[internalNodesCounter++] = {
+				XMFLOAT3(m_segments[i]->m_nodes[j]->GetPosition().x,
+				m_segments[i]->m_nodes[j]->GetPosition().y,
+				m_segments[i]->m_nodes[j]->GetPosition().z),
+				XMFLOAT3(0.0f, 0.0f, 1.0f)
+			};
+			if (j > 0 && j < numberOfInternalNodesPerSegment - 1)
+			{
+				verticesContour[internalNodesCounter] = verticesContour[internalNodesCounter - 1];
+				internalNodesCounter++;
+			}
+		}
+	} 
+
 	if (vertices.size() == 0)
 	{
 		//there must be only one point, create fake point to draw, but not segment
@@ -181,6 +223,10 @@ void BezierCurve::Reset()
 			m_nodes[index]->GetPosition().z), //position of single point = A
 			XMFLOAT3(0.0f, 0.0f, 1.0f)
 		});
+
+		m_vertexCountContour = 1;
+		verticesContour = new VertexPosNormal[m_vertexCountContour];
+		verticesContour[0] = *vertices.front();
 	}
 
 
@@ -192,7 +238,9 @@ void BezierCurve::Reset()
 		arr[ind++] = *(*it);
 	}
 	m_vertexBuffer = m_device.CreateVertexBuffer(arr, m_vertexCount);
+	m_vertexBufferContour = m_device.CreateVertexBuffer(verticesContour, m_vertexCountContour);
 	delete arr;
+	delete verticesContour;
 	//setTriangleTopology();
 	//setLineTopology();
 	setPointTopology();
@@ -203,9 +251,10 @@ void BezierCurve::Initialize()
 	////////////////FIXME////////
 	if (m_nodes.size() < 4)
 	{
-		m_vertexCount = 1;
+		m_vertexCount = m_vertexCountContour = 1;
 		VertexPosNormal* vertices = new VertexPosNormal[m_vertexCount];
 		m_vertexBuffer = m_device.CreateVertexBuffer(vertices, m_vertexCount);
+		m_vertexBufferContour = m_device.CreateVertexBuffer(vertices, m_vertexCountContour);
 		setPointTopology();
 		delete vertices;
 		return;
@@ -250,6 +299,14 @@ void BezierCurve::setPointTopology()
 	}
 	m_indexBuffer = m_device.CreateIndexBuffer(indices, m_indexCount);
 	delete indices;
+	m_indexCountContour = m_vertexCountContour;
+	unsigned short* indicesContour = new unsigned short[m_indexCount];
+	for (int i = 0; i < m_indexCountContour; i++)
+	{
+		indicesContour[i] = i;
+	}
+	m_indexBufferContour = m_device.CreateIndexBuffer(indicesContour, m_indexCountContour);
+	delete indicesContour;
 }
 
 void BezierCurve::setLineTopology()
@@ -303,7 +360,7 @@ void BezierCurve::Draw()
 	ID3D11Buffer* b = m_vertexBuffer.get();
 	m_context->IASetVertexBuffers(0, 1, &b, &VB_STRIDE, &VB_OFFSET);
 	m_context->IASetIndexBuffer(m_indexBuffer.get(), DXGI_FORMAT_R16_UINT, 0);
-
+	m_context->IASetPrimitiveTopology(shader->getTopology());
 	if (m_input->isStereoscopyActive)
 	{
 		m_context->UpdateSubresource(shader->GetCBProjMatrix().get(), 0, 0, &createStereoscopicProjMatrixLeft(), 0, 0);
@@ -321,4 +378,9 @@ void BezierCurve::Draw()
 		m_context->DrawIndexed(m_indexCount, 0, 0);
 	}
 
+	m_context->IASetPrimitiveTopology(shader->m_NodesTopology);
+	b = m_vertexBufferContour.get();
+	m_context->IASetVertexBuffers(0, 1, &b, &VB_STRIDE, &VB_OFFSET);
+	m_context->IASetIndexBuffer(m_indexBufferContour.get(), DXGI_FORMAT_R16_UINT, 0);
+	m_context->DrawIndexed(m_indexCountContour, 0, 0);
 }
