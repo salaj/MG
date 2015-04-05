@@ -40,8 +40,10 @@ namespace Win
         void tvDragItem(HWND parent, int x, int y);
         void tvDropItem();
         bool isTreeViewItemDragged() const { return tvItemDragged; };
+		HTREEITEM getSelected();
 		HTREEITEM insertItem(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
-		void removeItem(int id);
+		//request to remove all copy items with given id
+		void removeItem(HTREEITEM item);
 		void OnSelectedChanged();
 
 		void SetEngineNotifier(EngineNotifier*);
@@ -51,7 +53,12 @@ namespace Win
         void buildItemList(TreeView* tv, HTREEITEM from);
         void getItemInfo(TreeView* tv, HTREEITEM item, TreeItem* treeItem);
         void addChildren(TreeView* tv, HTREEITEM first);
+		//it is used to create origin point - handled at root hierarchy
+		//when point has been added directly to curve
+		void addOriginPointItem(const wchar_t*);
 		int FindIdByViewItem(HTREEITEM);
+		TreeItem GetTreeItemByHTREEITEM(HTREEITEM);
+		int GetIndexOfTreeItemInVector(TreeItem);
 
         TreeView treeView;
         Button   buttonExit;
@@ -66,6 +73,7 @@ namespace Win
 
 		//HTREEITEM getHandle();
 		void addRecursivelyChildItems(vector<int>&, HTREEITEM);
+		void addRecursivelyChildTreeItems(vector<HTREEITEM>&, HTREEITEM);
 		void onItemChanged(HTREEITEM& item);
 		
 		static int counter;

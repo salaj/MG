@@ -194,13 +194,6 @@ void SceneHelper::AddModel(ModelType type)
 	m_GUIUpdater->AddModel(position);
 }
 
-void SceneHelper::RemoveModel(ModelClass* model)
-{
-	deselectCurrentModel();
-	m_modelsManager.RemoveModel(model->m_id);
-	m_GUIUpdater->RemoveModels(model->m_id);
-}
-
 void SceneHelper::CheckInput()
 {
 	//map<int, ModelClass*>& models = m_modelsManager.GetModels();
@@ -251,29 +244,6 @@ void SceneHelper::CheckInput()
 	{
 		m_CanSelect = true;
 	}
-
-	if (m_InputClass->IsKeyDown(VK_DELETE))
-	{
-		if (m_CanDelete)
-		{
-			if (m_modelsManager.selected != NULL)
-			{
-				m_CanDelete = false;
-				RemoveModel(m_modelsManager.selected);
-				//vector<ModelClass*> newModels = m_modelsManager.GetModels();
-				//ModelClass* newModel = newModels.size() > 1 ? newModels[1] : NULL;
-				//if (newModel != NULL)
-				//{
-				//	selectNewAndDeselectOldModel(newModel);
-				//}
-			}
-		}
-	}
-	else
-	{
-		m_CanDelete = true;
-	}
-
 
 	if (m_InputClass->IsKeyDown(0x57)) //W
 	{

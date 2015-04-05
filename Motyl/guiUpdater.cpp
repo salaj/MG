@@ -28,11 +28,6 @@ void GUIUpdater::AddModel(XMFLOAT4 position)
 	m_settings->insertItemExternally();
 }
 
-void GUIUpdater::RemoveModels(int parentID)
-{
-	m_settings->GetSettingsHelper()->removeItem(parentID);
-}
-
 void GUIUpdater::setCursorPositionWorld(XMFLOAT4 position)
 {
 	m_settings->setCursorPositionWorld(position);

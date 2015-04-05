@@ -20,7 +20,7 @@ namespace gk2
 		static int BezierCurveCounter;
 
 
-		void AddNewModelToTreeView(wchar_t*);
+		HTREEITEM AddNewModelToTreeView(wchar_t*);
 		HTREEITEM insertItemInternally(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
 		//HTREEITEM insertItemExternally(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
 		void removeItem(int id);

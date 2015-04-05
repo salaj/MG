@@ -35,7 +35,6 @@ public:
 
 	std::shared_ptr<ID3D11Buffer>& GetCBColor();
 
-
 private:
 	//Path to the shaders' file
 	static const std::wstring ShaderFile;

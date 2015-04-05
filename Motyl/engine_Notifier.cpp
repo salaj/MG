@@ -43,3 +43,8 @@ void EngineNotifier::SetBezierPoints(int curveId, vector<int>& ids)
 	}
 	bezierCurve->SetNodes(simplePoints);
 }
+
+void EngineNotifier::RemoveModel(int id)
+{
+	m_ModelsManager->RemoveModel(id);
+}

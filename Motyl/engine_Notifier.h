@@ -15,6 +15,8 @@ public:
 	void SetActiveModels(vector<int>&);
 	void SetBezierPoints(int, vector<int>&);
 
+	void RemoveModel(int id);
+
 private:
 	ModelsManager* m_ModelsManager;
 };

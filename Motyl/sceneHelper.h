@@ -36,7 +36,6 @@ class SceneHelper
 		void InitializeModels();
 		void DrawModels();
 		void AddModel(ModelType type);
-		void RemoveModel(ModelClass*);
 
 
 
@@ -49,7 +48,6 @@ class SceneHelper
 
 		bool m_CanAdd = true;
 		bool m_CanSelect = true;
-		bool m_CanDelete = true;
 
 		void translateModels(vector<ModelClass*>& models, XMFLOAT4 offset);
 		void translatePostActions(vector<ModelClass*>& models);

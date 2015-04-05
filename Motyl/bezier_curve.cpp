@@ -85,6 +85,8 @@ void BezierCurve::RemoveNodeAt(int position)
 
 void BezierCurve::UpdateNode(SimplePoint* point)
 {
+	if (m_segments.size() == 0)
+		return;
 	list<VertexPosNormal*> vertices;
 	for (int i = 0; i < m_segments.size(); i++)
 	{
@@ -94,6 +96,17 @@ void BezierCurve::UpdateNode(SimplePoint* point)
 		//concatenate segment points with target vertices
 		vertices.splice(vertices.end(), singleSegmentPoints);
 	}
+	if (vertices.size() == 0)
+	{
+		//there must be only one point, or many in the same place, create fake point to draw, but not segment
+		vertices.push_back(new VertexPosNormal{
+			XMFLOAT3(m_nodes[0]->GetPosition().x,
+			m_nodes[0]->GetPosition().y,
+			m_nodes[0]->GetPosition().z), //position of single point = A
+			XMFLOAT3(0.0f, 0.0f, 1.0f)
+		});
+	}
+
 	m_vertexCount = vertices.size();
 	VertexPosNormal *arr = new VertexPosNormal[m_vertexCount];
 	int ind = 0;
@@ -151,6 +164,7 @@ void BezierCurve::Reset()
 		}
 		m_segments.push_back(segment);
 	}
+
 	for (int i = 0; i < m_segments.size(); i++)
 	{
 		list<VertexPosNormal*> singleSegmentPoints = m_segments[i]->GetSegmentPoints();

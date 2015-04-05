@@ -156,7 +156,10 @@ void ControllerMain::SetEngineNotifier(EngineNotifier* engineNotifier)
 
 HTREEITEM ControllerMain::insertItem(const wchar_t* str, ItemType type, HTREEITEM parent, HTREEITEM insertAfter, int imageIndex, int selectedImageIndex)
 {
-	return view.insertItem(str, type, parent, TVI_LAST, 0, 1);
+	if (type == ItemType::ItemPoint)
+		return view.insertItem(str, type, view.getSelected(), TVI_LAST, 0, 1);
+	else
+		return view.insertItem(str, type, TVI_ROOT, TVI_LAST, 0, 1);
 }
 
 int ControllerMain::getSelectetTreeViewItem()
@@ -169,7 +172,7 @@ int ControllerMain::getSelectetTreeViewItem()
 
 void ControllerMain::removeItem(int id)
 {
-	view.removeItem(id);
+	//view.removeItem(id);
 }
 ///////////////////////////////////////////////////////////////////////////////
 // handle mouse move

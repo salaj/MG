@@ -24,7 +24,6 @@ cbuffer color : register(b0) //Vertex Shader constant buffer slot 2
 struct VSInput
 {
 	float3 pos : POSITION;
-	//float3 color : COLOR0;
 	float3 norm : NORMAL0;
 };
 

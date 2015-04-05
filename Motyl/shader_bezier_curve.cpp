@@ -68,6 +68,10 @@ void BezierCurveShader::InitializeShaders()
 	m_vertexShader = m_device.CreateVertexShader(vsByteCode);
 	m_pixelShader = m_device.CreatePixelShader(psByteCode);
 	m_inputLayout = m_device.CreateInputLayout<VertexPosNormal>(vsByteCode);
+
+	//m_vertexShaderContour = m_device.CreateVertexShader(vsByteCode);
+	//m_pixelShaderContour = m_device.CreatePixelShader(psByteCode);
+	//m_inputLayoutContour = m_device.CreateInputLayout<VertexPosNormal>(vsByteCode);
 }
 
 //void TorusShader::SetShaders()
