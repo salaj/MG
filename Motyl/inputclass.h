@@ -54,8 +54,10 @@ public:
 	bool IsKeyDown(unsigned int);
 
 	void setStereorcopy(bool isActive);
+	void setBezierPolygon(bool isActive);
 
-	bool isStereoscopyActive;
+	bool isStereoscopyActive = true;
+	bool isBezierPolygonActive = true;
 	void AddModel(ModelType);
 	void SetMousePosition(float x, float y);
 	void SetMousePressing(bool isPressed);

@@ -134,7 +134,7 @@ void BezierCurve::UpdateNode(SimplePoint* point)
 		arr[ind++] = *(*it);
 	}
 	m_vertexBuffer = m_device.CreateVertexBuffer(arr, m_vertexCount);
-	m_vertexBufferContour = m_device.CreateVertexBuffer(verticesContour, m_vertexCount);
+	m_vertexBufferContour = m_device.CreateVertexBuffer(verticesContour, m_vertexCountContour);
 	delete arr;
 	delete verticesContour;
 	setPointTopology();
@@ -188,7 +188,9 @@ void BezierCurve::Reset()
 
 	int segmentCount = m_segments.size();
 	m_vertexCountContour = m_nodes.size() * 2 - 2;
-	VertexPosNormal* verticesContour = new VertexPosNormal[m_vertexCountContour];
+	VertexPosNormal* verticesContour;
+	if (m_vertexCountContour > 0)
+		verticesContour = new VertexPosNormal[m_vertexCountContour];
 	int internalNodesCounter = 0;
 	for (int i = 0; i < segmentCount; i++)
 	{
@@ -370,17 +372,34 @@ void BezierCurve::Draw()
 		m_context->UpdateSubresource(shader->GetCBProjMatrix().get(), 0, 0, &createStereoscopicProjMatrixRight(), 0, 0);
 		m_context->UpdateSubresource(shader->GetCBColor().get(), 0, 0, &XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 0, 0);
 		m_context->DrawIndexed(m_indexCount, 0, 0);
+
+		if (m_input->isBezierPolygonActive)
+		{
+				m_context->IASetPrimitiveTopology(shader->m_NodesTopology);
+				b = m_vertexBufferContour.get();
+				m_context->IASetVertexBuffers(0, 1, &b, &VB_STRIDE, &VB_OFFSET);
+				m_context->IASetIndexBuffer(m_indexBufferContour.get(), DXGI_FORMAT_R16_UINT, 0);
+				m_context->UpdateSubresource(shader->GetCBProjMatrix().get(), 0, 0, &createStereoscopicProjMatrixLeft(), 0, 0);
+				m_context->UpdateSubresource(shader->GetCBColor().get(), 0, 0, &XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), 0, 0);
+				m_context->DrawIndexed(m_indexCountContour, 0, 0);
+				m_context->UpdateSubresource(shader->GetCBProjMatrix().get(), 0, 0, &createStereoscopicProjMatrixRight(), 0, 0);
+				m_context->UpdateSubresource(shader->GetCBColor().get(), 0, 0, &XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 0, 0);
+				m_context->DrawIndexed(m_indexCountContour, 0, 0);
+		}
 	}
 	else
 	{
 		m_context->UpdateSubresource(shader->GetCBProjMatrix().get(), 0, 0, &createStereoscopicProjMatrixRight(), 0, 0);
 		m_context->UpdateSubresource(shader->GetCBColor().get(), 0, 0, &XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), 0, 0);
 		m_context->DrawIndexed(m_indexCount, 0, 0);
-	}
 
-	m_context->IASetPrimitiveTopology(shader->m_NodesTopology);
-	b = m_vertexBufferContour.get();
-	m_context->IASetVertexBuffers(0, 1, &b, &VB_STRIDE, &VB_OFFSET);
-	m_context->IASetIndexBuffer(m_indexBufferContour.get(), DXGI_FORMAT_R16_UINT, 0);
-	m_context->DrawIndexed(m_indexCountContour, 0, 0);
+		if (m_input->isBezierPolygonActive)
+		{
+			m_context->IASetPrimitiveTopology(shader->m_NodesTopology);
+			b = m_vertexBufferContour.get();
+			m_context->IASetVertexBuffers(0, 1, &b, &VB_STRIDE, &VB_OFFSET);
+			m_context->IASetIndexBuffer(m_indexBufferContour.get(), DXGI_FORMAT_R16_UINT, 0);
+			m_context->DrawIndexed(m_indexCountContour, 0, 0);
+		}
+	}
 }

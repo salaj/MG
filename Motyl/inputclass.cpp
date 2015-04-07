@@ -94,6 +94,11 @@ void InputClass::setStereorcopy(bool isActive)
 	isStereoscopyActive = isActive;
 }
 
+void InputClass::setBezierPolygon(bool isActive)
+{
+	isBezierPolygonActive = isActive;
+}
+
 void InputClass::AddModel(ModelType type)
 {
 	
