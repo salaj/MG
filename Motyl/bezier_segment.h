@@ -27,10 +27,10 @@ public:
 	XMFLOAT3 calculateSquare(float t);
 	XMFLOAT3 calculateLine(float t);
 
-	list<VertexPosNormal*> GetSegmentPoints();
+	list<VertexPos*> GetSegmentPoints();
 	vector<SimplePoint*> m_nodes;
 private:
-	list<VertexPosNormal*> vertices;
+	list<VertexPos*> vertices;
 	segment_length_calculator m_previousCalculator;
 	void fillNodes();
 };

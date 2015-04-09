@@ -89,15 +89,15 @@ void BezierCurve::UpdateNode(SimplePoint* point)
 {
 	if (m_segments.size() == 0)
 		return;
-	list<VertexPosNormal*> vertices;
+	list<VertexPos*> vertices;
 	m_vertexCountContour = m_nodes.size() * 2 - 2;
 	int internalNodesCounter = 0;
-	VertexPosNormal* verticesContour = new VertexPosNormal[m_vertexCountContour];
+	VertexPos* verticesContour = new VertexPos[m_vertexCountContour];
 	for (int i = 0; i < m_segments.size(); i++)
 	{
 		if (m_segments[i]->Contain(point))
 			m_segments[i]->calculate(nullptr);
-		list<VertexPosNormal*> singleSegmentPoints = m_segments[i]->GetSegmentPoints();
+		list<VertexPos*> singleSegmentPoints = m_segments[i]->GetSegmentPoints();
 		//concatenate segment points with target vertices
 		vertices.splice(vertices.end(), singleSegmentPoints);
 
@@ -107,8 +107,7 @@ void BezierCurve::UpdateNode(SimplePoint* point)
 			verticesContour[internalNodesCounter++] = {
 				XMFLOAT3(m_segments[i]->m_nodes[j]->GetPosition().x,
 				m_segments[i]->m_nodes[j]->GetPosition().y,
-				m_segments[i]->m_nodes[j]->GetPosition().z),
-				XMFLOAT3(0.0f, 0.0f, 1.0f)
+				m_segments[i]->m_nodes[j]->GetPosition().z)
 			};
 			if (j > 0 && j < numberOfInternalNodesPerSegment - 1)
 			{
@@ -120,18 +119,17 @@ void BezierCurve::UpdateNode(SimplePoint* point)
 	if (vertices.size() == 0)
 	{
 		//there must be only one point, or many in the same place, create fake point to draw, but not segment
-		vertices.push_back(new VertexPosNormal{
+		vertices.push_back(new VertexPos{
 			XMFLOAT3(m_nodes[0]->GetPosition().x,
 			m_nodes[0]->GetPosition().y,
 			m_nodes[0]->GetPosition().z), //position of single point = A
-			XMFLOAT3(0.0f, 0.0f, 1.0f)
 		});
 	}
 
 	m_vertexCount = vertices.size();
-	VertexPosNormal *arr = new VertexPosNormal[m_vertexCount];
+	VertexPos *arr = new VertexPos[m_vertexCount];
 	int ind = 0;
-	for (list<VertexPosNormal*>::iterator it = vertices.begin(); it != vertices.end(); it++)
+	for (list<VertexPos*>::iterator it = vertices.begin(); it != vertices.end(); it++)
 	{
 		arr[ind++] = *(*it);
 	}
@@ -144,7 +142,7 @@ void BezierCurve::UpdateNode(SimplePoint* point)
 
 void BezierCurve::Reset()
 {
-	list<VertexPosNormal*> vertices = list<VertexPosNormal*>();
+	list<VertexPos*> vertices = list<VertexPos*>();
 	//we start from Second Point cause we want segments continuity C0
 	int index = 0;
 	int numberOfControlPoints = m_nodes.size() - 1;
@@ -190,13 +188,13 @@ void BezierCurve::Reset()
 
 	int segmentCount = m_segments.size();
 	m_vertexCountContour = m_nodes.size() * 2 - 2;
-	VertexPosNormal* verticesContour;
+	VertexPos* verticesContour;
 	if (m_vertexCountContour > 0)
-		verticesContour = new VertexPosNormal[m_vertexCountContour];
+		verticesContour = new VertexPos[m_vertexCountContour];
 	int internalNodesCounter = 0;
 	for (int i = 0; i < segmentCount; i++)
 	{
-		list<VertexPosNormal*> singleSegmentPoints = m_segments[i]->GetSegmentPoints();
+		list<VertexPos*> singleSegmentPoints = m_segments[i]->GetSegmentPoints();
 		//concatenate segment points with target vertices
 		vertices.splice(vertices.end(), singleSegmentPoints);
 		//delete m_segments[i];
@@ -207,8 +205,7 @@ void BezierCurve::Reset()
 			verticesContour[internalNodesCounter++] = {
 				XMFLOAT3(m_segments[i]->m_nodes[j]->GetPosition().x,
 				m_segments[i]->m_nodes[j]->GetPosition().y,
-				m_segments[i]->m_nodes[j]->GetPosition().z),
-				XMFLOAT3(0.0f, 0.0f, 1.0f)
+				m_segments[i]->m_nodes[j]->GetPosition().z)
 			};
 			if (j > 0 && j < numberOfInternalNodesPerSegment - 1)
 			{
@@ -221,23 +218,22 @@ void BezierCurve::Reset()
 	if (vertices.size() == 0)
 	{
 		//there must be only one point, create fake point to draw, but not segment
-		vertices.push_back(new VertexPosNormal{
+		vertices.push_back(new VertexPos{
 			XMFLOAT3(m_nodes[index]->GetPosition().x,
 			m_nodes[index]->GetPosition().y,
 			m_nodes[index]->GetPosition().z), //position of single point = A
-			XMFLOAT3(0.0f, 0.0f, 1.0f)
 		});
 
 		m_vertexCountContour = 1;
-		verticesContour = new VertexPosNormal[m_vertexCountContour];
+		verticesContour = new VertexPos[m_vertexCountContour];
 		verticesContour[0] = *vertices.front();
 	}
 
 
 	m_vertexCount = vertices.size();
-	VertexPosNormal *arr = new VertexPosNormal[m_vertexCount];
+	VertexPos *arr = new VertexPos[m_vertexCount];
 	int ind = 0;
-	for (list<VertexPosNormal*>::iterator it=vertices.begin(); it != vertices.end(); it++)
+	for (list<VertexPos*>::iterator it=vertices.begin(); it != vertices.end(); it++)
 	{
 		arr[ind++] = *(*it);
 	}
@@ -258,7 +254,7 @@ void BezierCurve::Initialize()
 	if (m_nodes.size() < 4)
 	{
 		m_vertexCount = m_vertexCountContour = 1;
-		VertexPosNormal* vertices = new VertexPosNormal[m_vertexCount];
+		VertexPos* vertices = new VertexPos[m_vertexCount];
 		m_vertexBuffer = m_device.CreateVertexBuffer(vertices, m_vertexCount);
 		m_vertexBufferContour = m_device.CreateVertexBuffer(vertices, m_vertexCountContour);
 		setPointTopology();
@@ -276,7 +272,7 @@ void BezierCurve::Initialize()
 	//// Set the number of vertices in the vertex array.
 	////m_vertexCount = bezier_length();// 20;//m_nodes.size();
 
-	//VertexPosNormal* vertices = new VertexPosNormal[m_vertexCount];
+	//VertexPos* vertices = new VertexPos[m_vertexCount];
 
 	//for (int i = 0; i < m_vertexCount; i++)
 	//{

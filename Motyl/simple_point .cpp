@@ -48,29 +48,20 @@ void SimplePoint::operator delete(void* ptr)
 	Utils::Delete16Aligned(ptr);
 }
 
-
-XMFLOAT3 SimplePoint::TorusPos(float a, float t)
+SimplePoint* SimplePoint::GetModelDilateToWeight(ModelClass* a, ModelClass* b, float weight)
 {
-	float xt = (R_BIG_TORUS + R_SMALL_TORUS * cosf(a)) * cosf(t);
-	float yt = (R_BIG_TORUS + R_SMALL_TORUS * cosf(a)) * sinf(t);
-	float zt = R_SMALL_TORUS * sinf(a);
-	return XMFLOAT3(xt, yt, zt);
-}
-
-XMFLOAT3 SimplePoint::TorusDt(float a, float t)
-{
-	float xt = -sinf(t);
-	float yt = cosf(t);
-	float zt = 0;
-	return XMFLOAT3(xt, yt, zt);
-}
-
-XMFLOAT3 SimplePoint::TorusDa(float a, float t)
-{
-	float xt = -sinf(a) * cosf(t);
-	float yt = -sinf(a) * sinf(t);
-	float zt = cosf(a);
-	return XMFLOAT3(xt, yt, zt);
+	XMFLOAT4 v1 = a->GetPosition();
+	XMFLOAT4 v2 = b->GetPosition();
+	float xScaleFactor = 1 / a->m_modelMatrix._11;
+	float yScaleFactor = 1 / a->m_modelMatrix._22;
+	XMFLOAT4 off = XMFLOAT4(
+		(float)(v2.x - v1.x) * weight* xScaleFactor,
+		(float)(v2.y - v1.y) * weight* yScaleFactor,
+		0, 0
+		);
+	SimplePoint* copy = new SimplePoint(*dynamic_cast<SimplePoint*>(a));
+	copy->Translate(off);
+	return copy;
 }
 
 void SimplePoint::Initialize()
@@ -173,7 +164,7 @@ void SimplePoint::Draw()
 	shader->SetContent();
 
 	ID3D11Buffer* b = m_vertexBuffer.get();
-	m_context->IASetVertexBuffers(0, 1, &b, &VB_STRIDE, &VB_OFFSET);
+	m_context->IASetVertexBuffers(0, 1, &b, &VB_STRIDE_WITH_NORMAL, &VB_OFFSET);
 	m_context->IASetIndexBuffer(m_indexBuffer.get(), DXGI_FORMAT_R16_UINT, 0);
 
 	if (m_input->isStereoscopyActive)

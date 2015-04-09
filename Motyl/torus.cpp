@@ -274,7 +274,7 @@ void Torus::Draw()
 	shader->SetContent();
 
 	ID3D11Buffer* b = m_vertexBuffer.get();
-	m_context->IASetVertexBuffers(0, 1, &b, &VB_STRIDE, &VB_OFFSET);
+	m_context->IASetVertexBuffers(0, 1, &b, &VB_STRIDE_WITH_NORMAL, &VB_OFFSET);
 	m_context->IASetIndexBuffer(m_indexBuffer.get(), DXGI_FORMAT_R16_UINT, 0);
 	
 	if (m_input->isStereoscopyActive)

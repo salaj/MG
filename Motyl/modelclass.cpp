@@ -5,7 +5,8 @@
 
 using namespace gk2;
 
-const unsigned int ModelClass::VB_STRIDE = sizeof(VertexPosNormal);
+const unsigned int ModelClass::VB_STRIDE_WITH_NORMAL = sizeof(VertexPosNormal);
+const unsigned int ModelClass::VB_STRIDE = sizeof(VertexPos);
 const unsigned int ModelClass::VB_OFFSET = 0;
 int ModelClass::m_counter = 0;
 
@@ -36,7 +37,8 @@ ModelClass::ModelClass(const ModelClass& other)
 	m_modelMatrix = other.m_modelMatrix;
 	m_selected = other.m_selected;
 	m_position = other.m_position;
-	m_id = other.m_id;
+	//mark that it is copy
+	m_id = -1;
 }
 
 ModelClass::ModelClass(Service& service)

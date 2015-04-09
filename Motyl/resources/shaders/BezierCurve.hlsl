@@ -24,13 +24,11 @@ cbuffer color : register(b0) //Vertex Shader constant buffer slot 2
 struct VSInput
 {
 	float3 pos : POSITION;
-	float3 norm : NORMAL0;
 };
 
 struct PSInput
 {
 	float4 pos : SV_POSITION;
-	float3 norm : NORMAL1;
 };
 
 PSInput VS_Main(VSInput i)
@@ -40,7 +38,6 @@ PSInput VS_Main(VSInput i)
 
 	viewPos = mul(worldMatrix, viewPos);
 	o.pos = mul(projMatrix, viewPos);
-	o.norm = i.norm;
 	return o;
 }
 

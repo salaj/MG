@@ -44,20 +44,19 @@ void BezierC2Curve::RecalculateBezierPoints()
 {
 	vector<SimplePoint*> virtualNodes = CalculateBezierPoints();
 	for (int i = 0; i < virtualNodes.size(); i++)
+	{
 		m_nodes[i]->m_modelMatrix = virtualNodes[i]->m_modelMatrix;
+		if (virtualNodes[i]->m_id == -1)
+			delete virtualNodes[i];
+	}
 }
 
 vector<SimplePoint*> BezierC2Curve::CalculateBezierPoints()
 {
 	SimplePoint* previous = NULL;
-
 	vector<SimplePoint*> virtualNodes = vector<SimplePoint*>();
 	for (int i = 0; i < m_deBoor.size() - 1; i++)
 	{
-		XMFLOAT4 v1 = m_deBoor[i]->GetPosition();
-		XMFLOAT4 v2 = m_deBoor[i + 1]->GetPosition();
-		float xScaleFactor = 1 / m_deBoor[i]->m_modelMatrix._11;
-		float yScaleFactor = 1 / m_deBoor[i]->m_modelMatrix._22;
 		if (i == 0 || i == (m_deBoor.size() - 2))
 		{
 			//first segment
@@ -74,13 +73,7 @@ vector<SimplePoint*> BezierC2Curve::CalculateBezierPoints()
 		}
 		else if (i == 1 || i == (m_deBoor.size() - 3))
 		{
-			SimplePoint* copy = new SimplePoint(*dynamic_cast<SimplePoint*>(m_deBoor[i]));
-			XMFLOAT4 off = XMFLOAT4(
-				(float)(v2.x - v1.x) / 2.0f * xScaleFactor,
-				(float)(v2.y - v1.y) / 2.0f * yScaleFactor,
-				0, 0
-				);
-			copy->Translate(off);
+			SimplePoint* copy = SimplePoint::GetModelDilateToWeight(m_deBoor[i], m_deBoor[i + 1], 0.5f);
 			if (i == 1)
 			{
 				virtualNodes.push_back(dynamic_cast<SimplePoint*>(m_deBoor[i]));
@@ -89,16 +82,7 @@ vector<SimplePoint*> BezierC2Curve::CalculateBezierPoints()
 			else
 			{
 				previous = virtualNodes.back();
-				XMFLOAT4 w1 = previous->GetPosition();
-				XMFLOAT4 w2 = copy->GetPosition();
-
-				SimplePoint* copyFirst = new SimplePoint(*previous);
-				XMFLOAT4 off = XMFLOAT4(
-					(float)(w2.x - w1.x) / 2.0f * xScaleFactor,
-					(float)(w2.y - w1.y) / 2.0f * yScaleFactor,
-					0, 0
-					);
-				copyFirst->Translate(off);
+				SimplePoint* copyFirst = SimplePoint::GetModelDilateToWeight(previous, copy, 0.5f);
 				virtualNodes.push_back(copyFirst);
 				virtualNodes.push_back(copy);
 			}
@@ -106,39 +90,15 @@ vector<SimplePoint*> BezierC2Curve::CalculateBezierPoints()
 		else
 		{
 			//middle segments
-			SimplePoint* copyFirst = new SimplePoint(*dynamic_cast<SimplePoint*>(m_deBoor[i]));
-			XMFLOAT4 off = XMFLOAT4(
-				(float)(v2.x - v1.x) / 3.0f * xScaleFactor,
-				(float)(v2.y - v1.y) / 3.0f * yScaleFactor,
-				0, 0
-				);
-			copyFirst->Translate(off);
-
+			SimplePoint* copyFirst = SimplePoint::GetModelDilateToWeight(m_deBoor[i], m_deBoor[i + 1], 1.0f/3.0f);
 			previous = virtualNodes.back();
-			XMFLOAT4 w1 = previous->GetPosition();
-			XMFLOAT4 w2 = copyFirst->GetPosition();
-
-			SimplePoint* copy = new SimplePoint(*previous);
-			off = XMFLOAT4(
-				(float)(w2.x - w1.x) / 2.0f * xScaleFactor,
-				(float)(w2.y - w1.y) / 2.0f * yScaleFactor,
-				0, 0
-				);
-			copy->Translate(off);
+			SimplePoint* copy = SimplePoint::GetModelDilateToWeight(previous, copyFirst, 0.5f);
 			virtualNodes.push_back(copy);
-
 			virtualNodes.push_back(copyFirst);
-
-			SimplePoint* copySecond = new SimplePoint(*dynamic_cast<SimplePoint*>(m_deBoor[i]));
-			off = XMFLOAT4(
-				2.0f * (float)(v2.x - v1.x) / 3.0f * xScaleFactor,
-				2.0f * (float)(v2.y - v1.y) / 3.0f * yScaleFactor,
-				0, 0
-				);
-			copySecond->Translate(off);
+			SimplePoint* copySecond = SimplePoint::GetModelDilateToWeight(m_deBoor[i], m_deBoor[i + 1], 2.0f/3.0f);
 			virtualNodes.push_back(copySecond);
 		}
-		//m_deBoor.push_back(dynamic_cast<SimplePoint*>(nodes[i]));
+
 	}
 	return virtualNodes;
 }
@@ -147,22 +107,12 @@ vector<SimplePoint*> BezierC2Curve::CalculateBezierPoints()
 void BezierC2Curve::SetNodes(vector<ModelClass*> nodes)
 {
 	m_deBoor = nodes;
-
 	if (m_deBoor.size() < 5)
 	{
 		BezierCurve::SetNodes(m_deBoor);
 		return;
 	}
-
 	vector<SimplePoint*> virtualNodes = CalculateBezierPoints();
-
-	////m_deBoor.push_back(dynamic_cast<SimplePoint*>(nodes.back()));
-	//if (virtualNodes.size() == 0)
-	//{
-	//	//only one point
-	//	SimplePoint* copy = new SimplePoint(*dynamic_cast<SimplePoint*>(m_deBoor[0]));
-	//	virtualNodes.push_back(copy);
-	//}
 	m_nodes = virtualNodes;
 	BezierC2Curve::Reset();
 }
@@ -172,31 +122,27 @@ void BezierC2Curve::UpdateNode(SimplePoint* point)
 {
 	if (m_segments.size() == 0)
 		return;
-	list<VertexPosNormal*> vertices;
+	list<VertexPos*> vertices;
 	m_vertexCountContour = m_nodes.size() * 2 - 2;
 	int internalNodesCounter = 0;
-	VertexPosNormal* verticesContour = new VertexPosNormal[m_vertexCountContour];
-
+	VertexPos* verticesContour = new VertexPos[m_vertexCountContour];
 	RecalculateBezierPoints();
-
 	for (int i = 0; i < m_segments.size(); i++)
 	{
 		if (m_segments[i]->Contain(point))
 		{
 			m_segments[i]->calculate(nullptr);
 		}
-		list<VertexPosNormal*> singleSegmentPoints = m_segments[i]->GetSegmentPoints();
+		list<VertexPos*> singleSegmentPoints = m_segments[i]->GetSegmentPoints();
 		//concatenate segment points with target vertices
 		vertices.splice(vertices.end(), singleSegmentPoints);
-
 		int numberOfInternalNodesPerSegment = m_segments[i]->m_nodes.size();
 		for (int j = 0; j < numberOfInternalNodesPerSegment; j++)
 		{
 			verticesContour[internalNodesCounter++] = {
 				XMFLOAT3(m_segments[i]->m_nodes[j]->GetPosition().x,
 				m_segments[i]->m_nodes[j]->GetPosition().y,
-				m_segments[i]->m_nodes[j]->GetPosition().z),
-				XMFLOAT3(0.0f, 0.0f, 1.0f)
+				m_segments[i]->m_nodes[j]->GetPosition().z)
 			};
 			if (j > 0 && j < numberOfInternalNodesPerSegment - 1)
 			{
@@ -205,21 +151,10 @@ void BezierC2Curve::UpdateNode(SimplePoint* point)
 			}
 		}
 	}
-	//if (vertices.size() == 0)
-	//{
-	//	//there must be only one point, or many in the same place, create fake point to draw, but not segment
-	//	vertices.push_back(new VertexPosNormal{
-	//		XMFLOAT3(m_nodes[0]->GetPosition().x,
-	//		m_nodes[0]->GetPosition().y,
-	//		m_nodes[0]->GetPosition().z), //position of single point = A
-	//		XMFLOAT3(0.0f, 0.0f, 1.0f)
-	//	});
-	//}
-
 	m_vertexCount = vertices.size();
-	VertexPosNormal *arr = new VertexPosNormal[m_vertexCount];
+	VertexPos *arr = new VertexPos[m_vertexCount];
 	int ind = 0;
-	for (list<VertexPosNormal*>::iterator it = vertices.begin(); it != vertices.end(); it++)
+	for (list<VertexPos*>::iterator it = vertices.begin(); it != vertices.end(); it++)
 	{
 		arr[ind++] = *(*it);
 	}
@@ -234,7 +169,7 @@ void BezierC2Curve::UpdateNode(SimplePoint* point)
 
 void BezierC2Curve::Reset()
 {
-	list<VertexPosNormal*> vertices = list<VertexPosNormal*>();
+	list<VertexPos*> vertices = list<VertexPos*>();
 	//we start from Second Point cause we want segments continuity C0
 	int index = 0;
 	int indexDeBoor = 0;
@@ -258,7 +193,6 @@ void BezierC2Curve::Reset()
 			internalSegmentNodes->push_back(m_nodes[index + 1]);
 			internalSegmentNodes->push_back(m_nodes[index + 2]);
 			internalSegmentNodes->push_back(m_nodes[index + 3]);
-
 			numberOfControlPoints -= 3;
 			index += 3;
 			segment->m_nodes = *internalSegmentNodes;
@@ -294,13 +228,13 @@ void BezierC2Curve::Reset()
 
 	int segmentCount = m_segments.size();
 	m_vertexCountContour = m_nodes.size() * 2 - 2;
-	VertexPosNormal* verticesContour;
+	VertexPos* verticesContour;
 	if (m_vertexCountContour > 0)
-		verticesContour = new VertexPosNormal[m_vertexCountContour];
+		verticesContour = new VertexPos[m_vertexCountContour];
 	int internalNodesCounter = 0;
 	for (int i = 0; i < segmentCount; i++)
 	{
-		list<VertexPosNormal*> singleSegmentPoints = m_segments[i]->GetSegmentPoints();
+		list<VertexPos*> singleSegmentPoints = m_segments[i]->GetSegmentPoints();
 		//concatenate segment points with target vertices
 		vertices.splice(vertices.end(), singleSegmentPoints);
 		//delete m_segments[i];
@@ -311,8 +245,7 @@ void BezierC2Curve::Reset()
 			verticesContour[internalNodesCounter++] = {
 				XMFLOAT3(m_segments[i]->m_nodes[j]->GetPosition().x,
 				m_segments[i]->m_nodes[j]->GetPosition().y,
-				m_segments[i]->m_nodes[j]->GetPosition().z),
-				XMFLOAT3(0.0f, 0.0f, 1.0f)
+				m_segments[i]->m_nodes[j]->GetPosition().z)
 			};
 			if (j > 0 && j < numberOfInternalNodesPerSegment - 1)
 			{
@@ -325,23 +258,22 @@ void BezierC2Curve::Reset()
 	if (vertices.size() == 0)
 	{
 		//there must be only one point, create fake point to draw, but not segment
-		vertices.push_back(new VertexPosNormal{
+		vertices.push_back(new VertexPos{
 			XMFLOAT3(m_nodes[index]->GetPosition().x,
 			m_nodes[index]->GetPosition().y,
 			m_nodes[index]->GetPosition().z), //position of single point = A
-			XMFLOAT3(0.0f, 0.0f, 1.0f)
 		});
 
 		m_vertexCountContour = 1;
-		verticesContour = new VertexPosNormal[m_vertexCountContour];
+		verticesContour = new VertexPos[m_vertexCountContour];
 		verticesContour[0] = *vertices.front();
 	}
 
 
 	m_vertexCount = vertices.size();
-	VertexPosNormal *arr = new VertexPosNormal[m_vertexCount];
+	VertexPos *arr = new VertexPos[m_vertexCount];
 	int ind = 0;
-	for (list<VertexPosNormal*>::iterator it = vertices.begin(); it != vertices.end(); it++)
+	for (list<VertexPos*>::iterator it = vertices.begin(); it != vertices.end(); it++)
 	{
 		arr[ind++] = *(*it);
 	}

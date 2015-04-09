@@ -88,6 +88,7 @@ protected:
 	XMMATRIX createStereoscopicProjMatrixLeft();
 	XMMATRIX createStereoscopicProjMatrixRight();
 
+	static const unsigned int VB_STRIDE_WITH_NORMAL;
 	static const unsigned int VB_STRIDE;
 	static const unsigned int VB_OFFSET;
 

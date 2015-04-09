@@ -67,11 +67,11 @@ void BezierCurveShader::InitializeShaders()
 	std::shared_ptr<ID3DBlob> psByteCode = m_device.CompileD3DShader(ShaderFile, "PS_Main", "ps_4_0");
 	m_vertexShader = m_device.CreateVertexShader(vsByteCode);
 	m_pixelShader = m_device.CreatePixelShader(psByteCode);
-	m_inputLayout = m_device.CreateInputLayout<VertexPosNormal>(vsByteCode);
+	m_inputLayout = m_device.CreateInputLayout<VertexPos>(vsByteCode);
 
 	m_vertexShaderContour = m_device.CreateVertexShader(vsByteCode);
 	m_pixelShaderContour = m_device.CreatePixelShader(psByteCode);
-	m_inputLayoutContour = m_device.CreateInputLayout<VertexPosNormal>(vsByteCode);
+	m_inputLayoutContour = m_device.CreateInputLayout<VertexPos>(vsByteCode);
 }
 
 //void TorusShader::SetShaders()

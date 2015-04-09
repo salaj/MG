@@ -189,7 +189,7 @@ void Elipsoid::Draw()
 	ElipsoidShader* shader = dynamic_cast<ElipsoidShader*>(m_shader_base);
 	m_context->UpdateSubresource(shader->GetCBColor().get(), 0, 0, new XMFLOAT4(intensity, 0.0f, 0.0f, 0.0f), 0, 0);
 	ID3D11Buffer* b = m_vertexBuffer.get();
-	m_context->IASetVertexBuffers(0, 1, &b, &VB_STRIDE, &VB_OFFSET);
+	m_context->IASetVertexBuffers(0, 1, &b, &VB_STRIDE_WITH_NORMAL, &VB_OFFSET);
 	m_context->Draw(m_vertexCount, 0);
 }
 

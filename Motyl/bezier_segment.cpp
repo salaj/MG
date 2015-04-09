@@ -33,7 +33,7 @@ void BezierSegment::operator delete(void* ptr)
 	Utils::Delete16Aligned(ptr);
 }
 
-list<VertexPosNormal*> BezierSegment::GetSegmentPoints()
+list<VertexPos*> BezierSegment::GetSegmentPoints()
 {
 	return vertices;
 }
@@ -49,9 +49,8 @@ void BezierSegment::calculate(segment_length_calculator calculator)
 	int segmentLength = bezier_length(calculator);
 	for (int i = 0; i < segmentLength; i++)
 	{
-		vertices.push_back(new VertexPosNormal{
-			(this->*calculator)((float)i / (float)(segmentLength - 1)),
-			XMFLOAT3(0.0f, 0.0f, 1.0f)
+		vertices.push_back(new VertexPos{
+			(this->*calculator)((float)i / (float)(segmentLength - 1))
 		});
 	}
 }
