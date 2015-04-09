@@ -44,16 +44,18 @@ void BezierCurve::operator delete(void* ptr)
 	Utils::Delete16Aligned(ptr);
 }
 
-void BezierCurve::SetNodes(vector<ModelClass*> nodes)
+void BezierCurve::SetNodes(vector<ModelClass*>& nodes)
 {
+	int numberOfNodes = nodes.size();
 	vector<SimplePoint*> simplePoints = vector<SimplePoint*>();
-	for (int i = 0; i < nodes.size(); i++)
+	for (int i = 0; i < numberOfNodes; i++)
 	{
 		simplePoints.push_back(dynamic_cast<SimplePoint*>(nodes[i]));
 	}
 	m_nodes = simplePoints;
 	Reset();
 }
+
 
 void BezierCurve::InsertNodeAfter(SimplePoint* node, SimplePoint* after)
 {
@@ -247,6 +249,8 @@ void BezierCurve::Reset()
 	//setLineTopology();
 	setPointTopology();
 }
+
+
 
 void BezierCurve::Initialize()
 {

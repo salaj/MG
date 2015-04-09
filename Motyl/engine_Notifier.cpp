@@ -23,6 +23,11 @@ void EngineNotifier::OnBezierCurveAdded()
 	m_ModelsManager->AddModel(ModelType::BezierType);
 }
 
+void EngineNotifier::OnBezierC2CurveAdded()
+{
+	m_ModelsManager->AddModel(ModelType::BezierC2Type);
+}
+
 void EngineNotifier::OnTorusAdded()
 {
 	m_ModelsManager->AddModel(ModelType::TorusType);
@@ -33,9 +38,20 @@ void EngineNotifier::SetActiveModels(vector<int>& activeModels)
 	m_ModelsManager->SetActiveModels(activeModels);
 }
 
-void EngineNotifier::SetBezierPoints(int curveId, vector<int>& ids)
+void EngineNotifier::SetC0CurvePoints(int curveId, vector<int>& ids)
 {
 	BezierCurve* bezierCurve = dynamic_cast<BezierCurve*>( m_ModelsManager->GetModelById(curveId));
+	vector<ModelClass*> simplePoints = vector<ModelClass*>();
+	for (int i = 0; i < ids.size(); i++)
+	{
+		simplePoints.push_back(m_ModelsManager->GetModelById(ids[i]));
+	}
+	bezierCurve->SetNodes(simplePoints);
+}
+
+void EngineNotifier::SetC2CurvePoints(int curveId, vector<int>& ids)
+{
+	BezierC2Curve* bezierCurve = dynamic_cast<BezierC2Curve*>(m_ModelsManager->GetModelById(curveId));
 	vector<ModelClass*> simplePoints = vector<ModelClass*>();
 	for (int i = 0; i < ids.size(); i++)
 	{

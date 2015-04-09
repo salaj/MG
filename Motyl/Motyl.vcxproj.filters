@@ -198,6 +198,12 @@
     <ClCompile Include="bezier_segment.cpp">
       <Filter>Source Files\models</Filter>
     </ClCompile>
+    <ClCompile Include="bezierC2_curve.cpp">
+      <Filter>Source Files\models</Filter>
+    </ClCompile>
+    <ClCompile Include="bezierC2_segment.cpp">
+      <Filter>Source Files\models</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="modelclass.h">
@@ -318,6 +324,12 @@
       <Filter>Header Files\base\containers</Filter>
     </ClInclude>
     <ClInclude Include="bezier_segment.h">
+      <Filter>Header Files\models</Filter>
+    </ClInclude>
+    <ClInclude Include="bezierC2_curve.h">
+      <Filter>Header Files\models</Filter>
+    </ClInclude>
+    <ClInclude Include="bezierC2_segment.h">
       <Filter>Header Files\models</Filter>
     </ClInclude>
   </ItemGroup>

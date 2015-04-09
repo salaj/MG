@@ -12,6 +12,7 @@ enum ModelType{
 	SimplePointType,
 	CursorType,
 	BezierType,
+	BezierC2Type,
 	Undecided
 };
 

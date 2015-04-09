@@ -25,6 +25,7 @@ SimplePoint::SimplePoint(Service& service) : ModelClass(service)
 
 SimplePoint::SimplePoint(const SimplePoint& other) : ModelClass(other)
 {
+	m_Type = other.m_Type;
 }
 
 

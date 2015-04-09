@@ -149,12 +149,17 @@ void SceneHelper::translateModels(vector<ModelClass*>& models, XMFLOAT4 offset)
 void SceneHelper::translatePostActions(vector<ModelClass*>& models)
 {
 	vector<BezierCurve*> curves = m_modelsManager.GetBezierCurves();
+	float scaleFactor = 2.0f;
 	for (int i = 0; i < curves.size(); i++)
 	{
 		for (int j = 0; j < models.size(); j++)
 		{
 			if (models[j]->m_Type == ModelType::SimplePointType)
+			{
+				models[j]->Scale(1 / scaleFactor);
 				curves[i]->UpdateNode(dynamic_cast<SimplePoint*>(models[j]));
+				models[j]->Scale(scaleFactor);
+			}
 		}
 	}
 }

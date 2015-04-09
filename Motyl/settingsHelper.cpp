@@ -5,11 +5,13 @@ using namespace gk2;
 
 const std::wstring SettingsHelper::SimplePointName = L"Simple point ";
 const std::wstring SettingsHelper::TorusName = L"Torus ";
-const std::wstring SettingsHelper::BezierEdgeName = L"Bezier curve ";
+const std::wstring SettingsHelper::BezierEdgeName = L"C0 curve ";
+const std::wstring SettingsHelper::BezierC2EdgeName = L"C2 curve ";
 
 int SettingsHelper::SimplePointCounter = 0;
 int SettingsHelper::TorusCounter = 0;
 int SettingsHelper::BezierCurveCounter = 0;
+int SettingsHelper::BezierC2CurveCounter = 0;
 
 SettingsHelper::SettingsHelper()
 {
@@ -37,6 +39,11 @@ HTREEITEM SettingsHelper::AddNewModelToTreeView(wchar_t* buf)
 	{
 		swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierCurveCounter++);
 		item = insertItemInternally((BezierEdgeName + wstring(digitBuf)).c_str(), ItemType::ItemCurve);
+	}
+	else if (modelToAddName.compare(BezierC2EdgeName) == 0)
+	{
+		swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierCurveCounter++);
+		item = insertItemInternally((BezierC2EdgeName + wstring(digitBuf)).c_str(), ItemType::ItemC2Curve);
 	}
 	return item;
 }

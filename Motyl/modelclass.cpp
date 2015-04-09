@@ -26,6 +26,17 @@ ModelClass::ModelClass(std::shared_ptr<ID3D11DeviceContext> deviceContext,
 
 ModelClass::ModelClass(const ModelClass& other)
 {
+	m_vertexBuffer = 0;
+	m_indexBuffer = 0;
+	m_device = other.m_device;
+	m_context = other.m_context;
+	m_shader_base = other.m_shader_base;
+	m_camera = other.m_camera;
+	m_input = other.m_input;
+	m_modelMatrix = other.m_modelMatrix;
+	m_selected = other.m_selected;
+	m_position = other.m_position;
+	m_id = other.m_id;
 }
 
 ModelClass::ModelClass(Service& service)

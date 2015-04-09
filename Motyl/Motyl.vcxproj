@@ -130,6 +130,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bezierC2_curve.cpp" />
+    <ClCompile Include="bezierC2_segment.cpp" />
     <ClCompile Include="bezier_curve.cpp" />
     <ClCompile Include="bezier_segment.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -172,6 +174,8 @@
     <ClCompile Include="window_service.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bezierC2_curve.h" />
+    <ClInclude Include="bezierC2_segment.h" />
     <ClInclude Include="bezier_curve.h" />
     <ClInclude Include="bezier_segment.h" />
     <ClInclude Include="Controller.h" />

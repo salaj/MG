@@ -20,7 +20,7 @@ public:
 	XMVECTOR C;
 	XMVECTOR D;
 	void calculate(segment_length_calculator);
-	bool Contain(SimplePoint* point);
+	virtual bool Contain(SimplePoint* point);
 	double bezier_length(segment_length_calculator);
 
 	XMFLOAT3 calculateCubic(float t);

@@ -11,6 +11,7 @@
 #include "simple_point .h"
 #include "cursor.h"
 #include "bezier_curve.h"
+#include "bezierC2_curve.h"
 #include "shader_torus.h"
 #include "shader_elipsoid.h"
 #include "shader_simple_point.h"
