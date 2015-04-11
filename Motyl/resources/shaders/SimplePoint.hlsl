@@ -39,7 +39,9 @@ PSInput VS_Main(VSInput i)
 	PSInput o = (PSInput)0;
 	float4 viewPos = float4(i.pos, 1.0f);
 
-	viewPos = mul(worldMatrix, viewPos);
+	matrix worldView = mul(viewMatrix, worldMatrix);
+	viewPos = mul(worldView, viewPos);
+	/*viewPos = mul(worldMatrix, viewPos);*/
 	o.pos = mul(projMatrix, viewPos);
 	o.norm = i.norm;
 	return o;

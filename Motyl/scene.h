@@ -112,6 +112,8 @@ namespace gk2
 		CursorShader* m_shader_cursor;
 		BezierCurveShader* m_shader_bezier_curve;
 
+		vector<ShaderBase*> m_shaders;
+
 		InputClass* m_input_class;
 		GUIUpdater* m_GUIUpdater;
 

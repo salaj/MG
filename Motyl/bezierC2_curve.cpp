@@ -129,10 +129,10 @@ void BezierC2Curve::UpdateNode(SimplePoint* point)
 	RecalculateBezierPoints();
 	for (int i = 0; i < m_segments.size(); i++)
 	{
-		if (m_segments[i]->Contain(point))
-		{
+		//if (m_segments[i]->Contain(point))
+		//{
 			m_segments[i]->calculate(nullptr);
-		}
+		//}
 		list<VertexPos*> singleSegmentPoints = m_segments[i]->GetSegmentPoints();
 		//concatenate segment points with target vertices
 		vertices.splice(vertices.end(), singleSegmentPoints);

@@ -24,7 +24,7 @@ void Scene::operator delete(void* ptr)
 
 Scene::Scene(HINSTANCE hInstance, InputClass* inputClass, GUIUpdater* guiUpdater)
 	: ApplicationBase(hInstance),
-	m_camera(0.01f, 100.0f),
+	m_camera(/*-100.0f*/0.0f, 100.0f),
 	m_input_class(inputClass),
 	m_GUIUpdater(guiUpdater)
 {
@@ -73,10 +73,15 @@ void Scene::InitializeCamera()
 bool Scene::LoadContent()
 {
 	m_shader_torus = new TorusShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	m_shaders.push_back(m_shader_torus);
 	m_shader_elipsoid = new ElipsoidShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	m_shaders.push_back(m_shader_elipsoid);
 	m_shader_bezier_curve = new BezierCurveShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	m_shaders.push_back(m_shader_bezier_curve);
 	m_shader_simple_point = new SimplePointShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_shaders.push_back(m_shader_simple_point);
 	m_shader_cursor = new CursorShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	m_shaders.push_back(m_shader_cursor);
 
 	Service service;
 	service.Context = m_context;
@@ -93,34 +98,25 @@ bool Scene::LoadContent()
 		m_shader_bezier_curve
 	};
 	m_sceneHelper.Initialize(service, m_GUIUpdater);
-
-
 	m_sceneHelper.CreateModels();
 
-	//m_Torus = new Torus(m_context, m_shader_torus, m_device, m_camera);
-	//m_Torus2 = new Torus(m_context, m_shader_torus, m_device, m_camera);
-	//m_Elipsoid = new Elipsoid(m_context, m_shader_elipsoid, m_device, m_camera);
-
-	m_shader_torus->LoadContent();
-	m_shader_elipsoid->LoadContent();
-	m_shader_simple_point->LoadContent();
-	m_shader_cursor->LoadContent();
-	m_shader_bezier_curve->LoadContent();
+	for (int i = 0; i < m_shaders.size(); i++)
+	{
+		m_shaders[i]->LoadContent();
+	}
 
 	InitializeRenderStates();
 	InitializeCamera();
 
-	//m_Torus -> Initialize();
-	//m_Torus2 -> Initialize();
-	//m_Elipsoid -> Initialize();
-	//m_sceneHelper.InitializeModels();
 	return true;
 }
 
 void Scene::UnloadContent()
 {
-	m_shader_torus->UnloadContent();
-	m_shader_elipsoid->UnloadContent();
+	for (int i = 0; i < m_shaders.size(); i++)
+	{
+		m_shaders[i]->UnloadContent();
+	}
 
 	m_dssWrite.reset();
 	m_dssTest.reset();
@@ -140,7 +136,10 @@ void Scene::UpdateCamera()
 {
 	XMMATRIX viewMtx;
 	m_camera.GetViewMatrix(viewMtx);
-	m_context->UpdateSubresource(m_shader_torus->GetCBViewMatrix().get(), 0, 0, &viewMtx, 0, 0);
+	for (int i = 0; i < m_shaders.size(); i++)
+	{
+		m_context->UpdateSubresource(m_shaders[i]->GetCBViewMatrix().get(), 0, 0, &viewMtx, 0, 0);
+	}
 }
 
 void Scene::UpdateCamera(XMMATRIX& viewMtx)
@@ -153,26 +152,26 @@ int counter = 0;
 
 void Scene::Update(float dt)
 {
-	//static MouseState prevState;
-	//MouseState currentState;
-	//if (!m_mouse->GetState(currentState))
-	//	return;
-	//bool change = true;
-	//if (prevState.isButtonDown(0))
-	//{
-	//	POINT d = currentState.getMousePositionChange();
-	//	m_camera.Rotate(d.y / 300.f, d.x / 300.f);
-	//}
-	//else if (prevState.isButtonDown(1))
-	//{
-	//	POINT d = currentState.getMousePositionChange();
-	//	m_camera.Zoom(d.y / 10.0f);
-	//}
-	//else
-	//	change = false;
-	//prevState = currentState;
-	//if (change)
-	//	UpdateCamera();
+	static MouseState prevState;
+	MouseState currentState;
+	if (!m_mouse->GetState(currentState))
+		return;
+	bool change = true;
+	if (prevState.isButtonDown(0))
+	{
+		POINT d = currentState.getMousePositionChange();
+		m_camera.Rotate(d.y / 300.f, d.x / 300.f);
+	}
+	else if (prevState.isButtonDown(1))
+	{
+		POINT d = currentState.getMousePositionChange();
+		m_camera.Zoom(d.y / 10.0f);
+	}
+	else
+		change = false;
+	prevState = currentState;
+	if (change)
+		UpdateCamera();
 
 	m_sceneHelper.CheckMouse();
 	m_sceneHelper.CheckInput();

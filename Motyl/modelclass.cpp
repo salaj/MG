@@ -99,6 +99,7 @@ void ModelClass::SetPosition(XMFLOAT4 position)
 {
 	m_modelMatrix._41 = position.x;
 	m_modelMatrix._42 = position.y;
+	m_modelMatrix._43 = position.z;
 }
 
 float ModelClass::GetSquareDistanceBetweenModels(ModelClass* first, ModelClass*second)

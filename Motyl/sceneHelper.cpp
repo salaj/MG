@@ -77,29 +77,34 @@ void SceneHelper::findClosestModelWithMouse(POINT mousePosition)
 {
 	XMFLOAT2 translatedMousePosition = translatePoint(mousePosition);
 	Cursor cursor = Cursor(); //tmp cursor
-	ModelsManager::setModelToPosition(dynamic_cast<ModelClass*>(&cursor),
-		XMFLOAT3(translatedMousePosition.x, translatedMousePosition.y, 0));
+	int numberOfSamples = 50;
+	for (int i = 0; i < numberOfSamples; i++)
+	{
+		ModelsManager::setModelToPosition(dynamic_cast<ModelClass*>(&cursor),
+			XMFLOAT3(translatedMousePosition.x, translatedMousePosition.y, -1.0f + 2.0f * ((float)i / (float)numberOfSamples)));
 
-	map<int, ModelClass*>& models = m_modelsManager.GetModels();
-	float minSquareDistance = 0.02f;
-	float minVal = FLT_MAX;
-	int index = -1;
-	for (map<int, ModelClass*> ::iterator it = ++(models.begin()); it != models.end(); it++)
-	//for (int i = 1; i < models.size(); i++)//we omit cursor
-	{
-		ModelClass* model = (*it).second;// models[i];
-		if (model->m_Type != ModelType::SimplePointType)
-			continue;
-		float val = ModelClass::GetSquareDistanceBetweenModels(&cursor, model);
-		if (val < minVal)
+		map<int, ModelClass*>& models = m_modelsManager.GetModels();
+		float minSquareDistance = 0.02f;
+		float minVal = FLT_MAX;
+		int index = -1;
+		for (map<int, ModelClass*> ::iterator it = ++(models.begin()); it != models.end(); it++)
+			//for (int i = 1; i < models.size(); i++)//we omit cursor
 		{
-			index = (*it).first;
-			minVal = val;
+			ModelClass* model = (*it).second;// models[i];
+			if (model->m_Type != ModelType::SimplePointType)
+				continue;
+			float val = ModelClass::GetSquareDistanceBetweenModels(&cursor, model);
+			if (val < minVal)
+			{
+				index = (*it).first;
+				minVal = val;
+			}
 		}
-	}
-	if (minVal < minSquareDistance)
-	{
-		selectNewAndDeselectOldModel(models[index]);
+		if (minVal < minSquareDistance)
+		{
+			selectNewAndDeselectOldModel(models[index]);
+			break;
+		}
 	}
 }
 

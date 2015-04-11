@@ -40,6 +40,8 @@ void EngineNotifier::SetActiveModels(vector<int>& activeModels)
 
 void EngineNotifier::SetC0CurvePoints(int curveId, vector<int>& ids)
 {
+	if (ids.size() == 0)
+		return;
 	BezierCurve* bezierCurve = dynamic_cast<BezierCurve*>( m_ModelsManager->GetModelById(curveId));
 	vector<ModelClass*> simplePoints = vector<ModelClass*>();
 	for (int i = 0; i < ids.size(); i++)
@@ -51,6 +53,8 @@ void EngineNotifier::SetC0CurvePoints(int curveId, vector<int>& ids)
 
 void EngineNotifier::SetC2CurvePoints(int curveId, vector<int>& ids)
 {
+	if (ids.size() == 0)
+		return;
 	BezierC2Curve* bezierCurve = dynamic_cast<BezierC2Curve*>(m_ModelsManager->GetModelById(curveId));
 	vector<ModelClass*> simplePoints = vector<ModelClass*>();
 	for (int i = 0; i < ids.size(); i++)

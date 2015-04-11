@@ -33,8 +33,8 @@ float Camera::GetMaxDistance()
 
 void Camera::SetRange(float minDistance, float maxDistance)
 {
-	if (minDistance < 0)
-		minDistance = 0;
+	//if (minDistance < 0)
+	//	minDistance = 0;
 	if (maxDistance < minDistance)
 		maxDistance = minDistance;
 	m_minDistance = minDistance;

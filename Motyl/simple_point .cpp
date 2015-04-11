@@ -54,10 +54,12 @@ SimplePoint* SimplePoint::GetModelDilateToWeight(ModelClass* a, ModelClass* b, f
 	XMFLOAT4 v2 = b->GetPosition();
 	float xScaleFactor = 1 / a->m_modelMatrix._11;
 	float yScaleFactor = 1 / a->m_modelMatrix._22;
+	float zScaleFactor = 1 / a->m_modelMatrix._33;
 	XMFLOAT4 off = XMFLOAT4(
 		(float)(v2.x - v1.x) * weight* xScaleFactor,
 		(float)(v2.y - v1.y) * weight* yScaleFactor,
-		0, 0
+		(float)(v2.z - v1.z) * weight* zScaleFactor,
+		0 
 		);
 	SimplePoint* copy = new SimplePoint(*dynamic_cast<SimplePoint*>(a));
 	copy->Translate(off);
