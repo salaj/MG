@@ -24,7 +24,6 @@ using namespace std;
 class ModelsManager
 {
 public:
-
 	ModelsManager();
 	virtual ~ModelsManager();
 
@@ -54,7 +53,6 @@ public:
 
 	ModelClass* GetCursor();
 	ModelClass* selected = NULL;
-
 private:
 	map<int, ModelClass*> m_models;
 	map<int, ModelClass*> m_active_models;

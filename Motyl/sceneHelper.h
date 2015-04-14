@@ -43,6 +43,7 @@ class SceneHelper
 		InputClass*  m_InputClass;
 		GUIUpdater* m_GUIUpdater;
 		ModelsManager m_modelsManager;
+		ModelClass* m_activeVirtualModel = nullptr;
 
 		POINT m_previousPoint;
 

@@ -161,6 +161,11 @@ void SimplePoint::setStereoscopy(bool isStereoscopic)
 void SimplePoint::Draw()
 {
 	SimplePointShader* shader = dynamic_cast<SimplePointShader*>(m_shader_base);
+
+	//copy
+	if (!m_isGenuine)
+		Scale(0.5f);
+
 	m_context->UpdateSubresource(shader->GetCBWorldMatrix().get(), 0, 0, &m_modelMatrix, 0, 0);
 
 	shader->SetContent();
@@ -185,5 +190,8 @@ void SimplePoint::Draw()
 		m_context->UpdateSubresource(shader->GetCBColor().get(), 0, 0, &XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), 0, 0);
 		m_context->DrawIndexed(m_indexCount, 0, 0);
 	}
+
+	if (!m_isGenuine)
+		Scale(2.0f);
 
 }

@@ -66,9 +66,12 @@ public:
 	void Scale(float);
 
 	XMFLOAT4 GetPosition();
+	XMFLOAT3 GetPosition3();
 	XMFLOAT4 GetNormalizedPosition();
 	XMFLOAT4 GetTranslatedPosition(ModelClass* cursor);
 	void SetPosition(XMFLOAT4 position);
+	void SetPosition(float x, float y, float z);
+	void SetPosition(XMVECTOR pos);
 	static float GetSquareDistanceBetweenModels(ModelClass*, ModelClass*);
 	static XMFLOAT4 GetRelativeScaleVector(ModelClass*, ModelClass*);
 
@@ -76,7 +79,7 @@ public:
 	bool m_selected;
 	int m_id;
 	ModelType m_Type = ModelType::Undecided;
-
+	bool m_isGenuine;
 protected:
 	std::shared_ptr<ID3D11Buffer> m_vertexBuffer, m_indexBuffer;
 	int m_vertexCount, m_indexCount;

@@ -54,7 +54,20 @@ void SceneHelper::selectNewAndDeselectOldModel(ModelClass* model)
 {
 	vector<int> single = vector<int>();
 	single.push_back(model->m_id);
-	m_modelsManager.SetActiveModels(single);
+	if (model->m_isGenuine)
+	{
+		m_activeVirtualModel = nullptr;
+		m_modelsManager.SetActiveModels(single);
+	}
+	else
+	{
+		if (m_activeVirtualModel != nullptr)
+			m_activeVirtualModel->Scale(0.5f);
+		m_activeVirtualModel = model;
+		m_activeVirtualModel->Scale(2.0f);
+		ModelClass* cursor = m_modelsManager.GetCursor();
+		cursor->SetPosition(m_activeVirtualModel->GetPosition());
+	}
 }
 
 void SceneHelper::deselectCurrentModel()
@@ -103,6 +116,8 @@ void SceneHelper::findClosestModelWithMouse(POINT mousePosition)
 		if (minVal < minSquareDistance)
 		{
 			selectNewAndDeselectOldModel(models[index]);
+
+			delete &models;
 			break;
 		}
 	}
@@ -118,7 +133,7 @@ void SceneHelper::findClosestModelWithCursor()
 	//for (int i = 1; i < models.size(); i++)//we omit cursor
 	for (map<int, ModelClass*> ::iterator it = ++(models.begin()); it != models.end(); it++)
 	{
-		ModelClass* model = (*it).second;//models[i];
+		ModelClass* model = (*it).second;
 		if (model->m_Type != ModelType::SimplePointType)
 			continue;
 		float val = ModelClass::GetSquareDistanceBetweenModels(cursor, model);
@@ -212,8 +227,12 @@ void SceneHelper::CheckInput()
 
 	//vector<ModelClass*> activeModels;
 	//activeModels.push_back(cursor);
+	vector<ModelClass*>activeModels;
+	if (m_activeVirtualModel != nullptr)
+		activeModels.push_back(m_activeVirtualModel);
+	else
+		activeModels = m_modelsManager.GetActiveModels();
 
-	vector<ModelClass*>activeModels = m_modelsManager.GetActiveModels();
 	activeModels.push_back(cursor);
 
 	ActiveFeature feature = m_InputClass->getActiveFeature();

@@ -49,8 +49,9 @@ void BezierSegment::calculate(segment_length_calculator calculator)
 	int segmentLength = bezier_length(calculator);
 	for (int i = 0; i < segmentLength; i++)
 	{
+		float t = (float)i / (float)(segmentLength - 1);
 		vertices.push_back(new VertexPos{
-			(this->*calculator)((float)i / (float)(segmentLength - 1))
+			(this->*calculator)(t)
 		});
 	}
 }

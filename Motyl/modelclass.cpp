@@ -37,8 +37,8 @@ ModelClass::ModelClass(const ModelClass& other)
 	m_modelMatrix = other.m_modelMatrix;
 	m_selected = other.m_selected;
 	m_position = other.m_position;
-	//mark that it is copy
-	m_id = -1;
+	m_id = m_counter++;
+	m_isGenuine = false;
 }
 
 ModelClass::ModelClass(Service& service)
@@ -76,6 +76,11 @@ XMFLOAT4 ModelClass::GetPosition()
 	return XMFLOAT4(m_modelMatrix._41, m_modelMatrix._42, m_modelMatrix._43, 1);
 }
 
+XMFLOAT3 ModelClass::GetPosition3()
+{
+	return XMFLOAT3(m_modelMatrix._41, m_modelMatrix._42, m_modelMatrix._43);
+}
+
 XMFLOAT4 ModelClass::GetNormalizedPosition()
 {
 	return XMFLOAT4(m_position.x * m_modelMatrix._11, m_position.y * m_modelMatrix._22, m_position.z * m_modelMatrix._33, m_position.w * m_modelMatrix._44);
@@ -89,7 +94,7 @@ void ModelClass::Initialize()
 		0, 0, 1, 0,
 		0, 0, 0, 1
 		);
-
+	m_isGenuine = true;
 	m_id = m_counter++;
 	m_selected = false;
 	m_position = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -100,6 +105,24 @@ void ModelClass::SetPosition(XMFLOAT4 position)
 	m_modelMatrix._41 = position.x;
 	m_modelMatrix._42 = position.y;
 	m_modelMatrix._43 = position.z;
+}
+
+
+void ModelClass::SetPosition(float x, float y, float z)
+{
+	m_modelMatrix._41 = x;
+	m_modelMatrix._42 = y;
+	m_modelMatrix._43 = z;
+}
+
+void ModelClass::SetPosition(XMVECTOR pos)
+{
+	XMFLOAT4 position = XMFLOAT4(
+		XMVectorGetX(pos),
+		XMVectorGetY(pos),
+		XMVectorGetZ(pos),
+		1);
+	SetPosition(position);
 }
 
 float ModelClass::GetSquareDistanceBetweenModels(ModelClass* first, ModelClass*second)

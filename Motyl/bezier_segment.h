@@ -32,5 +32,6 @@ public:
 private:
 	list<VertexPos*> vertices;
 	segment_length_calculator m_previousCalculator;
+	int m_BSplineFunctionIndex = 3;
 	void fillNodes();
 };
