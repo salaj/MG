@@ -8,6 +8,9 @@ const std::wstring SettingsHelper::TorusName = L"Torus ";
 const std::wstring SettingsHelper::BezierEdgeName = L"C0 curve ";
 const std::wstring SettingsHelper::BezierC2EdgeName = L"C2 curve ";
 
+const std::wstring SettingsHelper::BernsteinBase = L"Bernstein base ";
+const std::wstring SettingsHelper::BSplineBase = L"BSpline base ";
+
 int SettingsHelper::SimplePointCounter = 0;
 int SettingsHelper::TorusCounter = 0;
 int SettingsHelper::BezierCurveCounter = 0;

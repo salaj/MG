@@ -29,6 +29,7 @@ class SceneHelper
 		void CheckInput();
 		void CheckMouse();
 		//void CheckSelectedByTreeView();
+		void IsBaseChanged();
 
 		//for modelmanager class
 		map<int, ModelClass*>& GetModels();
@@ -49,12 +50,13 @@ class SceneHelper
 
 		bool m_CanAdd = true;
 		bool m_CanSelect = true;
+		CurveBase m_base = CurveBase::Bezier;
 
 		void translateModels(vector<ModelClass*>& models, XMFLOAT4 offset);
 		void translatePostActions(vector<ModelClass*>& models);
 		void scaleModels(vector<ModelClass*>& models, float scale);
-
 		void rotateModels(vector<ModelClass*>& models, float rotation, ActiveAxis axis);
+		void redrawCurves();
 
 		//ModelClass* selected;
 

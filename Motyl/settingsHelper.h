@@ -16,6 +16,9 @@ namespace gk2
 		static const std::wstring BezierEdgeName;
 		static const std::wstring BezierC2EdgeName;
 
+		static const std::wstring BernsteinBase;
+		static const std::wstring BSplineBase;
+
 		static int SimplePointCounter;
 		static int TorusCounter;
 		static int BezierCurveCounter;

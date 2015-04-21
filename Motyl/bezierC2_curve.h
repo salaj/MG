@@ -44,15 +44,13 @@ public:
 	static CurveBase m_base;
 private:
 	vector<ModelClass*> m_deBoor;
-	vector<SimplePoint*> CalculateBezierPoints();
-	void RecalculateBezierPoints();
 	double bezier_length();
 	void convertFromBSplineToBezbierBase();
-	void convertFromBezierToBSplineBase();
+	void convertFromBezierToBSplineBase(BezierC2Segment& segment);
 	double* T;
 	int index;
 
-	void drawInBernsteinBase(bool updateBezierPoints = true);
+	void drawInBernsteinBase();
 	void drawInBSplineBase();
 	//works in both bases
 	VertexPos* drawContour();

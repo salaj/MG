@@ -33,6 +33,7 @@ class ModelClass
 public:
 
 	static int m_counter;
+	static int m_fakeCounter;
 
 	ModelClass();
 	ModelClass(std::shared_ptr<ID3D11DeviceContext>deviceContext,

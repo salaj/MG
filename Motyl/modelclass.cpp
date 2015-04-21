@@ -9,6 +9,7 @@ const unsigned int ModelClass::VB_STRIDE_WITH_NORMAL = sizeof(VertexPosNormal);
 const unsigned int ModelClass::VB_STRIDE = sizeof(VertexPos);
 const unsigned int ModelClass::VB_OFFSET = 0;
 int ModelClass::m_counter = 0;
+int ModelClass::m_fakeCounter = 4096;
 
 
 ModelClass::ModelClass(std::shared_ptr<ID3D11DeviceContext> deviceContext,
@@ -37,7 +38,7 @@ ModelClass::ModelClass(const ModelClass& other)
 	m_modelMatrix = other.m_modelMatrix;
 	m_selected = other.m_selected;
 	m_position = other.m_position;
-	m_id = m_counter++;
+	m_id = m_fakeCounter++;
 	m_isGenuine = false;
 }
 

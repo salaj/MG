@@ -54,6 +54,8 @@ void SceneHelper::selectNewAndDeselectOldModel(ModelClass* model)
 {
 	vector<int> single = vector<int>();
 	single.push_back(model->m_id);
+	if (m_activeVirtualModel != nullptr)
+		m_activeVirtualModel->Scale(0.5f);
 	if (model->m_isGenuine)
 	{
 		m_activeVirtualModel = nullptr;
@@ -61,8 +63,7 @@ void SceneHelper::selectNewAndDeselectOldModel(ModelClass* model)
 	}
 	else
 	{
-		if (m_activeVirtualModel != nullptr)
-			m_activeVirtualModel->Scale(0.5f);
+		deselectCurrentModel();
 		m_activeVirtualModel = model;
 		m_activeVirtualModel->Scale(2.0f);
 		ModelClass* cursor = m_modelsManager.GetCursor();
@@ -100,10 +101,9 @@ void SceneHelper::findClosestModelWithMouse(POINT mousePosition)
 		float minSquareDistance = 0.02f;
 		float minVal = FLT_MAX;
 		int index = -1;
-		for (map<int, ModelClass*> ::iterator it = ++(models.begin()); it != models.end(); it++)
-			//for (int i = 1; i < models.size(); i++)//we omit cursor
-		{
-			ModelClass* model = (*it).second;// models[i];
+		for (map<int, ModelClass*> ::iterator it = (models.begin()); it != models.end(); it++)
+ 		{
+			ModelClass* model = (*it).second;
 			if (model->m_Type != ModelType::SimplePointType)
 				continue;
 			float val = ModelClass::GetSquareDistanceBetweenModels(&cursor, model);
@@ -116,7 +116,6 @@ void SceneHelper::findClosestModelWithMouse(POINT mousePosition)
 		if (minVal < minSquareDistance)
 		{
 			selectNewAndDeselectOldModel(models[index]);
-
 			delete &models;
 			break;
 		}
@@ -466,11 +465,39 @@ void SceneHelper::CheckMouse()
 	}
 }
 
-//void SceneHelper::CheckSelectedByTreeView()
-//{
-//	//int id = m_InputClass->GetSelectedModel();
-//	//if (id != -1)
-//	//{
-//	//	selectNewAndDeselectOldModel(m_modelsManager.GetModelById(id));
-//	//}
-//}
+void SceneHelper::redrawCurves()
+{
+	vector<BezierCurve*>& curves = m_modelsManager.GetBezierCurves();
+	for (int i = 0; i < curves.size(); i++)
+	{
+		if (curves[i]->m_Type == ModelType::BezierC2Type)
+		{
+			curves[i]->Reset();
+		}
+	}
+}
+
+void SceneHelper::IsBaseChanged()
+{
+	bool isBernstein = m_InputClass->isBernsteinBaseSet;
+	if (isBernstein)
+	{
+		if (m_base == CurveBase::BSpline)
+		{
+			m_base = CurveBase::Bezier;
+			BezierC2Curve::m_base = m_base;
+			//notify to redraw
+			redrawCurves();
+		}
+	}
+	else
+	{
+		if (m_base == CurveBase::Bezier)
+		{
+			m_base = CurveBase::BSpline;
+			BezierC2Curve::m_base = m_base;
+			//notify to redraw
+			redrawCurves();
+		}
+	}
+}

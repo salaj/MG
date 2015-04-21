@@ -56,9 +56,12 @@ public:
 
 	void setStereorcopy(bool isActive);
 	void setBezierPolygon(bool isActive);
+	void setBase(bool isBezierBase);
 
 	bool isStereoscopyActive = true;
 	bool isBezierPolygonActive = true;
+	bool isBernsteinBaseSet = true;
+
 	void AddModel(ModelType);
 	void SetMousePosition(float x, float y);
 	void SetMousePressing(bool isPressed);

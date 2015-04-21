@@ -99,6 +99,11 @@ void InputClass::setBezierPolygon(bool isActive)
 	isBezierPolygonActive = isActive;
 }
 
+void InputClass::setBase(bool _isBernsteinBase)
+{
+	isBernsteinBaseSet = _isBernsteinBase;
+}
+
 void InputClass::AddModel(ModelType type)
 {
 	

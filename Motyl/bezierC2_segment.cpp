@@ -27,8 +27,8 @@ void BezierC2Segment::operator delete(void* ptr)
 
 bool BezierC2Segment::Contain(SimplePoint* point)
 {
-	for (int i = 0; i < m_deBoor.size(); i++)
-		if (point->m_id == m_deBoor[i]->m_id)
+	for (int i = 0; i < m_nodes.size(); i++)
+		if (point->m_id == m_nodes[i]->m_id)
 			return true;
 	return false;
 }

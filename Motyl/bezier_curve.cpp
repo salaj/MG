@@ -300,15 +300,15 @@ void BezierCurve::setPointTopology()
 		indices[i] = i;
 	}
 	m_indexBuffer = m_device.CreateIndexBuffer(indices, m_indexCount);
-	delete indices;
+	delete[] indices;
 	m_indexCountContour = m_vertexCountContour;
-	unsigned short* indicesContour = new unsigned short[m_indexCount];
+	unsigned short* indicesContour = new unsigned short[m_indexCountContour];
 	for (int i = 0; i < m_indexCountContour; i++)
 	{
 		indicesContour[i] = i;
 	}
 	m_indexBufferContour = m_device.CreateIndexBuffer(indicesContour, m_indexCountContour);
-	delete indicesContour;
+	delete[] indicesContour;
 }
 
 void BezierCurve::setLineTopology()
