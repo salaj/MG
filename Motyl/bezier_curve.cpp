@@ -258,7 +258,7 @@ void BezierCurve::Initialize()
 		m_vertexBuffer = m_device.CreateVertexBuffer(vertices, m_vertexCount);
 		m_vertexBufferContour = m_device.CreateVertexBuffer(vertices, m_vertexCountContour);
 		setPointTopology();
-		delete vertices;
+		delete[] vertices;
 		return;
 	}
 	///////////////////////////////

@@ -42,8 +42,11 @@ public:
 	XMFLOAT3 calculateInBSplineBase(float t);
 	vector<SimplePoint*> m_Bezier;
 	static CurveBase m_base;
-private:
+
+protected:
+	float calculateSingleDeBoor(int n, int i, double t, double* knots, int maxI);
 	vector<ModelClass*> m_deBoor;
+private:
 	double bezier_length();
 	void convertFromBSplineToBezbierBase();
 	void convertFromBezierToBSplineBase(BezierC2Segment& segment);

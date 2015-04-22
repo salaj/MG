@@ -387,6 +387,38 @@ Point deBoor(int k, int degree, int i, double x, double* knots, Point *ctrlPoint
 	}
 }
 
+float BezierC2Curve::calculateSingleDeBoor(int n, int i, double t, double* knots, int maxI)
+{
+	if (n == 0)
+	{
+		if (i < 0 || i >= maxI)
+			return 0.0f;
+
+		if (t >= knots[i] && t < knots[i + 1])
+			return 1.0f;
+		return 0.0f;
+	}
+	else
+	{
+		double left = (t - knots[i]) / (knots[i + n] - knots[i]);
+		if (i + n >= maxI)
+			left = 0;
+		if (knots[i + n] - knots[i] == 0)
+			left = 0;
+		double leftRecursive = calculateSingleDeBoor(n - 1, i, t, knots, maxI);
+
+		double right = (knots[i + n + 1] - t) / (knots[i + n + 1] - knots[i + 1]);
+		if (i + n + 1 >= maxI)
+			right = 0;
+		if (knots[i + n + 1] - knots[i + 1] == 0)
+			right = 0; 
+
+		double rightRecursive = calculateSingleDeBoor(n - 1, i + 1, t, knots, maxI);
+		return left * leftRecursive + right * rightRecursive;
+	}
+}
+
+
 XMFLOAT3 BezierC2Curve::calculateInBSplineBase(float t)
 {
 	
@@ -407,6 +439,8 @@ XMFLOAT3 BezierC2Curve::calculateInBSplineBase(float t)
 	}
 
 	Point resN3i;
+
+	//CALCULATE FROM RECURSIVE FORMULA
 	for (int i = 0; i < m + n; i++)
 	{
 		if (t >= T[i] && t < T[i + 1])
@@ -415,6 +449,14 @@ XMFLOAT3 BezierC2Curve::calculateInBSplineBase(float t)
 			break;
 		}
 	}
+
+	//////CALCULATE FROM DEFINITION
+	//for (int i = 0; i < m; i++)
+	//{
+	//		float val = calculateSingleDeBoor(n, i, t, T, m + n + 1);
+	//		resN3i = resN3i + controlPoints[i] * val;
+	//}
+
 	return XMFLOAT3(
 		resN3i.x,
 		resN3i.y,
@@ -427,21 +469,17 @@ double BezierC2Curve::bezier_length()
 	double t;
 	int i;
 	int m = m_deBoor.size();
-	int steps = 10;
-	int estimation = 2;
-	int screenWidth = 300;
-	XMFLOAT3 dot;
-	XMFLOAT3 previous_dot;
-	double length = 0.0;
-	for (i = 0; i <= steps; i++) {
-		t = 2.0f + (double)(i * m - 3) / (double)steps;
-		dot = calculateInBSplineBase(t);
-		if (i > 0) {
-			double x_diff = dot.x - previous_dot.x;
-			double y_diff = dot.y - previous_dot.y;
-			length += sqrt(x_diff * x_diff + y_diff * y_diff);
-		}
-		previous_dot = dot;
+
+	float sumAllSegments = 0;
+	for (int i = 1; i < m; i++)
+	{
+		XMFLOAT3 pos1 = m_deBoor[i - 1]->GetPosition3();
+		XMFLOAT3 pos2 = m_deBoor[i]->GetPosition3();
+		float singleSegment = (pos1.x - pos2.x) *  (pos1.x - pos2.x) +
+			(pos1.y - pos2.y) *  (pos1.y - pos2.y) +
+			(pos1.z - pos2.z) *  (pos1.z - pos2.z);
+		sumAllSegments += singleSegment;
 	}
-	return length * screenWidth * estimation;
+	return sqrtf(sumAllSegments);
+
 }

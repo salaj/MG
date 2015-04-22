@@ -143,6 +143,7 @@
     <ClCompile Include="applicationBase.cpp" />
     <ClCompile Include="engine_Notifier.cpp" />
     <ClCompile Include="guiUpdater.cpp" />
+    <ClCompile Include="interpolatedC2_curve.cpp" />
     <ClCompile Include="modelsManager.cpp" />
     <ClCompile Include="procedure.cpp" />
     <ClCompile Include="scene.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="applicationBase.h" />
     <ClInclude Include="engine_Notifier.h" />
     <ClInclude Include="guiUpdater.h" />
+    <ClInclude Include="interpolatedC2_curve.h" />
     <ClInclude Include="modelsManager.h" />
     <ClInclude Include="procedure.h" />
     <ClInclude Include="resource.h" />

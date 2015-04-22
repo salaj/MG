@@ -13,6 +13,7 @@ enum ModelType{
 	CursorType,
 	BezierType,
 	BezierC2Type,
+	InterpolatedC2Type,
 	Undecided
 };
 

@@ -73,6 +73,18 @@
     <Filter Include="Resource Files\images">
       <UniqueIdentifier>{bf9e4ce4-f380-4403-94f4-2b1c22d4dd23}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\models\curves">
+      <UniqueIdentifier>{7b8f7d19-1ce0-4aae-9804-b681e58f1be6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\models\curves\segments">
+      <UniqueIdentifier>{5cf61fc0-7878-41be-b771-57717f966dff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\models\curves">
+      <UniqueIdentifier>{6e740c16-a046-4307-bbd3-92bfc0da7119}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\models\curves\segment">
+      <UniqueIdentifier>{a51ddd7e-5b88-402a-8c4d-3c984a94bc84}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -177,9 +189,6 @@
     <ClCompile Include="guiUpdater.cpp">
       <Filter>Source Files\controls</Filter>
     </ClCompile>
-    <ClCompile Include="bezier_curve.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
     <ClCompile Include="shader_bezier_curve.cpp">
       <Filter>Source Files\shaders</Filter>
     </ClCompile>
@@ -195,14 +204,20 @@
     <ClCompile Include="scene_service.cpp">
       <Filter>Source Files\base\containers</Filter>
     </ClCompile>
-    <ClCompile Include="bezier_segment.cpp">
-      <Filter>Source Files\models</Filter>
+    <ClCompile Include="bezier_curve.cpp">
+      <Filter>Source Files\models\curves</Filter>
     </ClCompile>
     <ClCompile Include="bezierC2_curve.cpp">
-      <Filter>Source Files\models</Filter>
+      <Filter>Source Files\models\curves</Filter>
     </ClCompile>
     <ClCompile Include="bezierC2_segment.cpp">
-      <Filter>Source Files\models</Filter>
+      <Filter>Source Files\models\curves\segments</Filter>
+    </ClCompile>
+    <ClCompile Include="bezier_segment.cpp">
+      <Filter>Source Files\models\curves\segments</Filter>
+    </ClCompile>
+    <ClCompile Include="interpolatedC2_curve.cpp">
+      <Filter>Source Files\models\curves</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -305,9 +320,6 @@
     <ClInclude Include="guiUpdater.h">
       <Filter>Header Files\controls</Filter>
     </ClInclude>
-    <ClInclude Include="bezier_curve.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
     <ClInclude Include="shader_bezier_curve.h">
       <Filter>Header Files\shaders</Filter>
     </ClInclude>
@@ -323,14 +335,20 @@
     <ClInclude Include="scene_service.h">
       <Filter>Header Files\base\containers</Filter>
     </ClInclude>
-    <ClInclude Include="bezier_segment.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
     <ClInclude Include="bezierC2_curve.h">
-      <Filter>Header Files\models</Filter>
+      <Filter>Header Files\models\curves</Filter>
+    </ClInclude>
+    <ClInclude Include="bezier_curve.h">
+      <Filter>Header Files\models\curves</Filter>
+    </ClInclude>
+    <ClInclude Include="bezier_segment.h">
+      <Filter>Header Files\models\curves\segment</Filter>
     </ClInclude>
     <ClInclude Include="bezierC2_segment.h">
-      <Filter>Header Files\models</Filter>
+      <Filter>Header Files\models\curves\segment</Filter>
+    </ClInclude>
+    <ClInclude Include="interpolatedC2_curve.h">
+      <Filter>Header Files\models\curves</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

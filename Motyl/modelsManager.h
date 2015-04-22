@@ -12,6 +12,7 @@
 #include "cursor.h"
 #include "bezier_curve.h"
 #include "bezierC2_curve.h"
+#include "interpolatedC2_curve.h"
 #include "shader_torus.h"
 #include "shader_elipsoid.h"
 #include "shader_simple_point.h"
@@ -58,4 +59,7 @@ private:
 	map<int, ModelClass*> m_active_models;
 	map<int, BezierCurve*> m_bezier_curves;
 	Service m_service;
+
+	void createFakeC2Curve();
+	void createFakeInterpolatedC2Curve();
 };

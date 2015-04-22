@@ -28,6 +28,11 @@ void EngineNotifier::OnBezierC2CurveAdded()
 	m_ModelsManager->AddModel(ModelType::BezierC2Type);
 }
 
+void EngineNotifier::OnC2InterpolatedAdded()
+{
+	m_ModelsManager->AddModel(ModelType::InterpolatedC2Type);
+}
+
 void EngineNotifier::OnTorusAdded()
 {
 	m_ModelsManager->AddModel(ModelType::TorusType);
@@ -63,6 +68,34 @@ void EngineNotifier::SetC2CurvePoints(int curveId, vector<int>& ids)
 	}
 	bezierCurve->SetNodes(simplePoints);
 }
+
+void EngineNotifier::SetC2InterpolatedCurvePoints(int curveId, vector<int>& ids)
+{
+	if (ids.size() == 0)
+		return;
+	InterpolatedC2Curve* curve = dynamic_cast<InterpolatedC2Curve*>(m_ModelsManager->GetModelById(curveId));
+	vector<ModelClass*> simplePoints = vector<ModelClass*>();
+	for (int i = 0; i < ids.size(); i++)
+	{
+		simplePoints.push_back(m_ModelsManager->GetModelById(ids[i]));
+	}
+	curve->SetNodes(simplePoints);
+}
+
+//
+//template<typename T>
+//void EngineNotifier::SetPoints(int, vector<int>&)
+//{
+//	if (ids.size() == 0)
+//		return;
+//	T* curve = dynamic_cast<T*>(m_ModelsManager->GetModelById(curveId));
+//	vector<ModelClass*> simplePoints = vector<ModelClass*>();
+//	for (int i = 0; i < ids.size(); i++)
+//	{
+//		simplePoints.push_back(m_ModelsManager->GetModelById(ids[i]));
+//	}
+//	curve->SetNodes(simplePoints);
+//}
 
 void EngineNotifier::RemoveModel(int id)
 {

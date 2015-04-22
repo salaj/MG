@@ -15,6 +15,7 @@ namespace gk2
 		static const std::wstring TorusName;
 		static const std::wstring BezierEdgeName;
 		static const std::wstring BezierC2EdgeName;
+		static const std::wstring BezierC2Interpolated;
 
 		static const std::wstring BernsteinBase;
 		static const std::wstring BSplineBase;
@@ -23,6 +24,7 @@ namespace gk2
 		static int TorusCounter;
 		static int BezierCurveCounter;
 		static int BezierC2CurveCounter;
+		static int C2InterpolatedCounter;
 
 
 		HTREEITEM AddNewModelToTreeView(wchar_t*);
