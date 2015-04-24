@@ -48,6 +48,7 @@ protected:
 	vector<ModelClass*> m_deBoor;
 private:
 	double bezier_length();
+	double bSpline_length();
 	void convertFromBSplineToBezbierBase();
 	void convertFromBezierToBSplineBase(BezierC2Segment& segment);
 	double* T;

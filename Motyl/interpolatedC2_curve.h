@@ -27,6 +27,7 @@ public:
 	virtual void UpdateNode(SimplePoint*);
 
 private:
+	//void calculateProportionalTao();
 	void createBaseFunctionsMatrix();
 	vector<ModelClass*> m_interpolants;
 	void dividePoint(int index, float dividor, float** matrix);

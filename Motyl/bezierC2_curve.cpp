@@ -94,7 +94,7 @@ void BezierC2Curve::UpdateNode(SimplePoint* point)
 
 void BezierC2Curve::drawInBSplineBase()
 {
-	m_vertexCount = bezier_length();
+	m_vertexCount = bSpline_length();
 	if (m_vertexCount == 0)
 		m_vertexCount = 1;
 	int n = 3;
@@ -478,8 +478,39 @@ double BezierC2Curve::bezier_length()
 		float singleSegment = (pos1.x - pos2.x) *  (pos1.x - pos2.x) +
 			(pos1.y - pos2.y) *  (pos1.y - pos2.y) +
 			(pos1.z - pos2.z) *  (pos1.z - pos2.z);
-		sumAllSegments += singleSegment;
+		sumAllSegments += sqrtf(singleSegment);
 	}
-	return sqrtf(sumAllSegments);
+	XMFLOAT3 pos1 = m_deBoor[m -1]->GetPosition3();
+	XMFLOAT3 pos2 = m_deBoor[0]->GetPosition3();
+	float singleSegment = (pos1.x - pos2.x) *  (pos1.x - pos2.x) +
+		(pos1.y - pos2.y) *  (pos1.y - pos2.y) +
+		(pos1.z - pos2.z) *  (pos1.z - pos2.z);
+	sumAllSegments += sqrtf(singleSegment);
 
+	return sumAllSegments;
+
+}
+
+double BezierC2Curve::bSpline_length()
+{
+	double t;
+	int i;
+	int m = m_deBoor.size();
+	int steps = 10;
+	int estimation = 2;
+	int screenWidth = 300;
+	XMFLOAT3 dot;
+	XMFLOAT3 previous_dot;
+	double length = 0.0;
+	for (i = 0; i <= steps; i++) {
+		t = 2.0f + (double)(i * m - 3) / (double)steps;
+		dot = calculateInBSplineBase(t);
+		if (i > 0) {
+			double x_diff = dot.x - previous_dot.x;
+			double y_diff = dot.y - previous_dot.y;
+			length += sqrt(x_diff * x_diff + y_diff * y_diff);
+		}
+		previous_dot = dot;
+	}
+	return length * screenWidth * estimation;
 }
