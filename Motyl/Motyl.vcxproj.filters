@@ -85,6 +85,12 @@
     <Filter Include="Header Files\models\curves\segment">
       <UniqueIdentifier>{a51ddd7e-5b88-402a-8c4d-3c984a94bc84}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\models\surfaces">
+      <UniqueIdentifier>{10bf8110-685b-41f8-b335-864f796c5f3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\models\surfaces">
+      <UniqueIdentifier>{3414d008-769c-4e90-9bdb-6f35b8994380}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -219,6 +225,15 @@
     <ClCompile Include="interpolatedC2_curve.cpp">
       <Filter>Source Files\models\curves</Filter>
     </ClCompile>
+    <ClCompile Include="bezierPatch.cpp">
+      <Filter>Source Files\models\surfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="bezierSurface.cpp">
+      <Filter>Source Files\models\surfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="shader_bezier_patch.cpp">
+      <Filter>Source Files\shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="modelclass.h">
@@ -350,6 +365,15 @@
     <ClInclude Include="interpolatedC2_curve.h">
       <Filter>Header Files\models\curves</Filter>
     </ClInclude>
+    <ClInclude Include="bezierPatch.h">
+      <Filter>Header Files\models\surfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="bezierSurface.h">
+      <Filter>Header Files\models\surfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_bezier_patch.h">
+      <Filter>Header Files\shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ribbon1.mfcribbon-ms">
@@ -371,6 +395,9 @@
       <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="resources\shaders\SimplePoint.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\BezierPatch.hlsl">
       <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>

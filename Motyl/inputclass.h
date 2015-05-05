@@ -14,6 +14,8 @@ enum ModelType{
 	BezierType,
 	BezierC2Type,
 	InterpolatedC2Type,
+	BezierPatchType,
+	BezierSurfaceType,
 	Undecided
 };
 
@@ -69,8 +71,11 @@ public:
 	bool IsMouseButtonDown();
 	POINT GetMousePosition();
 	int GetSelectedModel();
-	
+	int GetVerticalSpaces();
+	int GetHorizontalSpaces();
 	void SetSelectedModel(int id);
+	void SetVerticalSpaces(int verticalSpaces);
+	void SetHorizontalSpaces(int horizontalSpaces);
 
 private:
 	POINT m_MousePosition;
@@ -83,4 +88,6 @@ private:
 	int m_selectedTreeViewItem;
 	int m_previousSelectedTreeViewItem;
 	bool change = false;
+	int m_verticalSpaces = 4;
+	int m_horizontalSpaces = 4;
 };

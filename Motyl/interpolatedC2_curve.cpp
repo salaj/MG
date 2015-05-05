@@ -77,8 +77,12 @@ void InterpolatedC2Curve::createBaseFunctionsMatrix()
 		T[i + 1] = (double)i;
 	T[m + n] = (double)(m + 1);
 
-	//double T[8] = { 0, 0, 1, 2, 3, 4, 5, 5 };
+	////double* T = new double[m + n + 1];
+	////for (int i = 0; i < m + n + 1; i++)
+	////	T[i] = (double)i;
 
+	//double T[8] = { 0, 0, 2, 3, 4, 5, 7, 7 };
+	 
 	double tao = 2.0f;
 	double step = (m - n) / (double)(m - 1);
 
@@ -98,6 +102,7 @@ void InterpolatedC2Curve::createBaseFunctionsMatrix()
 	steps[0] = tao;
 	steps[m - 1] = tao + (m - n);
 	double dif = steps[m - 1] - steps[0];
+
 	for (int i = 1; i < m_interpolants.size(); i++)
 	{
 		XMFLOAT3 pos1 = m_interpolants[i - 1]->GetPosition3();
@@ -118,8 +123,9 @@ void InterpolatedC2Curve::createBaseFunctionsMatrix()
 			float deBoorValue = calculateSingleDeBoor(n, j, tao, T, m + n + 1);
 			matrix[i][j] = deBoorValue;
 		}
-		//tao += step;
-		tao = steps[i + 1];
+		tao += step;
+		//tao = steps[i + 1];
+		//tao++;
 	}
 
 	for (int i = 0; i < rows - 1; i++)

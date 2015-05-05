@@ -30,6 +30,7 @@ class SceneHelper
 		void CheckMouse();
 		//void CheckSelectedByTreeView();
 		void IsBaseChanged();
+		void RefreshSpaces();
 
 		//for modelmanager class
 		map<int, ModelClass*>& GetModels();

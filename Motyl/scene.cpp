@@ -82,6 +82,8 @@ bool Scene::LoadContent()
 	m_shaders.push_back(m_shader_simple_point);
 	m_shader_cursor = new CursorShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 	m_shaders.push_back(m_shader_cursor);
+	m_shader_bezier_patch = new BezierPatchShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	m_shaders.push_back(m_shader_bezier_patch);
 
 	Service service;
 	service.Context = m_context;
@@ -89,13 +91,14 @@ bool Scene::LoadContent()
 	service.Device = m_device;
 	service.Mouse = m_mouse;
 	service.InputClass = m_input_class;
-	service.Shader = new ShaderBase*[5]
+	service.Shader = new ShaderBase*[6]
 	{
 		m_shader_torus,
 		m_shader_elipsoid,
 		m_shader_simple_point,
 		m_shader_cursor,
-		m_shader_bezier_curve
+		m_shader_bezier_curve,
+		m_shader_bezier_patch
 	};
 	m_sceneHelper.Initialize(service, m_GUIUpdater);
 	m_sceneHelper.CreateModels();
@@ -176,6 +179,7 @@ void Scene::Update(float dt)
 	m_sceneHelper.CheckMouse();
 	m_sceneHelper.CheckInput();
 	m_sceneHelper.IsBaseChanged();
+	m_sceneHelper.RefreshSpaces();
 	//m_sceneHelper.CheckSelectedByTreeView();
 }
 

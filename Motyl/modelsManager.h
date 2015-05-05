@@ -12,6 +12,8 @@
 #include "cursor.h"
 #include "bezier_curve.h"
 #include "bezierC2_curve.h"
+#include "bezierPatch.h"
+#include "bezierSurface.h"
 #include "interpolatedC2_curve.h"
 #include "shader_torus.h"
 #include "shader_elipsoid.h"
@@ -35,10 +37,12 @@ public:
 	map<int, ModelClass*>& GetModels();
 	vector<ModelClass*>& GetActiveModels();
 	vector<BezierCurve*>& GetBezierCurves();
+	vector<BezierSurface*>& GetBezierSurfaces();
 	void CreateModels();
 	void SetActiveModels(vector<int>&);
 	void AddActiveModel(int);
 	void AddBezierCurve(BezierCurve*);
+	void AddBezierSurface(BezierSurface*);
 	void RemoveActiveModel(int);
 	void RemoveBezierCurve(int);
 	void InitializeModels();
@@ -58,8 +62,10 @@ private:
 	map<int, ModelClass*> m_models;
 	map<int, ModelClass*> m_active_models;
 	map<int, BezierCurve*> m_bezier_curves;
+	map<int, BezierSurface*> m_bezier_surfaces;
 	Service m_service;
 
 	void createFakeC2Curve();
 	void createFakeInterpolatedC2Curve();
+	void createFakeSurfaceC0();
 };

@@ -130,6 +130,26 @@ POINT InputClass::GetMousePosition()
 	return m_MousePosition;
 }
 
+void InputClass::SetVerticalSpaces(int verticalSpaces)
+{
+		m_verticalSpaces = verticalSpaces;
+}
+
+void InputClass::SetHorizontalSpaces(int horizontalSpaces)
+{
+	m_horizontalSpaces = horizontalSpaces;
+}
+
+int InputClass::GetVerticalSpaces()
+{
+	return m_verticalSpaces;
+}
+
+int InputClass::GetHorizontalSpaces()
+{
+	return m_horizontalSpaces;
+}
+
 void InputClass::SetSelectedModel(int id)
 {
 	m_selectedTreeViewItem = id;

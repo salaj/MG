@@ -181,6 +181,21 @@ void SceneHelper::translatePostActions(vector<ModelClass*>& models)
 			}
 		}
 	}
+
+
+	vector<BezierSurface*> bezierSurfaces = m_modelsManager.GetBezierSurfaces();
+	for (int i = 0; i < bezierSurfaces.size(); i++)
+	{
+		for (int j = 0; j < models.size(); j++)
+		{
+			if (models[j]->m_Type == ModelType::SimplePointType)
+			{
+				models[j]->Scale(1 / scaleFactor);
+				bezierSurfaces[i]->UpdateNode(dynamic_cast<SimplePoint*>(models[j]));
+				models[j]->Scale(scaleFactor);
+			}
+		}
+	}
 }
 
 void SceneHelper::scaleModels(vector<ModelClass*>& models, float scale)
@@ -473,6 +488,30 @@ void SceneHelper::redrawCurves()
 		if (curves[i]->m_Type == ModelType::BezierC2Type)
 		{
 			curves[i]->Reset();
+		}
+	}
+}
+
+void SceneHelper::RefreshSpaces()
+{
+	int verticalSpaces = m_InputClass->GetVerticalSpaces();
+	int horizontalSpaces = m_InputClass->GetHorizontalSpaces();
+	map<int, ModelClass*> models = m_modelsManager.GetModels();
+	for (map<int, ModelClass*> ::iterator it = models.begin(); it != models.end(); it++)
+	{
+		if ((*it).second->m_Type == ModelType::BezierPatchType)
+		{
+			BezierPatch* bezierPatch = dynamic_cast<BezierPatch*>((*it).second);
+			if (bezierPatch->verticalSpaces != verticalSpaces)
+			{
+				bezierPatch->verticalSpaces = verticalSpaces;
+				bezierPatch->Reset();
+			}
+			if (bezierPatch->horizontalSpaces != horizontalSpaces)
+			{
+				bezierPatch->horizontalSpaces = horizontalSpaces;
+				bezierPatch->Reset();
+			}
 		}
 	}
 }

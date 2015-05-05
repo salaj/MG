@@ -42,11 +42,16 @@ namespace Win
         bool isTreeViewItemDragged() const { return tvItemDragged; };
 		HTREEITEM getSelected();
 		HTREEITEM insertItem(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
+		int findIdOfGenuine(const wchar_t* str);
 		//request to remove all copy items with given id
 		void removeItem(HTREEITEM item);
 		void OnSelectedChanged();
+		void ReconstructSurface(HTREEITEM surface);
 
 		void SetEngineNotifier(EngineNotifier*);
+		int m_rows, m_cols;
+		int m_surfaceWidth, m_surfaceHeight;
+		bool isSurfacePlane = true;
     private:
         // member functions
         void moveTreeViewItem(TreeView* tv, HTREEITEM dragged, HTREEITEM target);
@@ -79,8 +84,9 @@ namespace Win
 		static int counter;
 		
 		//HTREEITEM treeItems[100];
-		vector<TreeItem> allItems[100];
+		vector<TreeItem> allItems[3000];
 		EngineNotifier* m_engineNotifier;
+
     };
 }
 
