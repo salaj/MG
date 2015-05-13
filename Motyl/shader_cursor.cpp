@@ -1,46 +1,46 @@
-#include "shader_bspline_patch.h"
+#include "shader_cursor.h"
 
 using namespace gk2;
 
 #define RESOURCES_PATH L"resources/"
-const std::wstring BSplinePatchShader::ShaderFile = RESOURCES_PATH L"shaders/BSplinePatch.hlsl";
+const std::wstring CursorShader::ShaderFile = RESOURCES_PATH L"shaders/Cursor.hlsl";
 
 
-void* BSplinePatchShader::operator new(size_t size)
+void* CursorShader::operator new(size_t size)
 {
 	return Utils::New16Aligned(size);
 }
 
-void BSplinePatchShader::operator delete(void* ptr)
+void CursorShader::operator delete(void* ptr)
 {
 	Utils::Delete16Aligned(ptr);
 }
 
-BSplinePatchShader::BSplinePatchShader(std::shared_ptr<ID3D11DeviceContext> context,
+CursorShader::CursorShader(std::shared_ptr<ID3D11DeviceContext> context,
 	gk2::DeviceHelper device,
 	D3D11_PRIMITIVE_TOPOLOGY topology) : ShaderBase(context, device, topology)
 {
 }
 
-BSplinePatchShader::~BSplinePatchShader()
+CursorShader::~CursorShader()
 {
 }
 
-BSplinePatchShader::BSplinePatchShader()
+CursorShader::CursorShader()
 {
 }
 
-BSplinePatchShader::BSplinePatchShader(const BSplinePatchShader&)
+CursorShader::CursorShader(const CursorShader&)
 {
 }
 
-std::shared_ptr<ID3D11Buffer>& BSplinePatchShader::GetCBColor()
+std::shared_ptr<ID3D11Buffer>& CursorShader::GetCBColor()
 {
 	return m_color;
 }
 
 
-void BSplinePatchShader::InitializeConstantBuffers()
+void CursorShader::InitializeConstantBuffers()
 {
 	D3D11_BUFFER_DESC desc;
 	ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
@@ -61,20 +61,16 @@ void BSplinePatchShader::InitializeConstantBuffers()
 }
 
 
-void BSplinePatchShader::InitializeShaders()
+void CursorShader::InitializeShaders()
 {
 	std::shared_ptr<ID3DBlob> vsByteCode = m_device.CompileD3DShader(ShaderFile, "VS_Main", "vs_4_0");
 	std::shared_ptr<ID3DBlob> psByteCode = m_device.CompileD3DShader(ShaderFile, "PS_Main", "ps_4_0");
 	m_vertexShader = m_device.CreateVertexShader(vsByteCode);
 	m_pixelShader = m_device.CreatePixelShader(psByteCode);
-	m_inputLayout = m_device.CreateInputLayout<VertexPos>(vsByteCode);
-
-	m_vertexShaderContour = m_device.CreateVertexShader(vsByteCode);
-	m_pixelShaderContour = m_device.CreatePixelShader(psByteCode);
-	m_inputLayoutContour = m_device.CreateInputLayout<VertexPos>(vsByteCode);
+	m_inputLayout = m_device.CreateInputLayout<VertexPosNormal>(vsByteCode);
 }
 
-void BSplinePatchShader::SetConstantBuffers()
+void CursorShader::SetConstantBuffers()
 {
 	ID3D11Buffer* vsb[] = { m_cbWorld.get(), m_cbView.get(), m_cbProj.get()};
 	m_context->VSSetConstantBuffers(0, 3, vsb);

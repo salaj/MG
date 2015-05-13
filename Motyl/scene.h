@@ -12,6 +12,7 @@
 #include "shader_cursor.h"
 #include "shader_bezier_curve.h"
 #include "shader_bezier_patch.h"
+#include "shader_bspline_patch.h"
 #include "torus.h"
 #include "elipsoid.h"
 
@@ -113,6 +114,7 @@ namespace gk2
 		CursorShader* m_shader_cursor;
 		BezierCurveShader* m_shader_bezier_curve;
 		BezierPatchShader* m_shader_bezier_patch;
+		BSplinePatchShader* m_shader_bspline_patch;
 
 		vector<ShaderBase*> m_shaders;
 

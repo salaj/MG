@@ -107,12 +107,11 @@ private:
 
 	const float diametryE = 1.f;
 
-	XMMATRIX* CreateXAxisRotationMatrix(float angle);
-	XMMATRIX* CreateYAxisRotationMatrix(float angle);
-	XMMATRIX* CreateZAxisRotationMatrix(float angle);
+	XMMATRIX CreateXAxisRotationMatrix(float angle);
+	XMMATRIX CreateYAxisRotationMatrix(float angle);
+	XMMATRIX CreateZAxisRotationMatrix(float angle);
 	XMMATRIX* CreateTranslationMatrix(XMFLOAT4 offset);
 	XMMATRIX* CreateScaleMatrix(float s);
-	void updatePosition(XMMATRIX* transform);
 
 	XMFLOAT4 m_position;
 };

@@ -45,28 +45,17 @@ void EngineNotifier::OnBezierPatchAdded()
 
 void EngineNotifier::OnBezierSurfaceAdded()
 {
-	//int numberOfRows, numberOfColumns;
-	//numberOfRows = 2;
-	//numberOfColumns = 3;
-	//int numberOfPatches = numberOfRows * numberOfColumns;
-	//int numberOfControlPoints = numberOfPatches * 16 - (
-	//	numberOfRows * (numberOfColumns - 1) * 4 +
-	//	numberOfColumns * (numberOfRows - 1) * 4);
-	//vector<BezierPatch*> bezierPatches;
-	//vector<SimplePoint*> controlPoints;
-	//for (int i = 0; i < numberOfControlPoints; i++)
-	//{
-	//	ModelClass* model = m_ModelsManager->AddModel(ModelType::SimplePointType);
-	//	controlPoints.push_back(dynamic_cast<SimplePoint*>(model));
-	//}
-	//for (int i = 0; i < numberOfPatches; i++)
-	//{
-	//	ModelClass* model = m_ModelsManager->AddModel(ModelType::BezierPatchType);
-	//	bezierPatches.push_back(dynamic_cast<BezierPatch*>(model));
-	//}
-	ModelClass* model = m_ModelsManager->AddModel(ModelType::BezierSurfaceType);
+	m_ModelsManager->AddModel(ModelType::BezierSurfaceType);
+}
 
-	BezierSurface* bezierSurface = dynamic_cast<BezierSurface*>(model);
+void EngineNotifier::OnBSplinePatchAdded()
+{
+	m_ModelsManager->AddModel(ModelType::BSplinePatchType);
+}
+
+void EngineNotifier::OnBSplineSurfaceAdded()
+{
+	m_ModelsManager->AddModel(ModelType::BSplineSurfaceType);
 }
 
 void EngineNotifier::SetActiveModels(vector<int>& activeModels)
@@ -128,13 +117,28 @@ void EngineNotifier::SetPatchPoints(int surfaceId, int patchId, vector<int>& ids
 	bezierSurface->AddPatch(bezierPatch);
 }
 
-void EngineNotifier::SetDimensions(int surfaceId, int rows, int cols, int surfaceWidth, int surfaceHeigth)
+void EngineNotifier::SetBSplinePatchPoints(int surfaceId, int patchId, vector<int>& ids)
+{
+	if (ids.size() == 0)
+		return;
+	BSplineSurface* bsplineSurface = dynamic_cast<BSplineSurface*>(m_ModelsManager->GetModelById(surfaceId));
+	BSplinePatch* bsplinePatch = dynamic_cast<BSplinePatch*>(m_ModelsManager->GetModelById(patchId));
+	vector<ModelClass*> simplePoints = vector<ModelClass*>();
+	for (int i = 0; i < ids.size(); i++)
+	{
+		simplePoints.push_back(m_ModelsManager->GetModelById(ids[i]));
+	}
+	bsplinePatch->SetNodes(simplePoints);
+	bsplineSurface->AddPatch(bsplinePatch);
+}
+
+void EngineNotifier::SetDimensionsForBezierSurface(int surfaceId, int rows, int cols, int surfaceWidth, int surfaceHeigth)
 {
 	BezierSurface* bezierSurface = dynamic_cast<BezierSurface*>(m_ModelsManager->GetModelById(surfaceId));
 	bezierSurface->SetDimensions(rows, cols, surfaceWidth, surfaceHeigth);
 }
 
-void EngineNotifier::TranslateSurfacePoints(int surfaceId, bool isSurfacePlane)
+void EngineNotifier::TranslateBezierSurfacePoints(int surfaceId, bool isSurfacePlane)
 {
 	BezierSurface* bezierSurface = dynamic_cast<BezierSurface*>(m_ModelsManager->GetModelById(surfaceId));
 	if (isSurfacePlane)
@@ -143,22 +147,20 @@ void EngineNotifier::TranslateSurfacePoints(int surfaceId, bool isSurfacePlane)
 		bezierSurface->TranslateCyllinderPoints();
 }
 
+void EngineNotifier::SetDimensionsForBSplineSurface(int surfaceId, int rows, int cols, int surfaceWidth, int surfaceHeigth)
+{
+	BSplineSurface* bsplineSurface = dynamic_cast<BSplineSurface*>(m_ModelsManager->GetModelById(surfaceId));
+	bsplineSurface->SetDimensions(rows, cols, surfaceWidth, surfaceHeigth);
+}
 
-//
-//template<typename T>
-//void EngineNotifier::SetPoints(int, vector<int>&)
-//{
-//	if (ids.size() == 0)
-//		return;
-//	T* curve = dynamic_cast<T*>(m_ModelsManager->GetModelById(curveId));
-//	vector<ModelClass*> simplePoints = vector<ModelClass*>();
-//	for (int i = 0; i < ids.size(); i++)
-//	{
-//		simplePoints.push_back(m_ModelsManager->GetModelById(ids[i]));
-//	}
-//	curve->SetNodes(simplePoints);
-//}
-
+void EngineNotifier::TranslateBSplineSurfacePoints(int surfaceId, bool isSurfacePlane)
+{
+	BSplineSurface* bsplineSurface = dynamic_cast<BSplineSurface*>(m_ModelsManager->GetModelById(surfaceId));
+	if (isSurfacePlane)
+		bsplineSurface->TranslateSurfacePoints();
+	else
+		bsplineSurface->TranslateCyllinderPoints();
+}
 void EngineNotifier::RemoveModel(int id)
 {
 	m_ModelsManager->RemoveModel(id);

@@ -196,6 +196,20 @@ void SceneHelper::translatePostActions(vector<ModelClass*>& models)
 			}
 		}
 	}
+
+	vector<BSplineSurface*> bsplineSurfaces = m_modelsManager.GetBSplineSurfaces();
+	for (int i = 0; i < bsplineSurfaces.size(); i++)
+	{
+		for (int j = 0; j < models.size(); j++)
+		{
+			if (models[j]->m_Type == ModelType::SimplePointType)
+			{
+				models[j]->Scale(1 / scaleFactor);
+				bsplineSurfaces[i]->UpdateNode(dynamic_cast<SimplePoint*>(models[j]));
+				models[j]->Scale(scaleFactor);
+			}
+		}
+	}
 }
 
 void SceneHelper::scaleModels(vector<ModelClass*>& models, float scale)
@@ -511,6 +525,20 @@ void SceneHelper::RefreshSpaces()
 			{
 				bezierPatch->horizontalSpaces = horizontalSpaces;
 				bezierPatch->Reset();
+			}
+		}
+		else if ((*it).second->m_Type == ModelType::BSplinePatchType)
+		{
+			BSplinePatch* bsplinePatch = dynamic_cast<BSplinePatch*>((*it).second);
+			if (bsplinePatch->verticalSpaces != verticalSpaces)
+			{
+				bsplinePatch->verticalSpaces = verticalSpaces;
+				bsplinePatch->Reset();
+			}
+			if (bsplinePatch->horizontalSpaces != horizontalSpaces)
+			{
+				bsplinePatch->horizontalSpaces = horizontalSpaces;
+				bsplinePatch->Reset();
 			}
 		}
 	}

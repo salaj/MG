@@ -1,46 +1,46 @@
-#include "shader_bspline_patch.h"
+#include "shader_bezier_patch.h"
 
 using namespace gk2;
 
 #define RESOURCES_PATH L"resources/"
-const std::wstring BSplinePatchShader::ShaderFile = RESOURCES_PATH L"shaders/BSplinePatch.hlsl";
+const std::wstring BezierPatchShader::ShaderFile = RESOURCES_PATH L"shaders/BezierPatch.hlsl";
 
 
-void* BSplinePatchShader::operator new(size_t size)
+void* BezierPatchShader::operator new(size_t size)
 {
 	return Utils::New16Aligned(size);
 }
 
-void BSplinePatchShader::operator delete(void* ptr)
+void BezierPatchShader::operator delete(void* ptr)
 {
 	Utils::Delete16Aligned(ptr);
 }
 
-BSplinePatchShader::BSplinePatchShader(std::shared_ptr<ID3D11DeviceContext> context,
+BezierPatchShader::BezierPatchShader(std::shared_ptr<ID3D11DeviceContext> context,
 	gk2::DeviceHelper device,
 	D3D11_PRIMITIVE_TOPOLOGY topology) : ShaderBase(context, device, topology)
 {
 }
 
-BSplinePatchShader::~BSplinePatchShader()
+BezierPatchShader::~BezierPatchShader()
 {
 }
 
-BSplinePatchShader::BSplinePatchShader()
+BezierPatchShader::BezierPatchShader()
 {
 }
 
-BSplinePatchShader::BSplinePatchShader(const BSplinePatchShader&)
+BezierPatchShader::BezierPatchShader(const BezierPatchShader&)
 {
 }
 
-std::shared_ptr<ID3D11Buffer>& BSplinePatchShader::GetCBColor()
+std::shared_ptr<ID3D11Buffer>& BezierPatchShader::GetCBColor()
 {
 	return m_color;
 }
 
 
-void BSplinePatchShader::InitializeConstantBuffers()
+void BezierPatchShader::InitializeConstantBuffers()
 {
 	D3D11_BUFFER_DESC desc;
 	ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
@@ -61,7 +61,7 @@ void BSplinePatchShader::InitializeConstantBuffers()
 }
 
 
-void BSplinePatchShader::InitializeShaders()
+void BezierPatchShader::InitializeShaders()
 {
 	std::shared_ptr<ID3DBlob> vsByteCode = m_device.CompileD3DShader(ShaderFile, "VS_Main", "vs_4_0");
 	std::shared_ptr<ID3DBlob> psByteCode = m_device.CompileD3DShader(ShaderFile, "PS_Main", "ps_4_0");
@@ -74,7 +74,15 @@ void BSplinePatchShader::InitializeShaders()
 	m_inputLayoutContour = m_device.CreateInputLayout<VertexPos>(vsByteCode);
 }
 
-void BSplinePatchShader::SetConstantBuffers()
+//void TorusShader::SetShaders()
+//{
+//	m_context->IASetInputLayout(m_inputLayout.get());
+//	m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+//	m_context->VSSetShader(m_vertexShader.get(), 0, 0);
+//	m_context->PSSetShader(m_pixelShader.get(), 0, 0);
+//}
+
+void BezierPatchShader::SetConstantBuffers()
 {
 	ID3D11Buffer* vsb[] = { m_cbWorld.get(), m_cbView.get(), m_cbProj.get()};
 	m_context->VSSetConstantBuffers(0, 3, vsb);

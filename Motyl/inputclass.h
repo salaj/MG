@@ -16,6 +16,8 @@ enum ModelType{
 	InterpolatedC2Type,
 	BezierPatchType,
 	BezierSurfaceType,
+	BSplinePatchType,
+	BSplineSurfaceType,
 	Undecided
 };
 

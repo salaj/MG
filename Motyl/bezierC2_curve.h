@@ -44,7 +44,7 @@ public:
 	static CurveBase m_base;
 
 protected:
-	float calculateSingleDeBoor(int n, int i, double t, double* knots, int maxI);
+	static float calculateSingleDeBoor(int n, int i, double t, double* knots, int maxI);
 	vector<ModelClass*> m_deBoor;
 private:
 	double bezier_length();

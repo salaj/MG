@@ -18,6 +18,8 @@ namespace gk2
 		static const std::wstring BezierC2Interpolated;
 		static const std::wstring BezierPatch;
 		static const std::wstring BezierSurface;
+		static const std::wstring BSplinePatch;
+		static const std::wstring BSplineSurface;
 
 
 		static const std::wstring BernsteinBase;
@@ -33,6 +35,8 @@ namespace gk2
 		static int C2InterpolatedCounter;
 		static int BezierSurfaceCounter;
 		static int BezierPatchCounter;
+		static int BSplineSurfaceCounter;
+		static int BSplinePatchCounter;
 
 
 		HTREEITEM AddNewModelToTreeView(wchar_t*, HWND handle = 0);

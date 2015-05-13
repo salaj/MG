@@ -91,6 +91,18 @@
     <Filter Include="Header Files\models\surfaces">
       <UniqueIdentifier>{3414d008-769c-4e90-9bdb-6f35b8994380}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\shaders\curves">
+      <UniqueIdentifier>{63474c67-1821-487b-906f-be4e8f8d16e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\shaders\surfaces">
+      <UniqueIdentifier>{e17e7a70-4ac1-441c-b595-cc37723e2ade}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\shaders\curves">
+      <UniqueIdentifier>{3bf5cc52-1c61-4ca1-8b05-4a3622b75840}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\shaders\surfaces">
+      <UniqueIdentifier>{9211bdfe-e6e8-414d-904e-4ff84fb3854e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -195,9 +207,6 @@
     <ClCompile Include="guiUpdater.cpp">
       <Filter>Source Files\controls</Filter>
     </ClCompile>
-    <ClCompile Include="shader_bezier_curve.cpp">
-      <Filter>Source Files\shaders</Filter>
-    </ClCompile>
     <ClCompile Include="settingsHelper.cpp">
       <Filter>Source Files\helpers</Filter>
     </ClCompile>
@@ -231,8 +240,20 @@
     <ClCompile Include="bezierSurface.cpp">
       <Filter>Source Files\models\surfaces</Filter>
     </ClCompile>
+    <ClCompile Include="bsplinePatch.cpp">
+      <Filter>Source Files\models\surfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="shader_bezier_curve.cpp">
+      <Filter>Source Files\shaders\curves</Filter>
+    </ClCompile>
     <ClCompile Include="shader_bezier_patch.cpp">
-      <Filter>Source Files\shaders</Filter>
+      <Filter>Source Files\shaders\surfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="shader_bspline_patch.cpp">
+      <Filter>Source Files\shaders\surfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="bsplineSurface.cpp">
+      <Filter>Source Files\models\surfaces</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -335,9 +356,6 @@
     <ClInclude Include="guiUpdater.h">
       <Filter>Header Files\controls</Filter>
     </ClInclude>
-    <ClInclude Include="shader_bezier_curve.h">
-      <Filter>Header Files\shaders</Filter>
-    </ClInclude>
     <ClInclude Include="settingsHelper.h">
       <Filter>Header Files\helpers</Filter>
     </ClInclude>
@@ -371,8 +389,20 @@
     <ClInclude Include="bezierSurface.h">
       <Filter>Header Files\models\surfaces</Filter>
     </ClInclude>
+    <ClInclude Include="bsplinePatch.h">
+      <Filter>Header Files\models\surfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_bezier_curve.h">
+      <Filter>Header Files\shaders\curves</Filter>
+    </ClInclude>
     <ClInclude Include="shader_bezier_patch.h">
-      <Filter>Header Files\shaders</Filter>
+      <Filter>Header Files\shaders\surfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_bspline_patch.h">
+      <Filter>Header Files\shaders\surfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="bsplineSurface.h">
+      <Filter>Header Files\models\surfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -416,5 +446,10 @@
     <Image Include="toolbar1.bmp">
       <Filter>Resource Files\images</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="resources\shaders\BSplinePatch.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

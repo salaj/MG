@@ -159,34 +159,10 @@ XMFLOAT4 ModelClass::GetRelativeScaleVector(ModelClass* first, ModelClass*second
 		);
 }
 
-void ModelClass::updatePosition(XMMATRIX* transform)
-{
-	//XMMATRIX old_transform = XMMATRIX(*transform);
-	////potrzebna jest translacja i mno¿ymy pozycjê razy wektor
-	//XMMATRIX old_position = {
-	//	m_position.x, m_position.y, m_position.z, m_position.w,
-	//	0, 0, 0, 0,
-	//	0, 0, 0, 0,
-	//	0, 0, 0, 0,
-	//};
-	//XMMATRIX new_position = old_position * old_transform;
-	//m_position.x = new_position._11;
-	//m_position.y = new_position._12;
-	//m_position.z = new_position._13;
-	//m_position.w = new_position._14;
 
-	//XMFLOAT3 float3 = XMFLOAT3(m_position.x,
-	//	m_position.y,
-	//	m_position.z);
-	//XMVECTOR pos = XMVector3Transform(XMLoadFloat3(&float3), *transform);
-	//m_position.x = XMVectorGetX(pos);
-	//m_position.x = XMVectorGetY(pos);
-	//m_position.x = XMVectorGetZ(pos);
-}
-
-XMMATRIX* ModelClass :: CreateXAxisRotationMatrix(float angle)
+XMMATRIX ModelClass :: CreateXAxisRotationMatrix(float angle)
 {
-	return new XMMATRIX(
+	return XMMATRIX(
 		1, 0, 0, 0,
 		0, cosf(angle), -sinf(angle), 0,
 		0, sinf(angle), cosf(angle), 0,
@@ -194,19 +170,19 @@ XMMATRIX* ModelClass :: CreateXAxisRotationMatrix(float angle)
 		);
 }
 
-XMMATRIX* ModelClass :: CreateYAxisRotationMatrix(float angle)
+XMMATRIX ModelClass :: CreateYAxisRotationMatrix(float angle)
 {
-	return new XMMATRIX(
-		cosf(angle), 0, sinf(angle), 0,
+	return XMMATRIX(
+		cosf(angle), 0, -sinf(angle), 0,
 		0, 1, 0, 0,
-		-sinf(angle), 0, cosf(angle), 0,
+		sinf(angle), 0, cosf(angle), 0,
 		0, 0, 0, 1
 		);
 }
 
-XMMATRIX* ModelClass :: CreateZAxisRotationMatrix(float angle)
+XMMATRIX ModelClass :: CreateZAxisRotationMatrix(float angle)
 {
-	return new XMMATRIX(
+	return XMMATRIX(
 		cosf(angle), -sinf(angle), 0, 0,
 		sinf(angle), cosf(angle), 0, 0,
 		0, 0, 1, 0,
@@ -264,34 +240,29 @@ XMMATRIX ModelClass::createStereoscopicProjMatrixRight()
 void ModelClass::Scale(float scale)
 {
 	XMMATRIX* scaleMatrix = CreateScaleMatrix(scale);
-	updatePosition(scaleMatrix);
 	m_modelMatrix = XMMatrixMultiply(*scaleMatrix, m_modelMatrix);
 }
 
 void ModelClass::Translate(XMFLOAT4& delta)
 {
 	XMMATRIX* translate = CreateTranslationMatrix(delta);
-	updatePosition(translate);
 	m_modelMatrix = XMMatrixMultiply(*translate, m_modelMatrix);
 }
 
-void ModelClass :: RotateX(double rotation)
+void ModelClass::RotateX(double rotation)
 {
-	XMMATRIX* rotationMatrix = CreateXAxisRotationMatrix(rotation);
-	updatePosition(rotationMatrix);
-	m_modelMatrix = XMMatrixMultiply(*rotationMatrix, m_modelMatrix);
+	XMMATRIX rotationMatrix = CreateXAxisRotationMatrix(rotation);
+	m_modelMatrix = m_modelMatrix * rotationMatrix;
 }
 void ModelClass::RotateY(double rotation)
 {
-	XMMATRIX* rotationMatrix = CreateYAxisRotationMatrix(rotation);
-	updatePosition(rotationMatrix);
-	m_modelMatrix = XMMatrixMultiply(*rotationMatrix, m_modelMatrix);
+	XMMATRIX rotationMatrix = CreateYAxisRotationMatrix(rotation);
+	m_modelMatrix = m_modelMatrix * rotationMatrix;
 }
 void ModelClass::RotateZ(double rotation)
 {
-	XMMATRIX* rotationMatrix = CreateZAxisRotationMatrix(rotation);
-	updatePosition(rotationMatrix);
-	m_modelMatrix = XMMatrixMultiply(*rotationMatrix, m_modelMatrix);
+	XMMATRIX rotationMatrix = CreateZAxisRotationMatrix(rotation);
+	m_modelMatrix = m_modelMatrix * rotationMatrix;
 }
 
 int ModelClass::GetIndexCount()
