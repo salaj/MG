@@ -443,10 +443,45 @@ void View::removeItem(HTREEITEM item)
 	}
 	else if (treeItem.type == ItemType::ItemPatch || treeItem.type == ItemType::ItemTorus || treeItem.type == ItemType::ItemBSplinePatch)
 	{
+		
+		vector<HTREEITEM>selectedItems;
+		vector<wstring>texts;
+		addRecursivelyChildTreeItems(selectedItems, item);
+		for (int i = 0; i < selectedItems.size(); i++)
+		{
+			texts.push_back(GetTreeItemByHTREEITEM(selectedItems[i]).text);
+			removeItem(selectedItems[i]);
+		}
+		DestroyGenuinePoints(texts);
 		m_engineNotifier->RemoveModel(treeItem.id);
 		treeView.deleteItem(item);
 		int indexToRemove = GetIndexOfTreeItemInVector(treeItem);
 		allItems[treeItemId].erase(allItems[treeItemId].begin() + indexToRemove);
+	}
+}
+
+
+void View::DestroyGenuinePoints(vector<wstring>&selectedItems)
+{
+	HTREEITEM hRoot = TVI_ROOT;
+	HTREEITEM child = treeView.getChild(hRoot);
+	while (child != NULL)
+	{
+		TreeItem treeItem = GetTreeItemByHTREEITEM(child);
+		HTREEITEM toRemove = child;
+		child = treeView.getNext(child);
+		if (treeItem.type == ItemType::ItemPoint)
+		{
+			for (int i = 0; i < selectedItems.size(); i++)
+			{
+				if (selectedItems[i].compare(treeItem.text) == 0 && treeItem.origin == Origin::Genuine)
+				{
+					removeItem(toRemove);
+					break;
+				}
+			}
+		}
+
 	}
 }
 
@@ -651,8 +686,9 @@ void View::addRecursivelyChildTreeItems(vector<HTREEITEM>& selectedItems, HTREEI
 		int childId = FindIdByViewItem(child);
 		selectedItems.push_back(child);
 		child = treeView.getNext(child);
-		if (child != NULL)
-			addRecursivelyChildTreeItems(selectedItems, child);
+		//many level
+		//if (child != NULL)
+		//	addRecursivelyChildTreeItems(selectedItems, child);
 	}
 }
 

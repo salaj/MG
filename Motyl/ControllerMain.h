@@ -20,7 +20,8 @@ namespace Win
         int mouseMove(WPARAM state, int x, int y);
         int lButtonUp(WPARAM state, int x, int y);
 
-		HTREEITEM insertItem(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
+		HTREEITEM insertItemHierarchically(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
+		HTREEITEM insertItemFreely(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
 		void removeItem(int id);
 		int getSelectetTreeViewItem();
 		void SetEngineNotifier(EngineNotifier*);

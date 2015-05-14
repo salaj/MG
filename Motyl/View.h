@@ -64,6 +64,7 @@ namespace Win
 		int FindIdByViewItem(HTREEITEM);
 		TreeItem GetTreeItemByHTREEITEM(HTREEITEM);
 		int GetIndexOfTreeItemInVector(TreeItem);
+		void DestroyGenuinePoints(vector<wstring>&selectedItems);
 
         TreeView treeView;
         Button   buttonExit;

@@ -382,7 +382,7 @@ void Settings::CreateWindowHandle(int width, int height, const wstring& title, b
 		GetModuleHandle(NULL),
 		NULL);
 
-	value = 40;
+	value = 20;
 	TCHAR bufWidth[32];
 	swprintf(bufWidth, TEXT("%d"), value);
 	SetDlgItemText(m_hWnd, SURFACE_WIDTH, bufWidth);

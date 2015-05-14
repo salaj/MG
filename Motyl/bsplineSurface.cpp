@@ -57,11 +57,11 @@ void BSplineSurface::TranslateSurfacePoints()
 {
 	int i = 0;
 	int j = 0;
-	double X = m_sizeX / (m_cols + 3);
-	double Y = m_sizeY / (m_rows + 3);
+	double X = (double)m_sizeX / (m_cols + 2);
+	double Y = (double)m_sizeY / (m_rows + 2);
 	for (map<int, SimplePoint*> ::iterator it = m_nodes.begin(); it != m_nodes.end(); it++)
 	{
-		(*it).second->Translate(XMFLOAT4(j * X - (m_sizeX / 2.0f ) + X / 2.0f, i * Y - m_sizeY / 2.0f, 0, 1));
+		(*it).second->Translate(XMFLOAT4(j * X - (m_sizeX / 2.0f ), i * Y - (m_sizeY / 2.0f), 0, 1));
 		if (j < m_cols + 2)
 			j++;
 		else
@@ -79,8 +79,8 @@ void BSplineSurface::TranslateSurfacePoints()
 void BSplineSurface::TranslateCyllinderPoints()
 {
 	double r = m_sizeX;
-	double a = (double)1 / (m_cols * 3 - 1);
-	double Y = m_sizeY / (m_rows * 3);
+	double a = (double)1 / (m_cols);
+	double Y = (double)m_sizeY / (m_rows + 2);
 	int i = 0;
 	int j = 0;
 	for (map<int, SimplePoint*> ::iterator it = m_nodes.begin(); it != m_nodes.end(); it++)
@@ -88,11 +88,11 @@ void BSplineSurface::TranslateCyllinderPoints()
 		double x = r * cosf((double)j * a * XM_2PI);
 		(*it).second->Translate(
 			XMFLOAT4(
-			x - (r / 2.0f),
+			x,
 			i * Y - m_sizeY / 2.0f,
-			r * sinf((double)j * a * XM_2PI) - (r / 2.0f),
+			r * sinf((double)j * a * XM_2PI),
 			1));
-		if (j < m_cols * 3 - 1)
+		if (j < m_cols - 1)
 			j++;
 		else
 		{

@@ -332,6 +332,8 @@ void ModelsManager::RemoveModel(int id)
 	m_models.erase(id);
 	if (type == ModelType::BezierSurfaceType)
 		m_bezier_surfaces.erase(id);
+	if (type == ModelType::BSplineSurfaceType)
+		m_bspline_surfaces.erase(id);
 }
 
 vector<ModelClass*>& ModelsManager::GetActiveModels()

@@ -41,6 +41,7 @@ namespace gk2
 
 		HTREEITEM AddNewModelToTreeView(wchar_t*, HWND handle = 0);
 		HTREEITEM insertItemInternally(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
+		HTREEITEM insertItemFreely(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
 		//HTREEITEM insertItemExternally(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
 		void removeItem(int id);
 

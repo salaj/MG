@@ -154,15 +154,24 @@ void ControllerMain::SetEngineNotifier(EngineNotifier* engineNotifier)
 }
 
 
-HTREEITEM ControllerMain::insertItem(const wchar_t* str, ItemType type, HTREEITEM parent, HTREEITEM insertAfter, int imageIndex, int selectedImageIndex)
+HTREEITEM ControllerMain::insertItemHierarchically(const wchar_t* str, ItemType type, HTREEITEM parent, HTREEITEM insertAfter, int imageIndex, int selectedImageIndex)
 {
 	if ((type == ItemType::ItemPatch || type == ItemType::ItemBSplinePatch) || (type == ItemType::ItemPoint && parent != TVI_ROOT))
 		return view.insertItem(str, type, parent, TVI_LAST, 0, 1);
-	else if (type == ItemType::ItemPoint)
+	else if (type == ItemType::ItemPoint && parent == TVI_ROOT)
+		return view.insertItem(str, type, TVI_ROOT, TVI_LAST, 0, 1);
+	else
+		return view.insertItem(str, type, TVI_ROOT, TVI_LAST, 0, 1);
+}
+
+HTREEITEM ControllerMain::insertItemFreely(const wchar_t* str, ItemType type, HTREEITEM parent, HTREEITEM insertAfter, int imageIndex, int selectedImageIndex)
+{
+	if (type == ItemType::ItemPoint)
 		return view.insertItem(str, type, view.getSelected(), TVI_LAST, 0, 1);
 	else
 		return view.insertItem(str, type, TVI_ROOT, TVI_LAST, 0, 1);
 }
+
 void ControllerMain::ReconstructSurface(HTREEITEM surface)
 {
 	view.ReconstructSurface(surface);

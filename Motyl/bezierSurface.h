@@ -25,6 +25,6 @@ public:
 private:
 	vector<BezierPatch*> m_bezierPatches;
 	map<int, SimplePoint*> m_nodes;
-	int m_sizeX = 40, m_sizeY = 40;
+	int m_sizeX = 20, m_sizeY = 40;
 	int m_rows, m_cols;
 };
