@@ -7,7 +7,7 @@ CurveBase BezierC2Curve::m_base = CurveBase::Bezier;
 BezierC2Curve::BezierC2Curve(std::shared_ptr<ID3D11DeviceContext> deviceContext,
 	ShaderBase* shader_base,
 	gk2::DeviceHelper device,
-	gk2::Camera camera,
+	gk2::Camera& camera,
 	InputClass* input) : BezierCurve(deviceContext, shader_base, device, camera, input)
 {
 }

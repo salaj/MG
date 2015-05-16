@@ -14,7 +14,7 @@ int ModelClass::m_fakeCounter = 4096;
 
 ModelClass::ModelClass(std::shared_ptr<ID3D11DeviceContext> deviceContext,
 	ShaderBase* shader_base,
-	gk2::DeviceHelper device, gk2::Camera camera, InputClass* input)
+	gk2::DeviceHelper device, gk2::Camera& camera, InputClass* input)
 {
 	m_vertexBuffer = 0;
 	m_indexBuffer = 0;
@@ -173,9 +173,9 @@ XMMATRIX ModelClass :: CreateXAxisRotationMatrix(float angle)
 XMMATRIX ModelClass :: CreateYAxisRotationMatrix(float angle)
 {
 	return XMMATRIX(
-		cosf(angle), 0, -sinf(angle), 0,
+		cosf(angle), 0, sinf(angle), 0,
 		0, 1, 0, 0,
-		sinf(angle), 0, cosf(angle), 0,
+		-sinf(angle), 0, cosf(angle), 0,
 		0, 0, 0, 1
 		);
 }
@@ -190,9 +190,9 @@ XMMATRIX ModelClass :: CreateZAxisRotationMatrix(float angle)
 		);
 }
 
-XMMATRIX* ModelClass::CreateTranslationMatrix(XMFLOAT4 offset)
+XMMATRIX ModelClass::CreateTranslationMatrix(XMFLOAT4 offset)
 {
-	return new XMMATRIX(
+	return XMMATRIX(
 		1, 0, 0, 0,
 		0, 1, 0, 0,
 		0, 0, 1, 0,
@@ -201,9 +201,9 @@ XMMATRIX* ModelClass::CreateTranslationMatrix(XMFLOAT4 offset)
 		);
 }
 
-XMMATRIX* ModelClass::CreateScaleMatrix(float s)
+XMMATRIX ModelClass::CreateScaleMatrix(float s)
 {
-	return new XMMATRIX(
+	return XMMATRIX(
 		s, 0, 0, 0,
 		0, s, 0, 0,
 		0, 0, s, 0,
@@ -239,14 +239,32 @@ XMMATRIX ModelClass::createStereoscopicProjMatrixRight()
 
 void ModelClass::Scale(float scale)
 {
-	XMMATRIX* scaleMatrix = CreateScaleMatrix(scale);
-	m_modelMatrix = XMMatrixMultiply(*scaleMatrix, m_modelMatrix);
+	XMMATRIX scaleMatrix = CreateScaleMatrix(scale);
+	m_modelMatrix = scaleMatrix * m_modelMatrix;
+}
+
+void ModelClass::ScaleDown()
+{
+	if (!isScaledUp)
+		return;
+	isScaledUp = false;
+	XMMATRIX scaleMatrix = CreateScaleMatrix((float) 1.0f / scaleFactor );
+	m_modelMatrix = scaleMatrix * m_modelMatrix;
+}
+
+void ModelClass::ScaleUp()
+{
+	if (isScaledUp)
+		return;
+	isScaledUp = true;
+	XMMATRIX scaleMatrix = CreateScaleMatrix(scaleFactor);
+	m_modelMatrix = scaleMatrix * m_modelMatrix;
 }
 
 void ModelClass::Translate(XMFLOAT4& delta)
 {
-	XMMATRIX* translate = CreateTranslationMatrix(delta);
-	m_modelMatrix = XMMatrixMultiply(*translate, m_modelMatrix);
+	XMMATRIX translate = CreateTranslationMatrix(delta);
+	m_modelMatrix = m_modelMatrix * translate;
 }
 
 void ModelClass::RotateX(double rotation)

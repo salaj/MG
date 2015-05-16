@@ -19,7 +19,7 @@ public:
 	Cursor(std::shared_ptr<ID3D11DeviceContext>,
 		ShaderBase*,
 		gk2::DeviceHelper device,
-		gk2::Camera camera,
+		gk2::Camera& camera,
 		InputClass* input);
 	Cursor(const Cursor&);
 	Cursor(Service& servie);

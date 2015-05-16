@@ -13,6 +13,16 @@ Camera::Camera(float minDistance, float maxDistance, float distance )
 	SetRange(minDistance, maxDistance);
 }
 
+void* Camera::operator new(size_t size)
+{
+	return Utils::New16Aligned(size);
+}
+
+void Camera::operator delete(void* ptr)
+{
+	Utils::Delete16Aligned(ptr);
+}
+
 void Camera::ClampDistance()
 {
 	if (m_distance < m_minDistance)

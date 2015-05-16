@@ -14,7 +14,7 @@ double sum = 0;
 Torus::Torus(std::shared_ptr<ID3D11DeviceContext> deviceContext,
 	ShaderBase* shader_base,
 	gk2::DeviceHelper device,
-	gk2::Camera camera,
+	gk2::Camera& camera,
 	InputClass* input) : ModelClass(deviceContext, shader_base, device, camera, input)
 {
 	ModelClass::Initialize();

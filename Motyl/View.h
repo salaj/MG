@@ -50,7 +50,7 @@ namespace Win
 
 		void SetEngineNotifier(EngineNotifier*);
 		int m_rows, m_cols;
-		int m_surfaceWidth, m_surfaceHeight;
+		double m_surfaceWidth, m_surfaceHeight;
 		bool isSurfacePlane = true;
     private:
         // member functions

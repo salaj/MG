@@ -39,7 +39,7 @@ public:
 	ModelClass(std::shared_ptr<ID3D11DeviceContext>deviceContext,
 		ShaderBase* shaderBase,
 		DeviceHelper deviceHelper,
-		Camera camera,
+		Camera& camera,
 		InputClass* input);
 	ModelClass(const ModelClass&);
 	ModelClass(Service& service);
@@ -65,6 +65,8 @@ public:
 	void RotateZ(double);
 	void Translate(XMFLOAT4&);
 	void Scale(float);
+	void ScaleDown();
+	void ScaleUp();
 
 	XMFLOAT4 GetPosition();
 	XMFLOAT3 GetPosition3();
@@ -110,8 +112,11 @@ private:
 	XMMATRIX CreateXAxisRotationMatrix(float angle);
 	XMMATRIX CreateYAxisRotationMatrix(float angle);
 	XMMATRIX CreateZAxisRotationMatrix(float angle);
-	XMMATRIX* CreateTranslationMatrix(XMFLOAT4 offset);
-	XMMATRIX* CreateScaleMatrix(float s);
+	XMMATRIX CreateTranslationMatrix(XMFLOAT4 offset);
+	XMMATRIX CreateScaleMatrix(float s);
 
 	XMFLOAT4 m_position;
+
+	bool isScaledUp = false;
+	float scaleFactor = 2.0f;
 };

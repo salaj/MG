@@ -108,7 +108,7 @@ void BezierSurface::TranslateCyllinderPoints()
 }
 
 
-void BezierSurface::SetDimensions(int rows, int cols, int surfaceWidth, int surfaceHeigth)
+void BezierSurface::SetDimensions(int rows, int cols, double surfaceWidth, double surfaceHeigth)
 {
 	m_rows = rows;
 	m_cols = cols;

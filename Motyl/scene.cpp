@@ -167,6 +167,8 @@ void Scene::Update(float dt)
 	{
 		POINT d = currentState.getMousePositionChange();
 		m_camera.Rotate(d.y / 300.f, d.x / 300.f);
+		POINT p = m_input_class->GetMousePosition();
+		//Pick(p.x, p.y);
 	}
 	else if (prevState.isButtonDown(1))
 	{
@@ -199,6 +201,37 @@ SceneService* Scene::GetSceneService()
 //	m_context->IASetVertexBuffers(0, 1, &b, &VB_STRIDE, &VB_OFFSET);
 //	m_context->Draw(m_vertexCount, 0);
 //}
+
+
+void Scene::Pick(int sx, int sy) {
+	XMMATRIX P = m_projMtx;
+	// Oblicz promieñ wskazuj¹cy w przestrzeni widoku.  
+	float vx = (+2.0f*sx / 600.0f - 1.0f/* - 2.0f * 300.0f / 600.0f*/) / P(0, 0);
+	float vy = (-2.0f*sy / 600.0 + 1.0f/* - 2.0f * 300.0f / 600.0f*/) / P(1, 1);
+	// Definicja promienia w przestrzeni widoku.  
+	// Przekszta³æ promieñ do przestrzeni lokalnej siatki.
+	map<int, ModelClass*> models = m_sceneHelper.GetModels();
+	for (map<int, ModelClass*> ::iterator it = models.begin(); it != models.end(); it++)
+	{
+		if ((*it).second->m_Type != ModelType::SimplePointType)
+			continue;
+		XMVECTOR rayOrigin = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+		XMVECTOR rayDir = XMVectorSet(vx, vy, 1.0f, 0.0f);
+		XMMATRIX W = (*it).second->m_modelMatrix; //XMLoadFloat4x4(&mMeshWorld);
+		XMMATRIX invWorld = XMMatrixInverse(&XMMatrixDeterminant(W), W);
+		XMMATRIX V = m_camera.GetViewMatrix();
+		XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(V), V);
+		XMMATRIX toLocal = XMMatrixMultiply(invView, invWorld);
+		rayOrigin = XMVector3TransformCoord(rayOrigin, toLocal);
+		rayOrigin = XMVector3Normalize(rayOrigin);
+
+		rayDir = XMVector3TransformNormal(rayDir, toLocal);
+		// Nadaj kierunkowi promienia d³ugoœæ 1 przed testami przeciêcia.
+		rayDir = XMVector3Normalize(rayDir);
+		rayDir /= 100;
+		m_sceneHelper.findClosestWithMouse(rayOrigin, rayDir);
+	}
+}
 
 void Scene::Render()
 {

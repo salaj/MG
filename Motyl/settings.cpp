@@ -382,9 +382,9 @@ void Settings::CreateWindowHandle(int width, int height, const wstring& title, b
 		GetModuleHandle(NULL),
 		NULL);
 
-	value = 20;
+	double val = 0.4;
 	TCHAR bufWidth[32];
-	swprintf(bufWidth, TEXT("%d"), value);
+	swprintf(bufWidth, TEXT("%f"), val);
 	SetDlgItemText(m_hWnd, SURFACE_WIDTH, bufWidth);
 
 	CreateWindowEx(0,
@@ -406,9 +406,9 @@ void Settings::CreateWindowHandle(int width, int height, const wstring& title, b
 		(HMENU)SURFACE_HEIGHT,
 		GetModuleHandle(NULL),
 		NULL);
-	value = 40;
+	val = 0.8;
 	TCHAR bufferHeight[32];
-	swprintf(bufferHeight, TEXT("%d"), value);
+	swprintf(bufferHeight, TEXT("%f"), val);
 	SetDlgItemText(m_hWnd, SURFACE_HEIGHT, bufferHeight);
 
 
@@ -597,9 +597,9 @@ LRESULT Settings::WndProc(UINT msg, WPARAM wParam, LPARAM lParam)
 			GetDlgItemText(m_hWnd, PATCHES_HEIGHT, bufferHeight, 32);
 
 			GetDlgItemText(m_hWnd,SURFACE_WIDTH, surfaceWidth, 32);
-			ctrl->view.m_surfaceWidth = _wtoi(surfaceWidth) <= 20 ? 20 : _wtoi(surfaceWidth);
+			ctrl->view.m_surfaceWidth = _wtof(surfaceWidth) <= 0.05 ? 0.05 : _wtof(surfaceWidth);
 			GetDlgItemText(m_hWnd, SURFACE_HEIGHT, surfaceHeight, 32);
-			ctrl->view.m_surfaceHeight = _wtoi(surfaceHeight) <= 20 ? 20 : _wtoi(surfaceHeight);
+			ctrl->view.m_surfaceHeight = _wtof(surfaceHeight) <= 0.05 ? 0.05 : _wtof(surfaceHeight);
 
 			ctrl->view.m_rows = _wtoi(bufferHeight) <= 0 ? 1 : _wtoi(bufferHeight);
 			m_settingsHelper.AddNewModelToTreeView(buf, m_list);

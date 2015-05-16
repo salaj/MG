@@ -253,13 +253,12 @@ void ModelsManager::SetModelAtOtherModelPosition(ModelClass *model, ModelClass *
 
 void ModelsManager::SetActiveModels(vector<int>& activeModels)
 {
-	float scaleFactor = 2.0f;
 	//first scale down
 	vector<ModelClass*> oldActiveModels = GetActiveModels();
 	for (int i = 0; i < oldActiveModels.size(); i++)
 	{
 		if (oldActiveModels[i]->m_Type == ModelType::SimplePointType)
-			oldActiveModels[i]->Scale(1 / scaleFactor);
+			oldActiveModels[i]->ScaleDown();
 	}
 	//clear old active
 	m_active_models.clear();
@@ -269,7 +268,7 @@ void ModelsManager::SetActiveModels(vector<int>& activeModels)
 		AddActiveModel(activeModels[i]);
 		if (m_models[activeModels[i]]->m_Type == ModelType::SimplePointType)
 		{
-			m_models[activeModels[i]]->Scale(scaleFactor);
+			m_models[activeModels[i]]->ScaleUp();
 		}
 	}
 

@@ -4,6 +4,12 @@
 
 #include <d3d11.h>
 #include <xnamath.h>
+#include "utils.h"
+#include "vertices.h"
+#include "deviceHelper.h"
+#include <memory>
+
+
 
 namespace gk2
 {
@@ -13,6 +19,9 @@ namespace gk2
 		Camera();
 
 		Camera(float minDistance, float maxDistance, float distance = 0.0f);
+
+		static void* operator new(size_t size);
+		static void operator delete(void* ptr);
 
 		void SetRange(float minDistance, float maxDistance);
 		void Zoom(float d);
@@ -31,6 +40,10 @@ namespace gk2
 		float m_distance;
 		float m_minDistance;
 		float m_maxDistance;
+
+		XMMATRIX camView;
+		XMMATRIX matrixRot;
+
 
 		void ClampDistance();
 	};

@@ -284,7 +284,47 @@ void View::OnSelectedChanged()
 		allItems[selectedId][0].type == ItemType::ItemC2Curve || 
 		allItems[selectedId][0].type == ItemType::ItemC2Interpolated)
 		return;
-	if (allItems[selectedId][0].type == ItemType::ItemPoint)
+	//if we select any patch type we want to select all its child points
+	if (allItems[selectedId][0].type == ItemType::ItemPatch ||
+		allItems[selectedId][0].type == ItemType::ItemBSplinePatch)
+	{
+		map<int, int> ids = map<int, int>();
+		HTREEITEM child = treeView.getChild(selected);
+		while (child != NULL)
+		{
+			int childId = FindIdByViewItem(child);
+			if (ids.find(childId) == ids.end())
+				ids.insert(pair<int, int>(childId, 1));
+			child = treeView.getNext(child);
+		}
+		for (map<int, int> ::iterator it = ids.begin(); it != ids.end(); it++)
+			selectedItems.push_back(it->first);
+		m_engineNotifier->SetActiveModels(selectedItems);
+	} 
+	//if we select any surface type we want to select all its child points recursively,
+	//including all patch points, but not patch types themselves
+	else if (allItems[selectedId][0].type == ItemType::ItemBezierSurface ||
+		allItems[selectedId][0].type == ItemType::ItemBSplineSurface)
+	{
+		map<int, int> ids = map<int, int>();
+		HTREEITEM patch = treeView.getChild(selected);
+		while (patch != NULL)
+		{
+			HTREEITEM child = treeView.getChild(patch);
+			while (child != NULL)
+			{
+				int childId = FindIdByViewItem(child);
+				if (ids.find(childId) == ids.end())
+					ids.insert(pair<int, int>(childId, 1));
+				child = treeView.getNext(child);
+			}
+			patch = treeView.getNext(patch);
+		}
+		for (map<int, int> ::iterator it = ids.begin(); it != ids.end(); it++)
+			selectedItems.push_back(it->first);
+		m_engineNotifier->SetActiveModels(selectedItems);
+	}
+	else if (allItems[selectedId][0].type == ItemType::ItemPoint)
 	{
 		//second when other model is selected we want to notify engine about multiple selection
 		selectedItems.push_back(selectedId);

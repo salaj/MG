@@ -24,9 +24,9 @@ public:
 	void SetC2InterpolatedCurvePoints(int, vector<int>&);
 	void SetPatchPoints(int, int, vector<int>&);
 	void SetBSplinePatchPoints(int, int, vector<int>&);
-	void SetDimensionsForBezierSurface(int surfaceId, int rows, int cols, int surfaceWidth, int surfaceHeigth);
+	void SetDimensionsForBezierSurface(int surfaceId, int rows, int cols, double surfaceWidth, double surfaceHeigth);
 	void TranslateBezierSurfacePoints(int, bool isSurfacePlane);
-	void SetDimensionsForBSplineSurface(int surfaceId, int rows, int cols, int surfaceWidth, int surfaceHeigth);
+	void SetDimensionsForBSplineSurface(int surfaceId, int rows, int cols, double surfaceWidth, double surfaceHeigth);
 	void TranslateBSplineSurfacePoints(int, bool isSurfacePlane);
 
 	//template <typename T>

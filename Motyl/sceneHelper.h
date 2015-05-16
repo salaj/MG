@@ -9,6 +9,7 @@
 #include "guiUpdater.h"
 #include <vector>
 #include <xnamath.h>
+#include <time.h>
 
 using namespace std;
 
@@ -39,7 +40,7 @@ class SceneHelper
 		void DrawModels();
 		void AddModel(ModelType type);
 
-
+		void findClosestWithMouse(XMVECTOR orig, XMVECTOR dir);
 
 	private:
 		InputClass*  m_InputClass;
@@ -53,7 +54,7 @@ class SceneHelper
 		bool m_CanSelect = true;
 		CurveBase m_base = CurveBase::Bezier;
 
-		void translateModels(vector<ModelClass*>& models, XMFLOAT4 offset);
+		void translateModels(vector<ModelClass*>& models, XMFLOAT4 offset, bool forceRefresh);
 		void translatePostActions(vector<ModelClass*>& models);
 		void scaleModels(vector<ModelClass*>& models, float scale);
 		void rotateModels(vector<ModelClass*>& models, float rotation, ActiveAxis axis);
@@ -66,5 +67,19 @@ class SceneHelper
 
 		void findClosestModelWithCursor();
 		void findClosestModelWithMouse(POINT mousePosition);
+
+		double refreshRate = 0.1f;
+		double refreshRateLong = 1.0f;
+		double deltaTime;
+		double lastTime;
+		bool shallBeRefreshed = false;
+		bool shallBeRefreshedLong = false;
+		void refreshTime();
+		void toggleRotation(bool isRotationUp);
+		void toggleTranslation(bool isTranslationUp);
+		bool isTranslationPending = false;
+		bool isTranslationUp;
+		bool isRotationPending = false;
+		bool isRotationUp;
 };
 

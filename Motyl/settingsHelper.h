@@ -2,6 +2,7 @@
 
 #include<string>
 #include"ControllerMain.h"
+#include"parserManager.h"
 
 
 namespace gk2
@@ -48,7 +49,7 @@ namespace gk2
 		Win::ControllerMain m_controller;
 		bool isSurfacePlane = true;
 	private:
-		
+		ParserManger m_ParserManager;
 	};
 }
 

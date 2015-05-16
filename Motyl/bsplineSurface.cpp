@@ -108,7 +108,7 @@ void BSplineSurface::TranslateCyllinderPoints()
 }
 
 
-void BSplineSurface::SetDimensions(int rows, int cols, int surfaceWidth, int surfaceHeigth)
+void BSplineSurface::SetDimensions(int rows, int cols, double surfaceWidth, double surfaceHeigth)
 {
 	m_rows = rows;
 	m_cols = cols;

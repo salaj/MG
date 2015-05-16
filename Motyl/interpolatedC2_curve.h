@@ -13,7 +13,7 @@ public:
 	InterpolatedC2Curve(std::shared_ptr<ID3D11DeviceContext>,
 		ShaderBase*,
 		gk2::DeviceHelper device,
-		gk2::Camera camera,
+		gk2::Camera& camera,
 		InputClass* input);
 	InterpolatedC2Curve(const BezierCurve&);
 	InterpolatedC2Curve(Service& servie);

@@ -31,6 +31,8 @@ int SettingsHelper::BSplinePatchCounter = 0;
 
 SettingsHelper::SettingsHelper()
 {
+	string pathToLoadFile = "Scene.mg1";
+	m_ParserManager.LoadScene(pathToLoadFile);
 }
 
 

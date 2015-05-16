@@ -25,7 +25,7 @@ public:
 	BezierC2Curve(std::shared_ptr<ID3D11DeviceContext>,
 		ShaderBase*,
 		gk2::DeviceHelper device,
-		gk2::Camera camera,
+		gk2::Camera& camera,
 		InputClass* input);
 	BezierC2Curve(const BezierCurve&);
 	BezierC2Curve(Service& servie);

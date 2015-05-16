@@ -132,7 +132,7 @@ void EngineNotifier::SetBSplinePatchPoints(int surfaceId, int patchId, vector<in
 	bsplineSurface->AddPatch(bsplinePatch);
 }
 
-void EngineNotifier::SetDimensionsForBezierSurface(int surfaceId, int rows, int cols, int surfaceWidth, int surfaceHeigth)
+void EngineNotifier::SetDimensionsForBezierSurface(int surfaceId, int rows, int cols, double surfaceWidth, double surfaceHeigth)
 {
 	BezierSurface* bezierSurface = dynamic_cast<BezierSurface*>(m_ModelsManager->GetModelById(surfaceId));
 	bezierSurface->SetDimensions(rows, cols, surfaceWidth, surfaceHeigth);
@@ -147,7 +147,7 @@ void EngineNotifier::TranslateBezierSurfacePoints(int surfaceId, bool isSurfaceP
 		bezierSurface->TranslateCyllinderPoints();
 }
 
-void EngineNotifier::SetDimensionsForBSplineSurface(int surfaceId, int rows, int cols, int surfaceWidth, int surfaceHeigth)
+void EngineNotifier::SetDimensionsForBSplineSurface(int surfaceId, int rows, int cols, double surfaceWidth, double surfaceHeigth)
 {
 	BSplineSurface* bsplineSurface = dynamic_cast<BSplineSurface*>(m_ModelsManager->GetModelById(surfaceId));
 	bsplineSurface->SetDimensions(rows, cols, surfaceWidth, surfaceHeigth);

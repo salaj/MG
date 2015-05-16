@@ -24,7 +24,7 @@ public:
 	Torus(std::shared_ptr<ID3D11DeviceContext> deviceContext,
 		ShaderBase* shaderBase,
 		gk2::DeviceHelper device,
-		gk2::Camera camera,
+		gk2::Camera& camera,
 		InputClass* input);
 	Torus(const Torus& torus);
 	Torus(Service& service);

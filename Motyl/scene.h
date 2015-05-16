@@ -101,11 +101,14 @@ namespace gk2
 		void InitializeRenderStates();
 		//Initializes camera
 		void InitializeCamera();
+		float zNear = 0.01f;
+		float zFar = 100.0f;
 
 		//Updates camera-related constant buffers
 		void UpdateCamera(XMMATRIX &viewMtx);
 		void UpdateCamera();
-
+		XMMATRIX m_cameraProjMtx;
+		void Pick(int sx, int sy);
 		/////////////////////
 
 		TorusShader* m_shader_torus;

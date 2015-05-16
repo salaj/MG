@@ -21,10 +21,10 @@ public:
 	void AddPatch(BezierPatch* patch);
 	void TranslateSurfacePoints();
 	void TranslateCyllinderPoints();
-	void SetDimensions(int rows, int cols, int surfaceWidth, int surfaceHeigth);
+	void SetDimensions(int rows, int cols, double surfaceWidth, double surfaceHeigth);
 private:
 	vector<BezierPatch*> m_bezierPatches;
 	map<int, SimplePoint*> m_nodes;
-	int m_sizeX = 20, m_sizeY = 40;
+	double m_sizeX = 0.2, m_sizeY = 0.4;
 	int m_rows, m_cols;
 };
