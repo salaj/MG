@@ -31,48 +31,48 @@ int SettingsHelper::BSplinePatchCounter = 0;
 
 SettingsHelper::SettingsHelper()
 {
-	string pathToLoadFile = "Scene.mg1";
-	m_ParserManager.LoadScene(pathToLoadFile);
+
 }
 
 
-HTREEITEM SettingsHelper::AddNewModelToTreeView(wchar_t* buf, HWND handle)
+InsertionParams* SettingsHelper::AddNewModelToTreeView(wchar_t* buf, HWND handle)
 {
 	wstring modelToAddName(buf);
 	wchar_t digitBuf[16];
 	HTREEITEM item;
-
+	InsertionParams* insertionParams;
+	InsertionParams* insertionParamsOrigin;
 	if (modelToAddName.compare(SimplePointName) == 0)
 	{
-		swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", SimplePointCounter++);
-		item = insertItemFreely((SimplePointName + wstring(digitBuf)).c_str(), ItemType::ItemPoint, nullptr);
+		std::swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", SimplePointCounter++);
+		insertionParamsOrigin = insertItemFreely((SimplePointName + wstring(digitBuf)).c_str(), ItemType::ItemPoint, nullptr);
 	}
 	else if (modelToAddName.compare(TorusName) == 0)
 	{
-		swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", TorusCounter++);
-		item = insertItemFreely((TorusName + wstring(digitBuf)).c_str(), ItemType::ItemTorus, nullptr);
+		std::swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", TorusCounter++);
+		insertionParamsOrigin = insertItemFreely((TorusName + wstring(digitBuf)).c_str(), ItemType::ItemTorus, nullptr);
 	}
 	else if (modelToAddName.compare(BezierEdgeName) == 0)
 	{
-		swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierCurveCounter++);
-		item = insertItemFreely((BezierEdgeName + wstring(digitBuf)).c_str(), ItemType::ItemCurve, nullptr);
+		std::swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierCurveCounter++);
+		insertionParamsOrigin = insertItemFreely((BezierEdgeName + wstring(digitBuf)).c_str(), ItemType::ItemCurve, nullptr);
 	}
 	else if (modelToAddName.compare(BezierC2EdgeName) == 0)
 	{
-		swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierCurveCounter++);
-		item = insertItemFreely((BezierC2EdgeName + wstring(digitBuf)).c_str(), ItemType::ItemC2Curve, nullptr);
+		std::swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierCurveCounter++);
+		insertionParamsOrigin = insertItemFreely((BezierC2EdgeName + wstring(digitBuf)).c_str(), ItemType::ItemC2Curve, nullptr);
 	}
 	else if (modelToAddName.compare(BezierC2Interpolated) == 0)
 	{
-		swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierCurveCounter++);
-		item = insertItemFreely((BezierC2Interpolated + wstring(digitBuf)).c_str(), ItemType::ItemC2Interpolated, nullptr);
+		std::swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierCurveCounter++);
+		insertionParamsOrigin = insertItemFreely((BezierC2Interpolated + wstring(digitBuf)).c_str(), ItemType::ItemC2Interpolated, nullptr);
 	}
 	else if (modelToAddName.compare(BezierSurface) == 0)
 	{
 		if (isSurfacePlane)
 		{
-			swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierSurfaceCounter++);
-			item = insertItemInternally((BezierSurface + wstring(digitBuf)).c_str(), ItemType::ItemBezierSurface);
+			std::swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierSurfaceCounter++);
+			insertionParamsOrigin = insertItemInternally((BezierSurface + wstring(digitBuf)).c_str(), ItemType::ItemBezierSurface);
 
 			int numberOfPatches = m_controller.view.m_cols * m_controller.view.m_rows;
 			wchar_t*** items = new wchar_t**[m_controller.view.m_rows * 3 + 1];
@@ -83,7 +83,7 @@ HTREEITEM SettingsHelper::AddNewModelToTreeView(wchar_t* buf, HWND handle)
 				for (int j = 0; j < m_controller.view.m_cols * 3 + 1; j++)
 				{
 					items[i][j] = new wchar_t[16];
-					swprintf(items[i][j], sizeof(wchar_t) * 16 / sizeof(*items[i][j]), L"%d", SimplePointCounter++);
+					std::swprintf(items[i][j], sizeof(wchar_t) * 16 / sizeof(*items[i][j]), L"%d", SimplePointCounter++);
 					insertItemInternally((SimplePointName + wstring(items[i][j])).c_str(), ItemType::ItemPoint);
 				}
 			}
@@ -92,8 +92,10 @@ HTREEITEM SettingsHelper::AddNewModelToTreeView(wchar_t* buf, HWND handle)
 				for (int j = 0; j < m_controller.view.m_cols; j++)
 				{
 					wchar_t digitBuf[16];
-					swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierPatchCounter++);
-					HTREEITEM patch = insertItemInternally((BezierPatch + wstring(digitBuf)).c_str(), ItemType::ItemPatch, item);
+					std::swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierPatchCounter++);
+					item = insertionParamsOrigin->item;
+					insertionParams = insertItemInternally((BezierPatch + wstring(digitBuf)).c_str(), ItemType::ItemPatch, item);
+					HTREEITEM patch = insertionParams->item;
 					int row = i * 3;
 					for (int n = 0; n < 4; n++)
 					{
@@ -111,9 +113,9 @@ HTREEITEM SettingsHelper::AddNewModelToTreeView(wchar_t* buf, HWND handle)
 		else
 		{
 			//cyllinder
-			swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierSurfaceCounter++);
-			item = insertItemInternally((BezierSurface + wstring(digitBuf)).c_str(), ItemType::ItemBezierSurface);
-
+			std::swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierSurfaceCounter++);
+			insertionParamsOrigin = insertItemInternally((BezierSurface + wstring(digitBuf)).c_str(), ItemType::ItemBezierSurface);
+			HTREEITEM patch = insertionParamsOrigin->item;
 			int numberOfPatches = m_controller.view.m_cols * m_controller.view.m_rows;
 			wchar_t*** items = new wchar_t**[m_controller.view.m_rows * 3 + 1];
 
@@ -123,7 +125,7 @@ HTREEITEM SettingsHelper::AddNewModelToTreeView(wchar_t* buf, HWND handle)
 				for (int j = 0; j < m_controller.view.m_cols * 3; j++)
 				{
 					items[i][j] = new wchar_t[16];
-					swprintf(items[i][j], sizeof(wchar_t) * 16 / sizeof(*items[i][j]), L"%d", SimplePointCounter++);
+					std::swprintf(items[i][j], sizeof(wchar_t) * 16 / sizeof(*items[i][j]), L"%d", SimplePointCounter++);
 					insertItemInternally((SimplePointName + wstring(items[i][j])).c_str(), ItemType::ItemPoint);
 				}
 			}
@@ -132,8 +134,10 @@ HTREEITEM SettingsHelper::AddNewModelToTreeView(wchar_t* buf, HWND handle)
 				for (int j = 0; j < m_controller.view.m_cols; j++)
 				{
 					wchar_t digitBuf[16];
-					swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierPatchCounter++);
-					HTREEITEM patch = insertItemInternally((BezierPatch + wstring(digitBuf)).c_str(), ItemType::ItemPatch, item);
+					std::swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierPatchCounter++);
+					item = insertionParamsOrigin->item;
+					insertionParams = insertItemInternally((BezierPatch + wstring(digitBuf)).c_str(), ItemType::ItemPatch, item);
+					HTREEITEM patch = insertionParams->item;
 					int row = i * 3;
 					for (int n = 0; n < 4; n++)
 					{
@@ -157,8 +161,8 @@ HTREEITEM SettingsHelper::AddNewModelToTreeView(wchar_t* buf, HWND handle)
 	{
 		if (isSurfacePlane)
 		{
-			swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BSplineSurfaceCounter++);
-			item = insertItemInternally((BSplineSurface + wstring(digitBuf)).c_str(), ItemType::ItemBSplineSurface);
+			std::swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BSplineSurfaceCounter++);
+			insertionParamsOrigin = insertItemInternally((BSplineSurface + wstring(digitBuf)).c_str(), ItemType::ItemBSplineSurface);
 
 			int numberOfPatches = m_controller.view.m_cols * m_controller.view.m_rows;
 			wchar_t*** items = new wchar_t**[m_controller.view.m_rows + 3];
@@ -169,7 +173,7 @@ HTREEITEM SettingsHelper::AddNewModelToTreeView(wchar_t* buf, HWND handle)
 				for (int j = 0; j < m_controller.view.m_cols + 3; j++)
 				{
 					items[i][j] = new wchar_t[16];
-					swprintf(items[i][j], sizeof(wchar_t) * 16 / sizeof(*items[i][j]), L"%d", SimplePointCounter++);
+					std::swprintf(items[i][j], sizeof(wchar_t) * 16 / sizeof(*items[i][j]), L"%d", SimplePointCounter++);
 					insertItemInternally((SimplePointName + wstring(items[i][j])).c_str(), ItemType::ItemPoint);
 				}
 			}
@@ -178,8 +182,10 @@ HTREEITEM SettingsHelper::AddNewModelToTreeView(wchar_t* buf, HWND handle)
 				for (int j = 0; j < m_controller.view.m_cols; j++)
 				{
 					wchar_t digitBuf[16];
-					swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BSplinePatchCounter++);
-					HTREEITEM patch = insertItemInternally((BSplinePatch + wstring(digitBuf)).c_str(), ItemType::ItemBSplinePatch, item);
+					std::swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BSplinePatchCounter++);
+					item = insertionParamsOrigin->item;
+					insertionParams = insertItemInternally((BSplinePatch + wstring(digitBuf)).c_str(), ItemType::ItemBSplinePatch, item);
+					HTREEITEM patch = insertionParams->item;
 					int row = i;
 					for (int n = 0; n < 4; n++)
 					{
@@ -197,8 +203,8 @@ HTREEITEM SettingsHelper::AddNewModelToTreeView(wchar_t* buf, HWND handle)
 		else
 		{
 			//cyllinder
-			swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierSurfaceCounter++);
-			item = insertItemInternally((BSplineSurface + wstring(digitBuf)).c_str(), ItemType::ItemBSplineSurface);
+			std::swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierSurfaceCounter++);
+			insertionParamsOrigin = insertItemInternally((BSplineSurface + wstring(digitBuf)).c_str(), ItemType::ItemBSplineSurface);
 
 			int numberOfPatches = m_controller.view.m_cols * m_controller.view.m_rows;
 			wchar_t*** items = new wchar_t**[m_controller.view.m_rows + 3];
@@ -209,7 +215,7 @@ HTREEITEM SettingsHelper::AddNewModelToTreeView(wchar_t* buf, HWND handle)
 				for (int j = 0; j < m_controller.view.m_cols; j++)
 				{
 					items[i][j] = new wchar_t[16];
-					swprintf(items[i][j], sizeof(wchar_t) * 16 / sizeof(*items[i][j]), L"%d", SimplePointCounter++);
+					std::swprintf(items[i][j], sizeof(wchar_t) * 16 / sizeof(*items[i][j]), L"%d", SimplePointCounter++);
 					insertItemInternally((SimplePointName + wstring(items[i][j])).c_str(), ItemType::ItemPoint);
 				}
 			}
@@ -218,8 +224,10 @@ HTREEITEM SettingsHelper::AddNewModelToTreeView(wchar_t* buf, HWND handle)
 				for (int j = 0; j < m_controller.view.m_cols; j++)
 				{
 					wchar_t digitBuf[16];
-					swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierPatchCounter++);
-					HTREEITEM patch = insertItemInternally((BSplinePatch + wstring(digitBuf)).c_str(), ItemType::ItemBSplinePatch, item);
+					std::swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierPatchCounter++);
+					item = insertionParamsOrigin->item;
+					insertionParams = insertItemInternally((BSplinePatch + wstring(digitBuf)).c_str(), ItemType::ItemBSplinePatch, item);
+					HTREEITEM patch = insertionParams->item;
 					int row = i;
 					for (int n = 0; n < 4; n++)
 					{
@@ -240,19 +248,23 @@ HTREEITEM SettingsHelper::AddNewModelToTreeView(wchar_t* buf, HWND handle)
 		m_controller.ReconstructSurface(item);
 	}
 	
-	return item;
+	return insertionParamsOrigin;
 }
 
-HTREEITEM SettingsHelper::insertItemInternally(const wchar_t* str, ItemType type, HTREEITEM parent, HTREEITEM insertAfter, int imageIndex, int selectedImageIndex)
+InsertionParams* SettingsHelper::insertItemInternally(const wchar_t* str, ItemType type, HTREEITEM parent, HTREEITEM insertAfter, int imageIndex, int selectedImageIndex)
 {
 	return m_controller.insertItemHierarchically(str, type, parent, TVI_LAST, 0, 1);
 }
 
-HTREEITEM SettingsHelper::insertItemFreely(const wchar_t* str, ItemType type, HTREEITEM parent, HTREEITEM insertAfter, int imageIndex, int selectedImageIndex)
+InsertionParams* SettingsHelper::insertItemFreely(const wchar_t* str, ItemType type, HTREEITEM parent, HTREEITEM insertAfter, int imageIndex, int selectedImageIndex)
 {
 	return m_controller.insertItemFreely(str, type, parent, TVI_LAST, 0, 1);
 }
 
+void SettingsHelper::CopyItem(HTREEITEM source, HTREEITEM target)
+{
+	m_controller.CopyItem(source, target);
+}
 
 void SettingsHelper::removeItem(int id)
 {

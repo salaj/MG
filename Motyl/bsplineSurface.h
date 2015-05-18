@@ -14,6 +14,7 @@ public:
 
 	virtual void Initialize();
 	virtual void Draw();
+	virtual void Reset();
 	virtual void UpdateNode(SimplePoint*);
 	virtual void setTriangleTopology();
 	virtual void setLineTopology();
@@ -21,9 +22,11 @@ public:
 	void TranslateSurfacePoints();
 	void TranslateCyllinderPoints();
 	void SetDimensions(int rows, int cols, double surfaceWidth, double surfaceHeigth);
+	double m_sizeX = 0.2, m_sizeY = 0.4;
+	int m_rows, m_cols;
+	bool isCyllindrical;
+	vector<SimplePoint*> GetNodes();
 private:
 	vector<BSplinePatch*> m_bsplinePatches;
 	map<int, SimplePoint*> m_nodes;
-	double m_sizeX = 0.2, m_sizeY = 0.4;
-	int m_rows, m_cols;
 };

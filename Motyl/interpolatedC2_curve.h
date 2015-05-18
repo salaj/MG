@@ -25,7 +25,7 @@ public:
 	virtual void Draw();
 	virtual void SetNodes(vector<ModelClass*> nodes);
 	virtual void UpdateNode(SimplePoint*);
-
+	vector<SimplePoint*> GetInterpolants();
 private:
 	//void calculateProportionalTao();
 	void createBaseFunctionsMatrix();

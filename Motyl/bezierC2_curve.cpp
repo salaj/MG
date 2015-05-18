@@ -514,3 +514,11 @@ double BezierC2Curve::bSpline_length()
 	}
 	return length * screenWidth * estimation;
 }
+
+vector<SimplePoint*> BezierC2Curve::GetDeboors()
+{
+	vector<SimplePoint*> toRet;
+	for (int i = 0; i < m_deBoor.size(); i++)
+		toRet.push_back(dynamic_cast<SimplePoint*>(m_deBoor[i]));
+	return toRet;
+}

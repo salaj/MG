@@ -152,6 +152,7 @@
     <ClCompile Include="modelsManager.cpp" />
     <ClCompile Include="parserManager.cpp" />
     <ClCompile Include="procedure.cpp" />
+    <ClCompile Include="saver.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="deviceHelper.cpp" />
     <ClCompile Include="exceptions.cpp" />
@@ -206,6 +207,7 @@
     <ClInclude Include="parserManager.h" />
     <ClInclude Include="procedure.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="saver.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="deviceHelper.h" />
     <ClInclude Include="exceptions.h" />

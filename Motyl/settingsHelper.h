@@ -2,8 +2,8 @@
 
 #include<string>
 #include"ControllerMain.h"
-#include"parserManager.h"
 
+using namespace Win;
 
 namespace gk2
 {
@@ -40,16 +40,17 @@ namespace gk2
 		static int BSplinePatchCounter;
 
 
-		HTREEITEM AddNewModelToTreeView(wchar_t*, HWND handle = 0);
-		HTREEITEM insertItemInternally(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
-		HTREEITEM insertItemFreely(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
+		InsertionParams* AddNewModelToTreeView(wchar_t*, HWND handle = 0);
+		InsertionParams* insertItemInternally(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
+		InsertionParams* insertItemFreely(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
 		//HTREEITEM insertItemExternally(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
 		void removeItem(int id);
 
 		Win::ControllerMain m_controller;
+		void CopyItem(HTREEITEM source, HTREEITEM target);
 		bool isSurfacePlane = true;
 	private:
-		ParserManger m_ParserManager;
+
 	};
 }
 

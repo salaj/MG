@@ -8,15 +8,15 @@ public:
 	EngineNotifier(SceneService*);
 	void Initialize();
 
-	void OnSimplePointAdded();
-	void OnBezierCurveAdded();
-	void OnBezierC2CurveAdded();
-	void OnC2InterpolatedAdded();
-	void OnTorusAdded();
-	void OnBezierSurfaceAdded();
-	void OnBSplineSurfaceAdded();
-	void OnBezierPatchAdded();
-	void OnBSplinePatchAdded();
+	ModelClass* OnSimplePointAdded();
+	ModelClass* OnBezierCurveAdded();
+	ModelClass* OnBezierC2CurveAdded();
+	ModelClass* OnC2InterpolatedAdded();
+	ModelClass* OnTorusAdded();
+	ModelClass* OnBezierSurfaceAdded();
+	ModelClass* OnBSplineSurfaceAdded();
+	ModelClass* OnBezierPatchAdded();
+	ModelClass* OnBSplinePatchAdded();
 
 	void SetActiveModels(vector<int>&);
 	void SetC0CurvePoints(int, vector<int>&);
@@ -32,7 +32,7 @@ public:
 	//template <typename T>
 	//void SetPoints<T>(int, vector<int>&);
 	void RemoveModel(int id);
-
+	ModelsManager* GetModelsManager();
 private:
 	ModelsManager* m_ModelsManager;
 };

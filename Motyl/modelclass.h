@@ -67,6 +67,8 @@ public:
 	void Scale(float);
 	void ScaleDown();
 	void ScaleUp();
+	void ScaleToDefault();
+	void ScaleBackToDefault();
 
 	XMFLOAT4 GetPosition();
 	XMFLOAT3 GetPosition3();

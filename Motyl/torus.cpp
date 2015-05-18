@@ -22,6 +22,7 @@ Torus::Torus(std::shared_ptr<ID3D11DeviceContext> deviceContext,
 
 Torus::Torus(Service& service) : ModelClass(service)
 {
+	m_Type = ModelType::TorusType;
 	ModelClass::Initialize();
 }
 

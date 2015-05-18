@@ -222,5 +222,13 @@ void InterpolatedC2Curve::substractPoint(int indexFirst, int indexSecond, float 
 	m_deBoor[indexFirst]->SetPosition(posFirst.x, posFirst.y, posFirst.z);
 }
 
+vector<SimplePoint*> InterpolatedC2Curve::GetInterpolants()
+{
+	vector<SimplePoint*> toRet;
+	for (int i = 0; i < m_interpolants.size(); i++)
+		toRet.push_back(dynamic_cast<SimplePoint*>(m_interpolants[i]));
+	return toRet;
+}
+
 
 

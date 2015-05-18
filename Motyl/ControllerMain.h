@@ -20,12 +20,14 @@ namespace Win
         int mouseMove(WPARAM state, int x, int y);
         int lButtonUp(WPARAM state, int x, int y);
 
-		HTREEITEM insertItemHierarchically(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
-		HTREEITEM insertItemFreely(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
+		InsertionParams* insertItemHierarchically(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
+		InsertionParams* insertItemFreely(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
 		void removeItem(int id);
+		void removeItem(HTREEITEM item);
 		int getSelectetTreeViewItem();
 		void SetEngineNotifier(EngineNotifier*);
 		void ReconstructSurface(HTREEITEM surface);
+		void CopyItem(HTREEITEM source, HTREEITEM target);
 		Win::View  view;
     private:
         //Win::Model model;

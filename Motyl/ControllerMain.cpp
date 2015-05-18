@@ -153,8 +153,17 @@ void ControllerMain::SetEngineNotifier(EngineNotifier* engineNotifier)
 	view.SetEngineNotifier(engineNotifier);
 }
 
+void ControllerMain::CopyItem(HTREEITEM source, HTREEITEM target)
+{
+	view.CopyItem(source, target);
+}
 
-HTREEITEM ControllerMain::insertItemHierarchically(const wchar_t* str, ItemType type, HTREEITEM parent, HTREEITEM insertAfter, int imageIndex, int selectedImageIndex)
+void ControllerMain::removeItem(HTREEITEM item)
+{
+	view.removeItem(item);
+}
+
+InsertionParams* ControllerMain::insertItemHierarchically(const wchar_t* str, ItemType type, HTREEITEM parent, HTREEITEM insertAfter, int imageIndex, int selectedImageIndex)
 {
 	if ((type == ItemType::ItemPatch || type == ItemType::ItemBSplinePatch) || (type == ItemType::ItemPoint && parent != TVI_ROOT))
 		return view.insertItem(str, type, parent, TVI_LAST, 0, 1);
@@ -164,7 +173,7 @@ HTREEITEM ControllerMain::insertItemHierarchically(const wchar_t* str, ItemType 
 		return view.insertItem(str, type, TVI_ROOT, TVI_LAST, 0, 1);
 }
 
-HTREEITEM ControllerMain::insertItemFreely(const wchar_t* str, ItemType type, HTREEITEM parent, HTREEITEM insertAfter, int imageIndex, int selectedImageIndex)
+InsertionParams* ControllerMain::insertItemFreely(const wchar_t* str, ItemType type, HTREEITEM parent, HTREEITEM insertAfter, int imageIndex, int selectedImageIndex)
 {
 	if (type == ItemType::ItemPoint)
 		return view.insertItem(str, type, view.getSelected(), TVI_LAST, 0, 1);

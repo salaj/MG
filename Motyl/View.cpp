@@ -25,6 +25,7 @@ using namespace std;
 ///////////////////////////////////////////////////////////////////////////////
 View::View() :tvItemDragged(false), tvDraggedItem(0), tvDraggedImageList(0), tvMenu(0)
 {
+	int a = 10;
 	//for (int i = 0; i < 100; i++)
 	//{
 	//	//treeItems[i] = NULL;
@@ -100,7 +101,7 @@ int View::findIdOfGenuine(const wchar_t* str)
 
 int View::counter = 0;
 
-HTREEITEM View::insertItem(const wchar_t* str, ItemType type, HTREEITEM parent, HTREEITEM insertAfter, int imageIndex, int selectedImageIndex)
+InsertionParams* View::insertItem(const wchar_t* str, ItemType type, HTREEITEM parent, HTREEITEM insertAfter, int imageIndex, int selectedImageIndex)
 {
 
 	bool copyPoint = false;
@@ -153,41 +154,43 @@ HTREEITEM View::insertItem(const wchar_t* str, ItemType type, HTREEITEM parent, 
 	else
 		allItems[id_Genuine].push_back(newTreeItem);
 
+	ModelClass* model = nullptr;
 	switch (type)
 	{
 	case ItemPoint:
 		if (!copyPoint)
-			m_engineNotifier->OnSimplePointAdded();
+			model = m_engineNotifier->OnSimplePointAdded();
 		onItemChanged(item);
 		break;
 	case ItemCurve:
-		m_engineNotifier->OnBezierCurveAdded();
+		model = m_engineNotifier->OnBezierCurveAdded();
 		break;
 	case ItemC2Curve:
-		m_engineNotifier->OnBezierC2CurveAdded();
+		model = m_engineNotifier->OnBezierC2CurveAdded();
 		break;
 	case ItemC2Interpolated:
-		m_engineNotifier->OnC2InterpolatedAdded();
+		model = m_engineNotifier->OnC2InterpolatedAdded();
 		break;
 	case ItemTorus:
-		m_engineNotifier->OnTorusAdded();
+		model = m_engineNotifier->OnTorusAdded();
 		break;
 	case ItemPatch:
-		m_engineNotifier->OnBezierPatchAdded();
+		model = m_engineNotifier->OnBezierPatchAdded();
 		break;
 	case ItemBezierSurface:
-		m_engineNotifier->OnBezierSurfaceAdded();
+		model = m_engineNotifier->OnBezierSurfaceAdded();
 		break;
 	case ItemBSplinePatch:
-		m_engineNotifier->OnBSplinePatchAdded();
+		model = m_engineNotifier->OnBSplinePatchAdded();
 		break;
 	case ItemBSplineSurface:
-		m_engineNotifier->OnBSplineSurfaceAdded();
+		model = m_engineNotifier->OnBSplineSurfaceAdded();
 		break;
 	default:
 		break;
 	}
-	return item;
+	return new InsertionParams(model, item);
+	//return item;
 }
 
 void View::addOriginPointItem(const wchar_t* str)
@@ -650,6 +653,31 @@ int View::FindIdByViewItem(HTREEITEM toFind)
 			if (allItems[i][j].handle == toFind)
 			return allItems[i][j].id;
 			//return i;
+	}
+}
+
+void View :: CopyItem(HTREEITEM source, HTREEITEM target)
+{
+	this->moveTreeViewItem(&treeView, source, target);
+
+	//notify about changes
+	int parentId = FindIdByViewItem(target);
+	vector<int> selectedItems = vector<int>();
+	TreeItem parent = allItems[parentId][0];
+	if (parent.type == ItemType::ItemCurve)
+	{
+		addRecursivelyChildItems(selectedItems, target);
+		m_engineNotifier->SetC0CurvePoints(parentId, selectedItems);
+	}
+	else if (parent.type == ItemType::ItemC2Curve)
+	{
+		addRecursivelyChildItems(selectedItems, target);
+		m_engineNotifier->SetC2CurvePoints(parentId, selectedItems);
+	}
+	else if (parent.type == ItemType::ItemC2Interpolated)
+	{
+		addRecursivelyChildItems(selectedItems, target);
+		m_engineNotifier->SetC2InterpolatedCurvePoints(parentId, selectedItems);
 	}
 }
 

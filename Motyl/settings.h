@@ -7,6 +7,7 @@
 #include "ControllerMain.h"
 #include <xnamath.h>
 #include <cstdlib>
+#include"parserManager.h"
 
 namespace gk2
 {
@@ -36,6 +37,7 @@ namespace gk2
 
 		SettingsHelper* GetSettingsHelper();
 		void SetEngineNotifier(EngineNotifier*);
+		void FakeLoad();
 
 		HWND m_hWnd, m_list;
 
@@ -66,6 +68,8 @@ namespace gk2
 		int yLayoutOffset = 70;
 
 		///////////////////
+
+		ParserManger m_ParserManager;
 	};
 	/////////////
 	// GLOBALS //

@@ -176,5 +176,6 @@ int ApplicationBase::Run(Window* w, Settings* settings, int cmdShow)
 		return -1;
 	m_mainWindow->Show(cmdShow);
 	m_settings->Show(cmdShow);
+	m_settings->FakeLoad();
 	return MainLoop();
 }

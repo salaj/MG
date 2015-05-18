@@ -13,49 +13,49 @@ void EngineNotifier::Initialize()
 	
 }
 
-void EngineNotifier::OnSimplePointAdded()
+ModelClass* EngineNotifier::OnSimplePointAdded()
 {
-	m_ModelsManager->AddModel(ModelType::SimplePointType);
+	return m_ModelsManager->AddModel(ModelType::SimplePointType);
 }
 
-void EngineNotifier::OnBezierCurveAdded()
+ModelClass* EngineNotifier::OnBezierCurveAdded()
 {
-	m_ModelsManager->AddModel(ModelType::BezierType);
+	return m_ModelsManager->AddModel(ModelType::BezierType);
 }
 
-void EngineNotifier::OnBezierC2CurveAdded()
+ModelClass* EngineNotifier::OnBezierC2CurveAdded()
 {
-	m_ModelsManager->AddModel(ModelType::BezierC2Type);
+	return m_ModelsManager->AddModel(ModelType::BezierC2Type);
 }
 
-void EngineNotifier::OnC2InterpolatedAdded()
+ModelClass* EngineNotifier::OnC2InterpolatedAdded()
 {
-	m_ModelsManager->AddModel(ModelType::InterpolatedC2Type);
+	return m_ModelsManager->AddModel(ModelType::InterpolatedC2Type);
 }
 
-void EngineNotifier::OnTorusAdded()
+ModelClass* EngineNotifier::OnTorusAdded()
 {
-	m_ModelsManager->AddModel(ModelType::TorusType);
+	return m_ModelsManager->AddModel(ModelType::TorusType);
 }
 
-void EngineNotifier::OnBezierPatchAdded()
+ModelClass* EngineNotifier::OnBezierPatchAdded()
 {
-	m_ModelsManager->AddModel(ModelType::BezierPatchType);
+	return m_ModelsManager->AddModel(ModelType::BezierPatchType);
 }
 
-void EngineNotifier::OnBezierSurfaceAdded()
+ModelClass* EngineNotifier::OnBezierSurfaceAdded()
 {
-	m_ModelsManager->AddModel(ModelType::BezierSurfaceType);
+	return m_ModelsManager->AddModel(ModelType::BezierSurfaceType);
 }
 
-void EngineNotifier::OnBSplinePatchAdded()
+ModelClass* EngineNotifier::OnBSplinePatchAdded()
 {
-	m_ModelsManager->AddModel(ModelType::BSplinePatchType);
+	return m_ModelsManager->AddModel(ModelType::BSplinePatchType);
 }
 
-void EngineNotifier::OnBSplineSurfaceAdded()
+ModelClass* EngineNotifier::OnBSplineSurfaceAdded()
 {
-	m_ModelsManager->AddModel(ModelType::BSplineSurfaceType);
+	return m_ModelsManager->AddModel(ModelType::BSplineSurfaceType);
 }
 
 void EngineNotifier::SetActiveModels(vector<int>& activeModels)
@@ -164,4 +164,9 @@ void EngineNotifier::TranslateBSplineSurfacePoints(int surfaceId, bool isSurface
 void EngineNotifier::RemoveModel(int id)
 {
 	m_ModelsManager->RemoveModel(id);
+}
+
+ModelsManager* EngineNotifier::GetModelsManager()
+{
+	return m_ModelsManager;
 }

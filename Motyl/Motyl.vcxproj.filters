@@ -267,6 +267,9 @@
     <ClCompile Include="loader.cpp">
       <Filter>Source Files\parsers</Filter>
     </ClCompile>
+    <ClCompile Include="saver.cpp">
+      <Filter>Source Files\parsers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="modelclass.h">
@@ -420,6 +423,9 @@
       <Filter>Header Files\parsers</Filter>
     </ClInclude>
     <ClInclude Include="loader.h">
+      <Filter>Header Files\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="saver.h">
       <Filter>Header Files\parsers</Filter>
     </ClInclude>
   </ItemGroup>

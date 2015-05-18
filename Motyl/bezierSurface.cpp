@@ -27,6 +27,14 @@ void BezierSurface::operator delete(void* ptr)
 	Utils::Delete16Aligned(ptr);
 }
 
+void BezierSurface::Reset()
+{
+	for (int i = 0; i < m_bezierPatches.size(); i++)
+	{
+		m_bezierPatches[i]->Reset();
+	}
+}
+
 void BezierSurface::UpdateNode(SimplePoint* point)
 {
 	for (int i = 0; i < m_bezierPatches.size(); i++)
@@ -55,6 +63,7 @@ void BezierSurface::AddPatch(BezierPatch* patch)
 
 void BezierSurface::TranslateSurfacePoints()
 {
+	isCyllindrical = false;
 	int i = 0;
 	int j = 0;
 	double X = (double)m_sizeX / (m_cols * 3);
@@ -78,6 +87,7 @@ void BezierSurface::TranslateSurfacePoints()
 
 void BezierSurface::TranslateCyllinderPoints()
 {
+	isCyllindrical = true;
 	double r = m_sizeX;
 	double a = (double)1 / (m_cols * 3);
 	double Y = (double)m_sizeY / (m_rows * 3);
@@ -114,6 +124,14 @@ void BezierSurface::SetDimensions(int rows, int cols, double surfaceWidth, doubl
 	m_cols = cols;
 	m_sizeX = surfaceWidth;
 	m_sizeY = surfaceHeigth;
+}
+
+vector<SimplePoint*> BezierSurface::GetNodes()
+{
+	vector<SimplePoint*> nodes;
+	for (map<int, SimplePoint*> ::iterator it = m_nodes.begin(); it != m_nodes.end(); it++)
+		nodes.push_back(it->second);
+	return nodes;
 }
 
 void BezierSurface::Initialize()

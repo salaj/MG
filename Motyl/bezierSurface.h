@@ -15,6 +15,7 @@ public:
 
 	virtual void Initialize();
 	virtual void Draw();
+	virtual void Reset();
 	virtual void UpdateNode(SimplePoint*);
 	virtual void setTriangleTopology();
 	virtual void setLineTopology();
@@ -22,9 +23,12 @@ public:
 	void TranslateSurfacePoints();
 	void TranslateCyllinderPoints();
 	void SetDimensions(int rows, int cols, double surfaceWidth, double surfaceHeigth);
+	vector<SimplePoint*> GetNodes();
+	bool isCyllindrical;
+	double m_sizeX = 0.2, m_sizeY = 0.4;
+	int m_rows, m_cols;
 private:
 	vector<BezierPatch*> m_bezierPatches;
 	map<int, SimplePoint*> m_nodes;
-	double m_sizeX = 0.2, m_sizeY = 0.4;
-	int m_rows, m_cols;
+
 };

@@ -351,6 +351,11 @@ void BezierCurve::setStereoscopy(bool isStereoscopic)
 	m_isStereoscopic = isStereoscopic;
 }
 
+vector<SimplePoint*>BezierCurve:: GetNodes()
+{
+	return m_nodes;
+}
+
 
 void BezierCurve::Draw()
 {

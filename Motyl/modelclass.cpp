@@ -261,6 +261,19 @@ void ModelClass::ScaleUp()
 	m_modelMatrix = scaleMatrix * m_modelMatrix;
 }
 
+
+void ModelClass::ScaleToDefault()
+{
+	float scaleFactor = 0.02f;
+	Scale(scaleFactor);
+}
+
+void ModelClass::ScaleBackToDefault()
+{
+	float scaleFactor = 0.02f;
+	Scale(1 / scaleFactor);
+}
+
 void ModelClass::Translate(XMFLOAT4& delta)
 {
 	XMMATRIX translate = CreateTranslationMatrix(delta);

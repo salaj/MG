@@ -55,6 +55,7 @@ void BSplineSurface::AddPatch(BSplinePatch* patch)
 
 void BSplineSurface::TranslateSurfacePoints()
 {
+	isCyllindrical = false;
 	int i = 0;
 	int j = 0;
 	double X = (double)m_sizeX / (m_cols + 2);
@@ -78,6 +79,7 @@ void BSplineSurface::TranslateSurfacePoints()
 
 void BSplineSurface::TranslateCyllinderPoints()
 {
+	isCyllindrical = true;
 	double r = m_sizeX;
 	double a = (double)1 / (m_cols);
 	double Y = (double)m_sizeY / (m_rows + 2);
@@ -114,6 +116,22 @@ void BSplineSurface::SetDimensions(int rows, int cols, double surfaceWidth, doub
 	m_cols = cols;
 	m_sizeX = surfaceWidth;
 	m_sizeY = surfaceHeigth;
+}
+
+vector<SimplePoint*> BSplineSurface::GetNodes()
+{
+	vector<SimplePoint*> nodes;
+	for (map<int, SimplePoint*> ::iterator it = m_nodes.begin(); it != m_nodes.end(); it++)
+		nodes.push_back(it->second);
+	return nodes;
+}
+
+void BSplineSurface::Reset()
+{
+	for (int i = 0; i < m_bsplinePatches.size(); i++)
+	{
+		m_bsplinePatches[i]->Reset();
+	}
 }
 
 void BSplineSurface::Initialize()

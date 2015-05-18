@@ -32,12 +32,35 @@ int Settings::m_defaultWindowHeight = 720;
 #define SURFACE_WIDTH 217
 #define SURFACE_HEIGHT 218
 #define COMBO_SURFACE 219
+#define LOAD_BUTTON 220
+#define SAVE_BUTTON 221
 
 //InputClass* input;
 
 void Settings::SetEngineNotifier(EngineNotifier* engineNotifier)
 {
 	m_settingsHelper.m_controller.SetEngineNotifier(engineNotifier);
+	m_ParserManager.modelsManager = engineNotifier->GetModelsManager();
+}
+
+void Settings::FakeLoad()
+{
+	m_ParserManager.Initialize(&m_settingsHelper);
+	////////LOAD///////////
+	//string pathToLoadFile = "Scene.mg1";
+	//string pathToLoadFile = "KubaScene.mg1";
+	//m_ParserManager.LoadScene(pathToLoadFile);
+
+	////////SAVE///////////
+	//m_settingsHelper.m_controller.view.m_surfaceWidth = 0.8;
+	//m_settingsHelper.m_controller.view.m_surfaceHeight = 0.4;
+	//m_settingsHelper.m_controller.view.m_cols = 3;
+	//m_settingsHelper.m_controller.view.m_rows = 1;
+	//m_settingsHelper.isSurfacePlane = false;
+	//m_settingsHelper.m_controller.view.isSurfacePlane = false;
+	//m_settingsHelper.AddNewModelToTreeView(const_cast<wchar_t*>(SettingsHelper::BSplineSurface.c_str()));
+	//string pathToWriteFile = "KubaScene.mg1";
+	//m_ParserManager.SaveScene(pathToWriteFile);
 }
 
 void Settings::RegisterWindowClass(HINSTANCE hInstance)
@@ -167,7 +190,7 @@ void Settings::CreateWindowHandle(int width, int height, const wstring& title, b
 
 	CreateWindowEx(NULL, TEXT("BUTTON"), TEXT("Apply"),
 		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		250, 100 + yLayoutOffset, 50, 20,
+		180, 140 + yLayoutOffset, 50, 20,
 		m_hWnd,
 		(HMENU)APPLY_BUTTON,
 		m_hInstance,
@@ -349,6 +372,22 @@ void Settings::CreateWindowHandle(int width, int height, const wstring& title, b
 	swprintf(buffer, TEXT("%d"), value);
 	SetDlgItemText(m_hWnd, PATCHES_HEIGHT, buffer);
 
+	CreateWindowEx(NULL, TEXT("BUTTON"), TEXT("Load file"),
+		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		300, 350, 100, 30,
+		m_hWnd,
+		(HMENU)LOAD_BUTTON,
+		m_hInstance,
+		NULL);
+
+	CreateWindowEx(NULL, TEXT("BUTTON"), TEXT("Save file"),
+		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		450, 350, 100, 30,
+		m_hWnd,
+		(HMENU)SAVE_BUTTON,
+		m_hInstance,
+		NULL);
+
 
 
 	//////////////NEXT/////////////////
@@ -517,7 +556,7 @@ void Settings::insertItemExternally()
 	wchar_t buf[30];
 	int selectedComboBoxItemIndex = SendMessage(hWndComboBox, CB_GETCURSEL, 0, 0);
 	SendMessage(hWndComboBox, CB_GETLBTEXT, selectedComboBoxItemIndex, (LPARAM)buf);
-	HTREEITEM item = m_settingsHelper.AddNewModelToTreeView(buf, m_list);
+	m_settingsHelper.AddNewModelToTreeView(buf, m_list);
 	//// Set the selection of the tree-view to be the first image
 	//// that has analyzed contour.
 	//NMHDR nmhdr;
@@ -553,7 +592,12 @@ LRESULT Settings::WndProc(UINT msg, WPARAM wParam, LPARAM lParam)
 	TCHAR surfaceWidth[32];
 	TCHAR surfaceHeight[32];
 	int a;
-	//swprintf(buf, TEXT("%f"), value);
+	string pathToWriteFile = "KubaScene.mg1";
+	// Fill the OPENFILENAME structure
+	TCHAR szFilters[] = TEXT("Model geometry files (*.mg1)\0*.mg1\0\0");
+	TCHAR szFilePathName[_MAX_PATH] = TEXT("");
+	OPENFILENAME ofn = { 0 };
+	wstring s;
 	if (selected != -1)
 	{
 		m_input->SetSelectedModel(selected);
@@ -603,6 +647,34 @@ LRESULT Settings::WndProc(UINT msg, WPARAM wParam, LPARAM lParam)
 
 			ctrl->view.m_rows = _wtoi(bufferHeight) <= 0 ? 1 : _wtoi(bufferHeight);
 			m_settingsHelper.AddNewModelToTreeView(buf, m_list);
+			return false;
+		case APPLY_BUTTON:
+			m_ParserManager.SaveScene(pathToWriteFile);
+			return false;
+		case LOAD_BUTTON:
+			ofn.lStructSize = sizeof(OPENFILENAME);
+			ofn.hwndOwner = m_hWnd;
+			ofn.lpstrFilter = szFilters;
+			ofn.lpstrFile = szFilePathName;
+			ofn.nMaxFile = _MAX_PATH;
+			ofn.lpstrTitle = TEXT("Open File");
+			ofn.Flags = OFN_FILEMUSTEXIST;
+			GetOpenFileName(&ofn);
+			s = (wstring)(ofn.lpstrFile);
+			m_ParserManager.LoadScene(string(s.begin(), s.end()));
+			return false;
+		case SAVE_BUTTON:
+			ofn.lStructSize = sizeof(OPENFILENAME);
+			ofn.hwndOwner = m_hWnd;
+			ofn.lpstrFilter = szFilters;
+			ofn.lpstrFile = szFilePathName;
+			ofn.lpstrDefExt = TEXT("mg1");
+			ofn.nMaxFile = _MAX_PATH;
+			ofn.lpstrTitle = TEXT("Save File");
+			ofn.Flags = OFN_OVERWRITEPROMPT;
+			GetSaveFileName(&ofn);
+			s = (wstring)(ofn.lpstrFile);
+			m_ParserManager.SaveScene(string(s.begin(), s.end()));
 			return false;
 		case COMBO_BASE:
 			selectedComboBoxItemIndex = SendMessage(m_baseComboBox, CB_GETCURSEL, 0, 0);

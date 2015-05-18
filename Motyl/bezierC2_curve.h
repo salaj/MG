@@ -42,7 +42,7 @@ public:
 	XMFLOAT3 calculateInBSplineBase(float t);
 	vector<SimplePoint*> m_Bezier;
 	static CurveBase m_base;
-
+	vector<SimplePoint*> GetDeboors();
 protected:
 	static float calculateSingleDeBoor(int n, int i, double t, double* knots, int maxI);
 	vector<ModelClass*> m_deBoor;

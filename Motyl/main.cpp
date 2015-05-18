@@ -39,18 +39,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine,
 		SceneService* sceneService = scene.get()->GetSceneService();
 		engineNotifier.reset(new EngineNotifier(sceneService));
 		settings.get()->SetEngineNotifier(engineNotifier.get());
-		//////
-		//// register TreeView from comctl32.dll before creating windows
-
-		//// create a child dialog box contains controls
-		//Win::ControllerMain ctrl;
-		//Win::DialogWindow dialog(hInstance, IDD_DIALOG1, 0, &ctrl);
-		//dialog.create();
-		//dialog.show();
-
-		//////
-
-
 		exitCode = scene->Run(w.get(), settings.get(), cmdShow);
 	}
 	catch (Exception& e)

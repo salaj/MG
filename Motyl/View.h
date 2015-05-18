@@ -21,6 +21,20 @@
 
 namespace Win
 {
+
+	class InsertionParams
+	{
+	public:
+		InsertionParams();
+		InsertionParams(ModelClass* model, HTREEITEM item)
+		{
+			this->model = model;
+			this->item = item;
+		}
+		ModelClass* model;
+		HTREEITEM item;
+	};
+
     class View
     {
     public:
@@ -39,9 +53,10 @@ namespace Win
         void tvBeginDrag(NMTREEVIEW* tv);
         void tvDragItem(HWND parent, int x, int y);
         void tvDropItem();
+		void CopyItem(HTREEITEM source, HTREEITEM target);
         bool isTreeViewItemDragged() const { return tvItemDragged; };
 		HTREEITEM getSelected();
-		HTREEITEM insertItem(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
+		InsertionParams* insertItem(const wchar_t* str, ItemType type = ItemType::ItemPoint, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);
 		int findIdOfGenuine(const wchar_t* str);
 		//request to remove all copy items with given id
 		void removeItem(HTREEITEM item);

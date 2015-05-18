@@ -59,6 +59,7 @@ public:
 	//POLYGON Contour
 	std::shared_ptr<ID3D11Buffer> m_vertexBufferContour, m_indexBufferContour;
 	int m_vertexCountContour, m_indexCountContour;
+	vector<SimplePoint*> GetNodes();
 protected:
 	
 	////bernstein polygon vertices
