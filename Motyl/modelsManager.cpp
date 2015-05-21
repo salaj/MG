@@ -335,44 +335,44 @@ void ModelsManager::RemoveModel(int id)
 		m_bspline_surfaces.erase(id);
 }
 
-vector<ModelClass*>& ModelsManager::GetActiveModels()
+vector<ModelClass*> ModelsManager::GetActiveModels()
 {
-	vector<ModelClass*>* activeModels = new vector<ModelClass*>();
+	vector<ModelClass*> activeModels;
 	for (map<int, ModelClass*> ::iterator it = m_active_models.begin(); it != m_active_models.end(); it++)
 	{
-		activeModels->push_back((*it).second);
+		activeModels.push_back((*it).second);
 	}
-	return *activeModels;
+	return activeModels;
 }
 
-vector<BezierCurve*>& ModelsManager::GetBezierCurves()
+vector<BezierCurve*> ModelsManager::GetBezierCurves()
 {
-	vector<BezierCurve*>* curves = new vector<BezierCurve*>();
+	vector<BezierCurve*> curves;
 	for (map<int, BezierCurve*> ::iterator it = m_bezier_curves.begin(); it != m_bezier_curves.end(); it++)
 	{
-		curves->push_back((*it).second);
+		curves.push_back((*it).second);
 	}
-	return *curves;
+	return curves;
 }
 
-vector<BezierSurface*>& ModelsManager::GetBezierSurfaces()
+vector<BezierSurface*> ModelsManager::GetBezierSurfaces()
 {
-	vector<BezierSurface*>* surfaces = new vector<BezierSurface*>();
+	vector<BezierSurface*> surfaces;
 	for (map<int, BezierSurface*> ::iterator it = m_bezier_surfaces.begin(); it != m_bezier_surfaces.end(); it++)
 	{
-		surfaces->push_back((*it).second);
+		surfaces.push_back((*it).second);
 	}
-	return *surfaces;
+	return surfaces;
 }
 
-vector<BSplineSurface*>& ModelsManager::GetBSplineSurfaces()
+vector<BSplineSurface*> ModelsManager::GetBSplineSurfaces()
 {
-	vector<BSplineSurface*>* surfaces = new vector<BSplineSurface*>();
+	vector<BSplineSurface*>surfaces;
 	for (map<int, BSplineSurface*> ::iterator it = m_bspline_surfaces.begin(); it != m_bspline_surfaces.end(); it++)
 	{
-		surfaces->push_back((*it).second);
+		surfaces.push_back((*it).second);
 	}
-	return *surfaces;
+	return surfaces;
 }
 
 
@@ -478,22 +478,22 @@ ModelClass* ModelsManager::AddModel(ModelType type)
 
 
 
-map<int, ModelClass*>& ModelsManager::GetModels()
+map<int, ModelClass*> ModelsManager::GetModels()
 {
-	map<int, ModelClass*>* extendedSetOfModels = new map<int, ModelClass*>;
+	map<int, ModelClass*> extendedSetOfModels;
 	for (map<int, ModelClass*> ::iterator it = ++(m_models.begin()); it != m_models.end(); it++)
 	{
-		extendedSetOfModels->insert(*it);
+		extendedSetOfModels.insert(*it);
 		if ((*it).second->m_Type == ModelType::BezierC2Type || (*it).second->m_Type == ModelType::InterpolatedC2Type)
 		{
 			BezierC2Curve* curve = dynamic_cast<BezierC2Curve*>((*it).second);
 			for (int i = 0; i < curve->m_Bezier.size(); i++)
 			{
-				extendedSetOfModels->insert(pair<int, ModelClass*>(curve->m_Bezier[i]->m_id, curve->m_Bezier[i]));
+				extendedSetOfModels.insert(pair<int, ModelClass*>(curve->m_Bezier[i]->m_id, curve->m_Bezier[i]));
 			}
 		}
 	}
-	return *extendedSetOfModels;
+	return extendedSetOfModels;
 }
 
 ModelClass* ModelsManager::GetModelById(int id)

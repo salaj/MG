@@ -77,6 +77,7 @@ void SceneHelper::deselectCurrentModel()
 {
 	vector<int> single = vector<int>();
 	m_modelsManager.SetActiveModels(single);
+	mirroredModel = nullptr;
 }
 
 XMFLOAT2 translatePoint(POINT mousePosition)
@@ -118,7 +119,7 @@ void SceneHelper::findClosestWithMouse(XMVECTOR orig, XMVECTOR dir)
 	if (minVal < minSquareDistance)
 	{
 		selectNewAndDeselectOldModel(models[index]);
-		delete &models;
+		//delete &models;
 	}
 }
 
@@ -152,10 +153,35 @@ void SceneHelper::findClosestModelWithMouse(POINT mousePosition)
 		if (minVal < minSquareDistance)
 		{
 			selectNewAndDeselectOldModel(models[index]);
-			delete &models;
 			break;
 		}
 	}
+}
+
+ModelClass* SceneHelper::findMirroredModel(map<int, ModelClass*>& models, ModelClass* relativeTo)
+{
+	Cursor cursor = Cursor(); //tmp cursor
+	ModelsManager::setModelToPosition(dynamic_cast<ModelClass*>(&cursor), relativeTo->GetPosition3());
+	cursor.m_modelMatrix(3, 2) *= -1; //mirror in z;
+	float minVal = FLT_MAX;
+	int index = -1;
+	float minSquareDistance = 0.02f;
+	for (map<int, ModelClass*> ::iterator it = (models.begin()); it != models.end(); it++)
+	{
+		ModelClass* model = (*it).second;
+		float val = ModelClass::GetSquareDistanceBetweenModels(&cursor, model);
+		if (val < minVal)
+		{
+			index = (*it).first;
+			minVal = val;
+		}
+	}
+	if (minVal < minSquareDistance)
+	{
+		return models[index];
+	}
+	else
+		return nullptr;
 }
 
 void SceneHelper::findClosestModelWithCursor()
@@ -179,6 +205,9 @@ void SceneHelper::findClosestModelWithCursor()
 	}
 	if (minVal < minSquareDistance)
 	{
+		mirroredModel = findMirroredModel(models, models[index]);
+		if (mirroredModel == models[index])
+			mirroredModel = nullptr;
 		selectNewAndDeselectOldModel(models[index]);
 	}
 }
@@ -210,6 +239,10 @@ void SceneHelper::translateModels(vector<ModelClass*>& models, XMFLOAT4 offset, 
 	{
 		models[i]->Translate(offset);
 	}
+	if (mirroredModel != nullptr)
+	{
+		mirroredModel->Translate(XMFLOAT4(offset.x, offset.y, -offset.z, offset.w));
+	}
 	if (forceRefresh && shallBeRefreshed)
 	{
 		translatePostActions(models);
@@ -233,6 +266,11 @@ void SceneHelper::translatePostActions(vector<ModelClass*>& models)
 		}
 	}
 
+	SimplePoint* mirroredPoint = nullptr;
+	if (mirroredModel != nullptr)
+		mirroredPoint = dynamic_cast<SimplePoint*>(mirroredModel);
+
+
 
 	vector<BezierSurface*> bezierSurfaces = m_modelsManager.GetBezierSurfaces();
 	for (int i = 0; i < bezierSurfaces.size(); i++)
@@ -254,6 +292,8 @@ void SceneHelper::translatePostActions(vector<ModelClass*>& models)
 			if (models[j]->m_Type == ModelType::SimplePointType)
 			{
 				bsplineSurfaces[i]->UpdateNode(dynamic_cast<SimplePoint*>(models[j]));
+				if (mirroredPoint != nullptr)
+					bsplineSurfaces[i]->UpdateNode(mirroredPoint);
 			}
 		}
 	}

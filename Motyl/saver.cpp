@@ -42,7 +42,10 @@ void Saver::SaveScene(string pathToSaveFile)
 //
 void Saver::parseModelMatrix(FILE* myWritefile, XMMATRIX& m)
 {
-	fprintf(myWritefile, "TMtx=");
+	swap(m(3, 0), m(0, 3));
+	swap(m(3, 1), m(1, 3));
+	swap(m(3, 2), m(2, 3));
+	fprintf(myWritefile, "TMtx=\n");
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
@@ -51,9 +54,6 @@ void Saver::parseModelMatrix(FILE* myWritefile, XMMATRIX& m)
 		}
 		fprintf(myWritefile, "\n");
 	}
-	//swap(m(3, 0), m(0, 3));
-	//swap(m(3, 1), m(1, 3));
-	//swap(m(3, 2), m(2, 3));
 }
 
 void Saver::parseModelControlPoints(FILE* myReadfile, vector<SimplePoint*>& nodes)
@@ -69,7 +69,7 @@ void Saver::parseModel(FILE* myReadFile, ModelClass* model)
 	string name;
 	if (model->m_Type == ModelType::BSplineSurfaceType)
 	{
-		name = "BSplineSurface";
+		name = "BezierSurfaceC2";
 	}
 	else if (model->m_Type == ModelType::SimplePointType)
 	{
@@ -133,15 +133,19 @@ void Saver::parseModel(FILE* myReadFile, ModelClass* model)
 			fprintf(myReadFile, "Cylindrical=True\n");
 	}
 	XMFLOAT3 position = model->GetPosition3();
-	fprintf(myReadFile, "X=%f\n", position.x);
-	fprintf(myReadFile, "Y=%f\n", position.y);
-	fprintf(myReadFile, "Z=%f\n", position.z);
+	//fprintf(myReadFile, "X=%f\n", position.x);
+	//fprintf(myReadFile, "Y=%f\n", position.y);
+	//fprintf(myReadFile, "Z=%f\n", position.z);
+	fprintf(myReadFile, "X=0\n");
+	fprintf(myReadFile, "Y=0\n");
+	fprintf(myReadFile, "Z=0\n");
 
 	if (model->m_Type == SimplePointType)
 	{
+		model->ScaleDown(); //we do not want any model selected
 		model->ScaleBackToDefault();
 	}
-	parseModelMatrix(myReadFile, model->m_modelMatrix);
+	parseModelMatrix(myReadFile, XMMATRIX(model->m_modelMatrix));
 	if (model->m_Type == SimplePointType)
 	{
 		model->ScaleToDefault();

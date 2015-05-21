@@ -67,6 +67,8 @@ class SceneHelper
 
 		void findClosestModelWithCursor();
 		void findClosestModelWithMouse(POINT mousePosition);
+		ModelClass* findMirroredModel(map<int, ModelClass*>& models, ModelClass* relativeTo);
+		ModelClass* mirroredModel = nullptr;
 
 		double refreshRate = 0.1f;
 		double refreshRateLong = 1.0f;

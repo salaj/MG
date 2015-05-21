@@ -49,6 +49,7 @@ void Settings::FakeLoad()
 	////////LOAD///////////
 	//string pathToLoadFile = "Scene.mg1";
 	//string pathToLoadFile = "KubaScene.mg1";
+	//string pathToLoadFile = "Hat.mg1";
 	//m_ParserManager.LoadScene(pathToLoadFile);
 
 	////////SAVE///////////

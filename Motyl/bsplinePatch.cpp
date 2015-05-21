@@ -223,6 +223,7 @@ void BSplinePatch::generateLines(list<VertexPos*>& vertices)
 				) });
 		}
 	}
+	delete[]T;
 }
 
 void BSplinePatch::generateBezierNet(VertexPos* verticesContour)
@@ -270,11 +271,12 @@ void BSplinePatch::Reset()
 	for (list<VertexPos*>::iterator it = vertices.begin(); it != vertices.end(); it++)
 	{
 		arr[ind++] = *(*it);
+		delete *it;
 	}
 	m_vertexBuffer = m_device.CreateVertexBuffer(arr, m_vertexCount);
 	m_vertexBufferContour = m_device.CreateVertexBuffer(verticesContour, m_vertexCountContour);
-	delete arr;
-	delete verticesContour;
+	delete []arr;
+	delete []verticesContour;
 	setPointTopology();
 }
 

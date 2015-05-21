@@ -37,11 +37,11 @@ public:
 	static void* operator new(size_t size);
 	static void operator delete(void* ptr);
 
-	map<int, ModelClass*>& GetModels();
-	vector<ModelClass*>& GetActiveModels();
-	vector<BezierCurve*>& GetBezierCurves();
-	vector<BezierSurface*>& GetBezierSurfaces();
-	vector<BSplineSurface*>& GetBSplineSurfaces();
+	map<int, ModelClass*> GetModels();
+	vector<ModelClass*> GetActiveModels();
+	vector<BezierCurve*> GetBezierCurves();
+	vector<BezierSurface*> GetBezierSurfaces();
+	vector<BSplineSurface*> GetBSplineSurfaces();
 	void CreateModels();
 	void SetActiveModels(vector<int>&);
 	void AddActiveModel(int);

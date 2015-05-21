@@ -12,6 +12,7 @@ void Loader::Initialize(SettingsHelper* settingsHelper)
 
 void Loader::LoadScene(string pathToLoadFile)
 {
+	m_ListViewItemMapper.clear();
 	FILE* myReadfile;
 	myReadfile = fopen(pathToLoadFile.c_str(), "r");
 	string line = string();
@@ -43,7 +44,7 @@ void Loader::LoadScene(string pathToLoadFile)
 		{
 			params = parseModel(myReadfile, ParseType::ParseBezierSurface);
 		}
-		else if (strcmp(line.c_str(), "BSplineSurface") == 0)
+		else if (strcmp(line.c_str(), "BSplineSurface") == 0 || strcmp(line.c_str(), "BezierSurfaceC2") == 0)
 		{
 			params = parseModel(myReadfile, ParseType::ParseBSplineSurface);
 		}
@@ -53,12 +54,12 @@ void Loader::LoadScene(string pathToLoadFile)
 	fclose(myReadfile);
 }
 
-void swap(float& a, float& b)
-{
-	float tmp = a;
-	a = b;
-	b = tmp;
-}
+//void swap(float& a, float& b)
+//{
+//	float tmp = a;
+//	a = b;
+//	b = tmp;
+//}
 
 XMMATRIX& Loader::parseModelMatrix(FILE* myReadfile)
 {
@@ -71,9 +72,13 @@ XMMATRIX& Loader::parseModelMatrix(FILE* myReadfile)
 			fscanf(myReadfile, "%f", &val);
 			m(i, j) = val;
 		}
-	//swap(m(3, 0), m(0, 3));
-	//swap(m(3, 1), m(1, 3));
-	//swap(m(3, 2), m(2, 3));
+	swap(m(3, 0), m(0, 3));
+	swap(m(3, 1), m(1, 3));
+	swap(m(3, 2), m(2, 3));
+
+	//m(3, 0) = 0;
+	//m(3, 1) = 0;
+	//m(3, 2) = 0;
 	 
 	fscanf(myReadfile, "\n");
 	return m;
@@ -197,8 +202,16 @@ void Loader::recreateModel(ModelParams* params)
 	model->m_modelMatrix = params->modelMatrix;
 	if (params->parseType == ParseType::ParsePoint)
 		model->ScaleToDefault();
-	model->SetPosition(XMVectorSet(params->X, params->Y, params->Z, 1));
 
+	//model->SetPosition(XMVectorSet(params->X, params->Y, params->Z, 1));
+
+	//XMMATRIX m = XMMATRIX(
+	//	1, 0, 0, 0,
+	//	0, 1, 0, 0,
+	//	0, 0, 1, 0,
+	//	params->X, params->Y, params->Z, 1
+	//);
+	model->Translate(XMFLOAT4(params->X, params->Y, params->Z, 1));
 
 	//////COPY CHILDREN//////
 	vector<int>* controlPoints = params->controlPoints;
