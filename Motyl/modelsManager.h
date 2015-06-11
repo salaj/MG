@@ -16,6 +16,8 @@
 #include "bezierSurface.h"
 #include "bsplinePatch.h"
 #include "bsplineSurface.h"
+#include "gregoryPatch.h"
+#include "gregorySurface.h"
 #include "interpolatedC2_curve.h"
 #include "shader_torus.h"
 #include "shader_elipsoid.h"
@@ -42,6 +44,7 @@ public:
 	vector<BezierCurve*> GetBezierCurves();
 	vector<BezierSurface*> GetBezierSurfaces();
 	vector<BSplineSurface*> GetBSplineSurfaces();
+	vector<GregorySurface*> GetGregorySurfaces();
 	void CreateModels();
 	void SetActiveModels(vector<int>&);
 	void AddActiveModel(int);
@@ -60,6 +63,7 @@ public:
 	void RemoveModel(int);
 
 	static void setModelToPosition(ModelClass*, XMFLOAT3);
+	void collapseMultiSelected(vector<SimplePoint*>& multiSelected);
 
 	ModelClass* GetCursor();
 	ModelClass* selected = NULL;
@@ -69,10 +73,16 @@ private:
 	map<int, BezierCurve*> m_bezier_curves;
 	map<int, BezierSurface*> m_bezier_surfaces;
 	map<int, BSplineSurface*> m_bspline_surfaces;
+	map<int, GregorySurface*> m_gregory_surfaces;
 	Service m_service;
 
 	void createFakeC2Curve();
 	void createFakeInterpolatedC2Curve();
-	void createFakeSurfaceC0();
-	void createFakeSurfaceC2();
+	BezierPatch* createFakePatchC0();
+	void createFakePatchC2();
+	GregoryPatch* createFakeGregoryPatch();
+	void createFakeGregorySurface();
+	BezierSurface* createFakeSurfaceC0();
+	vector<BezierSurface*> createTripleSurfaceHole();
+	/*void createFakeSurfaceC2();*/
 };

@@ -36,7 +36,7 @@ void ModelsManager::DrawModels()
 	}
 }
 
-void ModelsManager::createFakeSurfaceC0()
+BezierPatch* ModelsManager::createFakePatchC0()
 {
 	ModelClass* point;
 	vector<ModelClass*> nodes = vector<ModelClass*>();
@@ -44,7 +44,7 @@ void ModelsManager::createFakeSurfaceC0()
 		for (int j = 0; j < 4; j++)
 		{
 			point = AddModel(ModelType::SimplePointType);
-			point->Translate(XMFLOAT4(i * 5.0f, j * 5.0f, 0, 1));
+			point->Translate(XMFLOAT4(i * 0.1f, j * 0.1f, 0, 1));
 			nodes.push_back(point);
 		}
 	m_service.shaderIndex = 5;
@@ -52,9 +52,183 @@ void ModelsManager::createFakeSurfaceC0()
 	bezierPatch->Initialize();
 	dynamic_cast<BezierPatch*>(bezierPatch)->SetNodes(nodes);
 	m_models.insert(pair<int, ModelClass*>(bezierPatch->m_id, bezierPatch));
+	return bezierPatch;
 }
 
-void ModelsManager::createFakeSurfaceC2()
+GregoryPatch* ModelsManager::createFakeGregoryPatch()
+{
+	ModelClass* point;
+	vector<ModelClass*> nodes = vector<ModelClass*>();
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0, 0, 0, 1));
+	nodes.push_back(point);
+
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0.1f, 0.0f, 0, 1));
+	nodes.push_back(point);
+
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0.2f, 0.0f, 0, 1));
+	nodes.push_back(point);
+
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0.3f, 0.0f, 0, 1));
+	nodes.push_back(point);
+	///////////
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0, 0.1f, 0, 1));
+	nodes.push_back(point);
+
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0.1f, 0.1f, 0, 1));
+	nodes.push_back(point);
+
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0.1f, 0.1f, 0, 1));
+	nodes.push_back(point);
+
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0.2f, 0.1f, 0, 1));
+	nodes.push_back(point);
+
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0.2f, 0.1f, 0, 1));
+	nodes.push_back(point);
+
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0.3f, 0.1f, 0, 1));
+	nodes.push_back(point);
+	///////////
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0, 0.2f, 0, 1));
+	nodes.push_back(point);
+
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0.1f, 0.2f, 0, 1));
+	nodes.push_back(point);
+
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0.1f, 0.2f, 0, 1));
+	nodes.push_back(point);
+
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0.2f, 0.2f, 0, 1));
+	nodes.push_back(point);
+
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0.2f, 0.2f, 0, 1));
+	nodes.push_back(point);
+
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0.3f, 0.2f, 0, 1));
+	nodes.push_back(point);
+
+	////////////////
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0, 0.3f, 0, 1));
+	nodes.push_back(point);
+
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0.1f, 0.3f, 0, 1));
+	nodes.push_back(point);
+
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0.2f, 0.3f, 0, 1));
+	nodes.push_back(point);
+
+	point = AddModel(ModelType::SimplePointType);
+	point->Translate(XMFLOAT4(0.3f, 0.3f, 0, 1));
+	nodes.push_back(point);
+
+	m_service.shaderIndex = 7;
+	GregoryPatch* gregoryPatch = new GregoryPatch(m_service);
+	gregoryPatch->Initialize();
+	gregoryPatch->SetNodes(nodes);
+	m_models.insert(pair<int, ModelClass*>(gregoryPatch->m_id, gregoryPatch));
+	return gregoryPatch;
+}
+
+void ModelsManager::createFakeGregorySurface()
+{
+	GregorySurface* gregorySurface = new GregorySurface();
+	GregoryPatch* gregoryPatch = createFakeGregoryPatch();
+	gregorySurface->AddPatch(gregoryPatch);
+
+	gregoryPatch = createFakeGregoryPatch();
+	gregorySurface->AddPatch(gregoryPatch);
+	gregoryPatch = createFakeGregoryPatch();
+	gregorySurface->AddPatch(gregoryPatch);
+
+	vector<BezierSurface*> bezierSurfaces = createTripleSurfaceHole();
+	gregorySurface->SetBezierSurfaces(bezierSurfaces);
+	gregorySurface->TranslatePoints(TranslatedBezier::right);
+	m_gregory_surfaces.insert(pair<int, GregorySurface*>(gregorySurface->m_id, gregorySurface));
+	m_models.insert(pair<int, ModelClass*>(gregorySurface->m_id, gregorySurface));
+}
+
+BezierSurface* ModelsManager::createFakeSurfaceC0()
+{
+	BezierPatch* bezierPatch = createFakePatchC0();
+	BezierSurface* bezierSurface = new BezierSurface();
+	bezierSurface->AddPatch(bezierPatch);
+	m_models.insert(pair<int, ModelClass*>(bezierSurface->m_id, bezierSurface));
+	AddBezierSurface(bezierSurface);
+	return bezierSurface;
+}
+
+vector<BezierSurface*> ModelsManager::createTripleSurfaceHole()
+{
+	vector<BezierSurface*> bezierSurfaces;
+	BezierSurface* surface1 = createFakeSurfaceC0();
+	vector<SimplePoint*> points = surface1->GetNodes();
+	for (int i = 0; i < points.size(); i++)
+	{
+		points[i]->RotateZ(XM_PI / 6.0f);
+		points[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));
+	}
+	surface1->Reset();
+	BezierSurface* surface2 = createFakeSurfaceC0();
+	vector<SimplePoint*> points2 = surface2->GetNodes();
+	for (int i = 0; i < points2.size(); i++)
+	{
+		points2[i]->RotateZ(XM_PI / 6.0f);
+		points2[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));
+		points2[i]->m_modelMatrix = points[i]->m_modelMatrix * XMMatrixScaling(-1.0, 1.0f, 1.0f);
+	}
+
+	surface2->Reset();
+	vector<SimplePoint*>toCollapse;
+	toCollapse.push_back(surface1->GetNodes()[15]);
+	toCollapse.push_back(surface2->GetNodes()[15]);
+	collapseMultiSelected(toCollapse);
+
+	BezierSurface* surface3 = createFakeSurfaceC0();
+	vector<SimplePoint*> points3 = surface3->GetNodes();
+	for (int i = 0; i < points3.size(); i++)
+	{
+		points3[i]->Translate(XMFLOAT4(-0.15f, -0.6f, 0.0f, 0.0f));
+	}
+	surface3->Reset();
+
+	vector<SimplePoint*>toCollapse2;
+	toCollapse2.push_back(surface2->GetNodes()[12]);
+	toCollapse2.push_back(surface3->GetNodes()[15]);
+	collapseMultiSelected(toCollapse2);
+
+
+	vector<SimplePoint*>toCollapse3;
+	toCollapse3.push_back(surface1->GetNodes()[12]);
+	toCollapse3.push_back(surface3->GetNodes()[3]);
+	collapseMultiSelected(toCollapse3);
+
+	bezierSurfaces.push_back(surface1);
+	bezierSurfaces.push_back(surface2);
+	bezierSurfaces.push_back(surface3);
+
+	return bezierSurfaces;
+}
+
+void ModelsManager::createFakePatchC2()
 {
 	ModelClass* point;
 	vector<ModelClass*> nodes = vector<ModelClass*>();
@@ -63,7 +237,7 @@ void ModelsManager::createFakeSurfaceC2()
 		for (int j = 0; j < 4; j++)
 		{
 			point = AddModel(ModelType::SimplePointType);
-			point->Translate(XMFLOAT4(i * 5.0f, j * 5.0f, 0, 1));
+			point->Translate(XMFLOAT4(i * 0.1f, j * 0.1f, 0, 1));
 			nodes.push_back(point);
 		}
 
@@ -87,7 +261,7 @@ void ModelsManager::createFakeSurfaceC2()
 		{
 			{
 				point = AddModel(ModelType::SimplePointType);
-				point->Translate(XMFLOAT4((i + 3) * 5.0f, j * 5.0f, 0, 1));
+				point->Translate(XMFLOAT4((i + 3) * 0.1f, j * 0.1f, 0, 1));
 				nodes_second.push_back(point);
 			}
 		}
@@ -140,13 +314,13 @@ void ModelsManager::createFakeInterpolatedC2Curve()
 	ModelClass* point0 = AddModel(ModelType::SimplePointType);
 
 	ModelClass* point1 = AddModel(ModelType::SimplePointType);
-	point1->Translate(XMFLOAT4(10.0f, 10.0f, 0, 1));
+	point1->Translate(XMFLOAT4(0.1f, 0.1f, 0, 1));
 
 	ModelClass* point2 = AddModel(ModelType::SimplePointType);
-	point2->Translate(XMFLOAT4(20.0f, 15.0f, 0, 1));
+	point2->Translate(XMFLOAT4(0.2f, 0.15f, 0, 1));
 
 	ModelClass* point3 = AddModel(ModelType::SimplePointType);
-	point3->Translate(XMFLOAT4(30.0f, 5.0f, 0, 1));
+	point3->Translate(XMFLOAT4(0.3f, 0.5f, 0, 1));
 
 	//ModelClass* point4 = AddModel(ModelType::SimplePointType);
 	//point4->Translate(XMFLOAT4(40.0f, 10.0f, 0, 1));
@@ -219,14 +393,40 @@ void ModelsManager::CreateModels()
 
 	//createFakeC2Curve();
 	//createFakeInterpolatedC2Curve();
+	//createFakePatchC0();
+	//createFakePatchC2();
 	//createFakeSurfaceC0();
-	//createFakeSurfaceC2();
+
+	//createFakeGregoryPatch();
+	createFakeGregorySurface();
+
+	//createTripleSurfaceHole();
 
 	//BezierCurve* bezierCurve = new BezierCurve(m_service);
 	//dynamic_cast<BezierCurve*>(bezierCurve)->SetNodes(nodes);
 	//bezierCurve->Initialize();
 	//m_models.push_back(bezierCurve);
 	//AddBezierCurve(bezierCurve);
+}
+
+void ModelsManager::collapseMultiSelected(vector<SimplePoint*>& multiSelected)
+{
+	if (multiSelected.size() < 2)
+		return;
+	XMVECTOR meanPos = (XMLoadFloat3(&(multiSelected[0]->GetPosition3())) + XMLoadFloat3(&(multiSelected[1]->GetPosition3()))) / 2.0f;
+	vector<BezierSurface*> surfaces = GetBezierSurfaces();
+	multiSelected[0]->SetPosition(meanPos);
+	multiSelected[1]->SetPosition(meanPos);
+	multiSelected[0]->ScaleDown();
+	multiSelected[1]->ScaleDown();
+	for (int i = 0; i < surfaces.size(); i++)
+	{
+		surfaces[i]->ReplaceNode(multiSelected[0], multiSelected[1]);
+		surfaces[i]->Reset();
+	}
+	RemoveModel(multiSelected[0]->m_id);
+	multiSelected.clear();
+
 }
 
 ModelsManager::~ModelsManager()
@@ -375,6 +575,16 @@ vector<BSplineSurface*> ModelsManager::GetBSplineSurfaces()
 	return surfaces;
 }
 
+vector<GregorySurface*> ModelsManager::GetGregorySurfaces()
+{
+	vector<GregorySurface*>surfaces;
+	for (map<int, GregorySurface*> ::iterator it = m_gregory_surfaces.begin(); it != m_gregory_surfaces.end(); it++)
+	{
+		surfaces.push_back((*it).second);
+	}
+	return surfaces;
+}
+
 
 void ModelsManager::CopyOtherModelAfinityMatrix(ModelClass *model, ModelClass *relative_model)
 {
@@ -386,6 +596,7 @@ ModelClass* ModelsManager::GetCursor()
 {
 	return m_models[0];
 }
+static int op = 0;
 
 ModelClass* ModelsManager::AddModel(ModelType type)
 {
@@ -398,6 +609,10 @@ ModelClass* ModelsManager::AddModel(ModelType type)
 	BezierSurface* bezierSurface;
 	BSplinePatch* bsplinePatch;
 	BSplineSurface* bsplineSurface;
+	GregoryPatch* gregoryPatch;
+	GregorySurface* gregorySurface;
+	vector<SimplePoint*> points;
+
 	ModelClass* cursor = GetCursor();
 	//chcemy przestawiæ w dok³adnie to miejsce na ekranie, cursor wczeœniej mia³ nadan¹ skalê
 	XMFLOAT4 cursorPosition = cursor->GetPosition();
@@ -465,6 +680,18 @@ ModelClass* ModelsManager::AddModel(ModelType type)
 		m_models.insert(pair<int, ModelClass*>(bsplineSurface->m_id, bsplineSurface));
 		AddBSplineSurface(bsplineSurface);
 		return bsplineSurface;
+
+	case GregoryPatchType:
+		m_service.shaderIndex = 7;
+		gregoryPatch = new GregoryPatch(m_service);
+		gregoryPatch->Initialize();
+		m_models.insert(pair<int, ModelClass*>(gregoryPatch->m_id, gregoryPatch));
+		return gregoryPatch;
+	case GregorySurfaceType:
+		gregorySurface = new GregorySurface();
+		m_models.insert(pair<int, ModelClass*>(gregorySurface->m_id, gregorySurface));
+		m_gregory_surfaces.insert(pair<int, GregorySurface*>(gregorySurface->m_id, gregorySurface));
+		return gregorySurface;
 	//case ElipsoidType:
 	//	m_service.shaderIndex = 1;
 	//	m_models.push_back(new Elipsoid(m_service));

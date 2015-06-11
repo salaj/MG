@@ -3,30 +3,55 @@
 #include <d3dx10math.h>
 #include "bezier_segment.h"
 #include "simple_point .h"
-#include "shader_bezier_patch.h"
+#include "shader_gregory_patch.h"
 
-class BezierPatch : public ModelClass{
+class GregoryPatch : public ModelClass{
 public:
-	BezierPatch();
+	GregoryPatch();
 	static void* operator new(size_t size);
 	static void operator delete(void* ptr);
-	BezierPatch(const BezierPatch&);
-	BezierPatch(Service& servie);
-	~BezierPatch();
+	GregoryPatch(const GregoryPatch&);
+	GregoryPatch(Service& servie);
+	~GregoryPatch();
 
 	virtual void SetNodes(vector<ModelClass*>& nodes);
 	virtual void Initialize();
 	virtual void Draw();
 	virtual void Reset();
-	//virtual void UpdateNode(SimplePoint*);
 	//POLYGON Contour
 	std::shared_ptr<ID3D11Buffer> m_vertexBufferContour, m_indexBufferContour;
 	int m_vertexCountContour, m_indexCountContour;
 	int verticalSpaces, horizontalSpaces;
 	vector<SimplePoint*> GetNodes();
-	void ReplaceNode(int indexToReplace, SimplePoint* replacement);
-	XMFLOAT4 Q(float u, float v);
-	XMFLOAT4 InterpolatedControlPoint(float u, float v);
+
+	//first row
+	SimplePoint* p0;
+	SimplePoint* e0plus;
+	SimplePoint* e1minus;
+	SimplePoint* p1;
+
+	//second row
+	SimplePoint* e0minus;
+	SimplePoint* f0minus;
+	SimplePoint* f0plus;
+	SimplePoint* f1minus;
+	SimplePoint* f1plus;
+	SimplePoint* e1plus;
+
+	//third row
+	SimplePoint* e3plus;
+	SimplePoint* f3plus;
+	SimplePoint* f3minus;
+	SimplePoint* f2plus;
+	SimplePoint* f2minus;
+	SimplePoint* e2minus;
+
+	//fourth row
+	SimplePoint* p3;
+	SimplePoint* e3minus;
+	SimplePoint* e2plus;
+	SimplePoint* p2;
+
 private:
 
 	vector<SimplePoint*> m_nodes;
@@ -34,13 +59,19 @@ private:
 	virtual void setTriangleTopology();
 	virtual void setLineTopology();
 
-	void createBezierPointMatrix();
+	void createDeBoorPointMatrix();
 	XMMATRIX createBernteinBaseVector(float val, bool transpose);
 	void generateLines(list<VertexPos*>&);
 	void generateBezierNet(VertexPos*);
-	//double bezier_length(SimplePoint* bezierNodes);
 
-	XMMATRIX matrixOfX, resultX;
-	XMMATRIX matrixOfY, resultY;
-	XMMATRIX matrixOfZ, resultZ;
+	XMMATRIX matrixOfX;
+	XMMATRIX matrixOfY;
+	XMMATRIX matrixOfZ;
+
+	float b_u[4];
+	float b_v[4];
+
+
+
+
 };

@@ -32,6 +32,7 @@ class SceneHelper
 		//void CheckSelectedByTreeView();
 		void IsBaseChanged();
 		void RefreshSpaces();
+		void IsCollapseClicked();
 
 		//for modelmanager class
 		map<int, ModelClass*>& GetModels();
@@ -41,6 +42,7 @@ class SceneHelper
 		void AddModel(ModelType type);
 
 		void findClosestWithMouse(XMVECTOR orig, XMVECTOR dir);
+		void collapseMultiSelected();
 
 	private:
 		InputClass*  m_InputClass;
@@ -83,5 +85,8 @@ class SceneHelper
 		bool isTranslationUp;
 		bool isRotationPending = false;
 		bool isRotationUp;
+
+		bool isMultiSelect = true;
+		vector<SimplePoint*> multiSelected;
 };
 

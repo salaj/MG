@@ -20,7 +20,9 @@ namespace gk2
 		static const std::wstring BezierPatch;
 		static const std::wstring BezierSurface;
 		static const std::wstring BSplinePatch;
+		static const std::wstring GregoryPatch;
 		static const std::wstring BSplineSurface;
+		static const std::wstring GregorySurface;
 
 
 		static const std::wstring BernsteinBase;
@@ -38,6 +40,8 @@ namespace gk2
 		static int BezierPatchCounter;
 		static int BSplineSurfaceCounter;
 		static int BSplinePatchCounter;
+		static int GregoryPatchCounter;
+		static int GregorySurfaceCounter;
 
 
 		InsertionParams* AddNewModelToTreeView(wchar_t*, HWND handle = 0);

@@ -51,6 +51,22 @@ void BezierSurface::UpdateNode(SimplePoint* point)
 	}
 }
 
+void BezierSurface::ReplaceNode(SimplePoint* point, SimplePoint* replacement)
+{
+	for (int i = 0; i < m_bezierPatches.size(); i++)
+	{
+		vector<SimplePoint*> patchNodes = m_bezierPatches[i]->GetNodes();
+		for (int j = 0; j < patchNodes.size(); j++)
+		{
+			if (patchNodes[j]->m_id == point->m_id)
+			{
+				m_bezierPatches[i]->ReplaceNode(j, replacement);
+				break;
+			}
+		}
+	}
+}
+
 void BezierSurface::AddPatch(BezierPatch* patch)
 {
 	m_bezierPatches.push_back(patch);
@@ -70,7 +86,7 @@ void BezierSurface::TranslateSurfacePoints()
 	double Y = (double)m_sizeY / (m_rows * 3);
 	for (map<int, SimplePoint*> ::iterator it = m_nodes.begin(); it != m_nodes.end(); it++)
 	{
-		(*it).second->Translate(XMFLOAT4(j * X - (m_sizeX / 2.0f ), i * Y - (m_sizeY / 2.0f), 0, 1));
+		(*it).second->Translate(XMFLOAT4(i * X - (m_sizeX / 2.0f ), j * Y - (m_sizeY / 2.0f), 0, 1));
 		if (j < m_cols * 3)
 			j++;
 		else
@@ -83,6 +99,11 @@ void BezierSurface::TranslateSurfacePoints()
 	{
 		m_bezierPatches[i]->Reset();
 	}
+}
+
+XMFLOAT4 BezierSurface::Q(float u, float v)
+{
+	return m_bezierPatches[0]->Q(u, v);
 }
 
 void BezierSurface::TranslateCyllinderPoints()

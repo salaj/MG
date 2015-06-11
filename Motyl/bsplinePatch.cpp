@@ -140,7 +140,7 @@ float BSplinePatch::calculateSingleDeBoor(int n, int i, double t, double* knots,
 
 void BSplinePatch::generateLines(list<VertexPos*>& vertices)
 {
-	double numberOfDots = 50;
+	double numberOfDots = 100;
 	int n = 3;
 	int m = m_nodes.size();
 	double* T = new double[m + n + 1];

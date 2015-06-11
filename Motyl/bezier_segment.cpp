@@ -38,6 +38,11 @@ list<VertexPos*> BezierSegment::GetSegmentPoints()
 	return vertices;
 }
 
+XMVECTOR BezierSegment::Q(float t)
+{
+	return XMLoadFloat3(&calculateCubic(t));
+}
+
 void BezierSegment::calculate(segment_length_calculator calculator)
 {
 	vertices.clear();

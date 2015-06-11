@@ -19,6 +19,7 @@ public:
 	XMVECTOR B;
 	XMVECTOR C;
 	XMVECTOR D;
+	XMVECTOR Q(float t);
 	void calculate(segment_length_calculator);
 	virtual bool Contain(SimplePoint* point);
 	double bezier_length(segment_length_calculator);

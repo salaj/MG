@@ -47,6 +47,11 @@ void BezierPatch::Initialize()
 		return;
 	}
 }
+void BezierPatch::ReplaceNode(int indexToReplace, SimplePoint* replacement)
+{
+	m_nodes[indexToReplace] = replacement;
+}
+
 vector<SimplePoint*> BezierPatch:: GetNodes()
 {
 	return m_nodes;
@@ -104,6 +109,39 @@ void BezierPatch::createBezierPointMatrix()
 			matrixOfY.m[i][j] = m_nodes[i * 4 + j]->GetPosition3().y;
 			matrixOfZ.m[i][j] = m_nodes[i * 4 + j]->GetPosition3().z;
 		}
+}
+
+XMFLOAT4 BezierPatch::InterpolatedControlPoint(float u, float v)
+{
+	//int u_down = (int)(u);
+	//int v_down = (int)(v);
+	//SimplePoint* first = m_nodes[u_down * 4 + v_down];
+	//SimplePoint* second = m_nodes[(u_down + 1) * 4 + (v_down + 1)];
+
+	//float h_u = u - u_down;
+	//float h_v = v - v_down;
+
+	//XMFLOAT4(
+	//	first->GetPosition3().x + (second->GetPosition3().x - first->GetPosition3().x) / 
+	//	)
+
+	//return first->GetPosition();
+	return nullptr;
+}
+
+XMFLOAT4 BezierPatch::Q(float u, float v)
+{
+	XMMATRIX B_u = createBernteinBaseVector(u, false);
+	XMMATRIX B_v = createBernteinBaseVector(v, true);
+		resultX = B_u * matrixOfX * B_v;
+		resultY = B_u * matrixOfY * B_v;
+		resultZ = B_u * matrixOfZ * B_v;
+		return XMFLOAT4(
+			resultX.m[0][0],
+			resultY.m[0][0],
+			resultZ.m[0][0],
+			1.0f
+			);
 }
 
 void BezierPatch::generateLines(list<VertexPos*>& vertices)

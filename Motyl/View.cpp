@@ -108,7 +108,8 @@ InsertionParams* View::insertItem(const wchar_t* str, ItemType type, HTREEITEM p
 	int id_Genuine;
 	if (type == ItemType::ItemPoint && 
 		(allItems[FindIdByViewItem(parent)][0].type == ItemType::ItemPatch ||
-		 allItems[FindIdByViewItem(parent)][0].type == ItemType::ItemBSplinePatch))
+		 allItems[FindIdByViewItem(parent)][0].type == ItemType::ItemBSplinePatch||
+		 allItems[FindIdByViewItem(parent)][0].type == ItemType::ItemGregoryPatch))
 	{
 		copyPoint = true;
 		id_Genuine = findIdOfGenuine(str);
@@ -177,6 +178,9 @@ InsertionParams* View::insertItem(const wchar_t* str, ItemType type, HTREEITEM p
 	case ItemPatch:
 		model = m_engineNotifier->OnBezierPatchAdded();
 		break;
+	case ItemGregoryPatch:
+		model = m_engineNotifier->OnGregoryPatchAdded();
+		break;
 	case ItemBezierSurface:
 		model = m_engineNotifier->OnBezierSurfaceAdded();
 		break;
@@ -185,6 +189,9 @@ InsertionParams* View::insertItem(const wchar_t* str, ItemType type, HTREEITEM p
 		break;
 	case ItemBSplineSurface:
 		model = m_engineNotifier->OnBSplineSurfaceAdded();
+		break;
+	case ItemGregorySurface:
+		model = m_engineNotifier->OnGregorySurfaceAdded();
 		break;
 	default:
 		break;
@@ -260,6 +267,10 @@ void View::ReconstructSurface(HTREEITEM surface)
 		{
 			m_engineNotifier->SetBSplinePatchPoints(surfaceId, patchId, ids);
 		}
+		else if (GetTreeItemByHTREEITEM(surface).type == ItemType::ItemGregorySurface)
+		{
+			m_engineNotifier->SetGregoryPatchPoints(surfaceId, patchId, ids);
+		}
 		patch = treeView.getNext(patch);
 	}
 	if (GetTreeItemByHTREEITEM(surface).type == ItemType::ItemBezierSurface)
@@ -271,6 +282,10 @@ void View::ReconstructSurface(HTREEITEM surface)
 	{
 		m_engineNotifier->SetDimensionsForBSplineSurface(surfaceId, m_rows, m_cols, m_surfaceWidth, m_surfaceHeight);
 		m_engineNotifier->TranslateBSplineSurfacePoints(surfaceId, isSurfacePlane);
+	}
+	else if (GetTreeItemByHTREEITEM(surface).type == ItemType::ItemGregorySurface)
+	{
+		m_engineNotifier->TranslateGregoryPoints(surfaceId);
 	}
 }
 
@@ -289,7 +304,8 @@ void View::OnSelectedChanged()
 		return;
 	//if we select any patch type we want to select all its child points
 	if (allItems[selectedId][0].type == ItemType::ItemPatch ||
-		allItems[selectedId][0].type == ItemType::ItemBSplinePatch)
+		allItems[selectedId][0].type == ItemType::ItemBSplinePatch ||
+		allItems[selectedId][0].type == ItemType::ItemGregoryPatch)
 	{
 		map<int, int> ids = map<int, int>();
 		HTREEITEM child = treeView.getChild(selected);
@@ -307,7 +323,8 @@ void View::OnSelectedChanged()
 	//if we select any surface type we want to select all its child points recursively,
 	//including all patch points, but not patch types themselves
 	else if (allItems[selectedId][0].type == ItemType::ItemBezierSurface ||
-		allItems[selectedId][0].type == ItemType::ItemBSplineSurface)
+		allItems[selectedId][0].type == ItemType::ItemBSplineSurface||
+		allItems[selectedId][0].type == ItemType::ItemGregorySurface)
 	{
 		map<int, int> ids = map<int, int>();
 		HTREEITEM patch = treeView.getChild(selected);
@@ -471,7 +488,8 @@ void View::removeItem(HTREEITEM item)
 	else if (treeItem.type == ItemType::ItemCurve || 
 		treeItem.type == ItemType::ItemC2Curve || 
 		treeItem.type == ItemType::ItemBezierSurface ||
-		treeItem.type == ItemType::ItemBSplineSurface)
+		treeItem.type == ItemType::ItemBSplineSurface||
+		treeItem.type == ItemType::ItemGregorySurface)
 	{
 		vector<HTREEITEM>selectedItems;
 		addRecursivelyChildTreeItems(selectedItems, item);
@@ -484,7 +502,7 @@ void View::removeItem(HTREEITEM item)
 		int indexToRemove = GetIndexOfTreeItemInVector(treeItem);
 		allItems[treeItemId].erase(allItems[treeItemId].begin() + indexToRemove);
 	}
-	else if (treeItem.type == ItemType::ItemPatch || treeItem.type == ItemType::ItemTorus || treeItem.type == ItemType::ItemBSplinePatch)
+	else if (treeItem.type == ItemType::ItemPatch || treeItem.type == ItemType::ItemTorus || treeItem.type == ItemType::ItemBSplinePatch ||treeItem.type == ItemType::ItemGregoryPatch)
 	{
 		
 		vector<HTREEITEM>selectedItems;

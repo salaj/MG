@@ -11,7 +11,10 @@ const std::wstring SettingsHelper::BezierC2Interpolated = L"C2 interpolated ";
 const std::wstring SettingsHelper::BezierPatch = L"Bezier patch ";
 const std::wstring SettingsHelper::BezierSurface = L"Bezier surface ";
 const std::wstring SettingsHelper::BSplinePatch = L"BSpline patch ";
+const std::wstring SettingsHelper::GregoryPatch = L"Gregory patch ";
 const std::wstring SettingsHelper::BSplineSurface = L"BSpline surface ";
+const std::wstring SettingsHelper::GregorySurface = L"Gregory surface ";
+
 
 const std::wstring SettingsHelper::BernsteinBase = L"Bernstein base ";
 const std::wstring SettingsHelper::BSplineBase = L"BSpline base ";
@@ -28,6 +31,8 @@ int SettingsHelper::BezierSurfaceCounter = 0;
 int SettingsHelper::BezierPatchCounter = 0;
 int SettingsHelper::BSplineSurfaceCounter = 0;
 int SettingsHelper::BSplinePatchCounter = 0;
+int SettingsHelper::GregorySurfaceCounter = 0;
+int SettingsHelper::GregoryPatchCounter = 0;
 
 SettingsHelper::SettingsHelper()
 {
@@ -66,6 +71,36 @@ InsertionParams* SettingsHelper::AddNewModelToTreeView(wchar_t* buf, HWND handle
 	{
 		std::swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierCurveCounter++);
 		insertionParamsOrigin = insertItemFreely((BezierC2Interpolated + wstring(digitBuf)).c_str(), ItemType::ItemC2Interpolated, nullptr);
+	}
+	else if (modelToAddName.compare(GregorySurface) == 0)
+	{
+		std::swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", GregorySurfaceCounter++);
+		insertionParamsOrigin = insertItemInternally((GregorySurface + wstring(digitBuf)).c_str(), ItemType::ItemGregorySurface, nullptr);
+
+		int numberOfPatches = 3;
+		wchar_t** items = new wchar_t*[numberOfPatches * 20];
+
+		for (int j = 0; j < numberOfPatches * 20; j++)
+			{
+				items[j] = new wchar_t[16];
+				std::swprintf(items[j], sizeof(wchar_t) * 16 / sizeof(*items[j]), L"%d", SimplePointCounter++);
+				insertItemInternally((SimplePointName + wstring(items[j])).c_str(), ItemType::ItemPoint);
+			}
+
+
+		for (int j = 0; j < numberOfPatches; j++)
+		{
+			wchar_t digitBuf[16];
+			std::swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", GregoryPatchCounter++);
+			item = insertionParamsOrigin->item;
+			insertionParams = insertItemInternally((GregoryPatch + wstring(digitBuf)).c_str(), ItemType::ItemGregoryPatch, item);
+			HTREEITEM patch = insertionParams->item;
+			for (int m = 0; m < 20; m++)
+			{
+				insertItemInternally((SimplePointName + wstring(items[j * 20 + m])).c_str(), ItemType::ItemPoint, patch);
+			}
+		}
+		m_controller.ReconstructSurface(item);
 	}
 	else if (modelToAddName.compare(BezierSurface) == 0)
 	{

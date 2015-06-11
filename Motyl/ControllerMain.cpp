@@ -165,7 +165,7 @@ void ControllerMain::removeItem(HTREEITEM item)
 
 InsertionParams* ControllerMain::insertItemHierarchically(const wchar_t* str, ItemType type, HTREEITEM parent, HTREEITEM insertAfter, int imageIndex, int selectedImageIndex)
 {
-	if ((type == ItemType::ItemPatch || type == ItemType::ItemBSplinePatch) || (type == ItemType::ItemPoint && parent != TVI_ROOT))
+	if ((type == ItemType::ItemPatch || type == ItemType::ItemBSplinePatch||type==ItemType::ItemGregoryPatch) || (type == ItemType::ItemPoint && parent != TVI_ROOT))
 		return view.insertItem(str, type, parent, TVI_LAST, 0, 1);
 	else if (type == ItemType::ItemPoint && parent == TVI_ROOT)
 		return view.insertItem(str, type, TVI_ROOT, TVI_LAST, 0, 1);

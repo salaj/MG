@@ -270,6 +270,15 @@
     <ClCompile Include="saver.cpp">
       <Filter>Source Files\parsers</Filter>
     </ClCompile>
+    <ClCompile Include="gregoryPatch.cpp">
+      <Filter>Source Files\models\surfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="shader_gregory_patch.cpp">
+      <Filter>Source Files\shaders\surfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="gregorySurface.cpp">
+      <Filter>Source Files\models\surfaces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="modelclass.h">
@@ -428,6 +437,15 @@
     <ClInclude Include="saver.h">
       <Filter>Header Files\parsers</Filter>
     </ClInclude>
+    <ClInclude Include="gregoryPatch.h">
+      <Filter>Header Files\models\surfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_gregory_patch.h">
+      <Filter>Header Files\shaders\surfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="gregorySurface.h">
+      <Filter>Header Files\models\surfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ribbon1.mfcribbon-ms">
@@ -473,6 +491,9 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\BSplinePatch.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\GregoryPatch.hlsl">
       <Filter>Resource Files\shaders</Filter>
     </FxCompile>
   </ItemGroup>

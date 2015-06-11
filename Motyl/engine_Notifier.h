@@ -15,7 +15,9 @@ public:
 	ModelClass* OnTorusAdded();
 	ModelClass* OnBezierSurfaceAdded();
 	ModelClass* OnBSplineSurfaceAdded();
+	ModelClass* OnGregorySurfaceAdded();
 	ModelClass* OnBezierPatchAdded();
+	ModelClass* OnGregoryPatchAdded();
 	ModelClass* OnBSplinePatchAdded();
 
 	void SetActiveModels(vector<int>&);
@@ -23,11 +25,13 @@ public:
 	void SetC2CurvePoints(int, vector<int>&);
 	void SetC2InterpolatedCurvePoints(int, vector<int>&);
 	void SetPatchPoints(int, int, vector<int>&);
+	void SetGregoryPatchPoints(int, int, vector<int>&);
 	void SetBSplinePatchPoints(int, int, vector<int>&);
 	void SetDimensionsForBezierSurface(int surfaceId, int rows, int cols, double surfaceWidth, double surfaceHeigth);
 	void TranslateBezierSurfacePoints(int, bool isSurfacePlane);
 	void SetDimensionsForBSplineSurface(int surfaceId, int rows, int cols, double surfaceWidth, double surfaceHeigth);
 	void TranslateBSplineSurfacePoints(int, bool isSurfacePlane);
+	void TranslateGregoryPoints(int);
 
 	//template <typename T>
 	//void SetPoints<T>(int, vector<int>&);

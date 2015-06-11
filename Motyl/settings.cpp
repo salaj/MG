@@ -34,6 +34,8 @@ int Settings::m_defaultWindowHeight = 720;
 #define COMBO_SURFACE 219
 #define LOAD_BUTTON 220
 #define SAVE_BUTTON 221
+#define RADIO_MULTISELECT 222
+#define COLLAPSE_BUTTON 223
 
 //InputClass* input;
 
@@ -309,6 +311,7 @@ void Settings::CreateWindowHandle(int width, int height, const wstring& title, b
 	SendMessage(hWndComboBox, CB_ADDSTRING, 0, (LPARAM)(SettingsHelper::BezierC2Interpolated).c_str());
 	SendMessage(hWndComboBox, CB_ADDSTRING, 0, (LPARAM)(SettingsHelper::BezierSurface).c_str());
 	SendMessage(hWndComboBox, CB_ADDSTRING, 0, (LPARAM)(SettingsHelper::BSplineSurface).c_str());
+	SendMessage(hWndComboBox, CB_ADDSTRING, 0, (LPARAM)(SettingsHelper::GregorySurface).c_str());
 
 	SendMessage(hWndComboBox, CB_SETCURSEL, 0, 0); //highlight/select the first option
 
@@ -451,6 +454,32 @@ void Settings::CreateWindowHandle(int width, int height, const wstring& title, b
 	swprintf(bufferHeight, TEXT("%f"), val);
 	SetDlgItemText(m_hWnd, SURFACE_HEIGHT, bufferHeight);
 
+	//////////////////////////////////
+
+	CreateWindowEx(0,
+		TEXT("STATIC"),
+		TEXT("Filling gaps"),
+		WS_CHILD | WS_VISIBLE,
+		350, 400, 180, 20,
+		m_hWnd,
+		NULL,
+		m_hInstance,
+		NULL);
+
+	CreateWindow(TEXT("button"), TEXT("Multi-select"),
+		WS_VISIBLE | WS_CHILD | BS_CHECKBOX,
+		300, 440, 100, 30,
+		m_hWnd, (HMENU)RADIO_MULTISELECT, m_hInstance, this);
+
+	CreateWindowEx(NULL, TEXT("BUTTON"), TEXT("Collapse points"),
+		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		430, 440, 120, 30,
+		m_hWnd,
+		(HMENU)COLLAPSE_BUTTON,
+		m_hInstance,
+		NULL);
+
+	//CheckDlgButton(m_hWnd, RADIO_MULTISELECT, BST_CHECKED);
 
 
 	/////////BASE COMBOBOX//////////////
@@ -676,6 +705,18 @@ LRESULT Settings::WndProc(UINT msg, WPARAM wParam, LPARAM lParam)
 			GetSaveFileName(&ofn);
 			s = (wstring)(ofn.lpstrFile);
 			m_ParserManager.SaveScene(string(s.begin(), s.end()));
+			return false;
+
+		case COLLAPSE_BUTTON:
+			m_input->collapseMultiSelected();
+
+			//ctrl->view.m_cols = 1;
+			//ctrl->view.m_surfaceWidth = 0.4f;
+			//ctrl->view.m_surfaceHeight = 0.4f;
+			//ctrl->view.m_rows = 1;
+			//m_settingsHelper.AddNewModelToTreeView(const_cast<wchar_t*>(SettingsHelper::BezierSurface.c_str()),m_list);
+			//m_settingsHelper.AddNewModelToTreeView(const_cast<wchar_t*>(SettingsHelper::BezierSurface.c_str()), m_list);
+			//m_settingsHelper.AddNewModelToTreeView(const_cast<wchar_t*>(SettingsHelper::BezierSurface.c_str()), m_list);
 			return false;
 		case COMBO_BASE:
 			selectedComboBoxItemIndex = SendMessage(m_baseComboBox, CB_GETCURSEL, 0, 0);

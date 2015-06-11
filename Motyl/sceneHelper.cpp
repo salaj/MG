@@ -184,6 +184,11 @@ ModelClass* SceneHelper::findMirroredModel(map<int, ModelClass*>& models, ModelC
 		return nullptr;
 }
 
+void SceneHelper::collapseMultiSelected()
+{
+	m_modelsManager.collapseMultiSelected(multiSelected);
+}
+
 void SceneHelper::findClosestModelWithCursor()
 {
 	ModelClass* cursor = m_modelsManager.GetCursor();
@@ -205,10 +210,26 @@ void SceneHelper::findClosestModelWithCursor()
 	}
 	if (minVal < minSquareDistance)
 	{
-		mirroredModel = findMirroredModel(models, models[index]);
-		if (mirroredModel == models[index])
-			mirroredModel = nullptr;
-		selectNewAndDeselectOldModel(models[index]);
+		//mirroredModel = findMirroredModel(models, models[index]);
+		//if (mirroredModel == models[index])
+		//	mirroredModel = nullptr;
+
+		if (isMultiSelect)
+		{
+			if (multiSelected.size() == 2)
+			{
+				multiSelected[0]->ScaleDown();
+				multiSelected[0] = dynamic_cast<SimplePoint*>(models[index]);
+				multiSelected[0]->ScaleUp();
+			}
+			else
+			{
+				models[index]->ScaleUp();
+				multiSelected.push_back(dynamic_cast<SimplePoint*>(models[index]));
+			}
+		}
+		else
+			selectNewAndDeselectOldModel(models[index]);
 	}
 }
 
@@ -297,6 +318,18 @@ void SceneHelper::translatePostActions(vector<ModelClass*>& models)
 			}
 		}
 	}
+
+	vector<GregorySurface*> gregorySurfaces = m_modelsManager.GetGregorySurfaces();
+	for (int i = 0; i < gregorySurfaces.size(); i++)
+	{
+		for (int j = 0; j < models.size(); j++)
+		{
+			if (models[j]->m_Type == ModelType::SimplePointType)
+			{
+				gregorySurfaces[i]->Translate(dynamic_cast<SimplePoint*>(models[j]));
+			}
+		}
+	}
 }
 
 void SceneHelper::scaleModels(vector<ModelClass*>& models, float scale)
@@ -367,6 +400,9 @@ void SceneHelper::toggleTranslation(bool translationUp)
 		}
 	}
 }
+
+static bool once = true;
+
 void SceneHelper::CheckInput()
 {
 	ModelClass* cursor = m_modelsManager.GetCursor();
@@ -452,6 +488,63 @@ void SceneHelper::CheckInput()
 		translateModels(activeModels, offset);
 		m_GUIUpdater->setCursorPositionWorld(m_modelsManager.GetCursor()->GetPosition());
 		m_GUIUpdater->setCursorPositionScreen(m_modelsManager.GetCursor()->GetTranslatedPosition(m_modelsManager.GetCursor()));
+	}
+
+	if (m_InputClass->IsKeyDown(0x50)) //P
+	{
+		XMFLOAT4 offset = XMFLOAT4(0, 0, factor, 0);
+		for (int i = 0; i < activeModels.size(); i++)
+		{
+			activeModels[i]->m_modelMatrix = activeModels[i]->m_modelMatrix * XMMatrixScaling(-1.0, 1.0f, 1.0f);
+		}
+	}
+	if (m_InputClass->IsKeyDown(0x4C) && once) //L
+	{
+		once = false;
+		vector<BezierSurface*> bezierSurfaces = m_modelsManager.GetBezierSurfaces();
+		BezierSurface* surface1 = bezierSurfaces[0];
+		vector<SimplePoint*> points = surface1->GetNodes();
+		for (int i = 0; i < points.size(); i++)
+		{
+			points[i]->RotateZ(XM_PI / 6.0f);
+			points[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));
+		}
+		surface1->Reset();
+		BezierSurface* surface2 = bezierSurfaces[1];
+		vector<SimplePoint*> points2 = surface2->GetNodes();
+		for (int i = 0; i < points2.size(); i++)
+		{
+			points2[i]->RotateZ(XM_PI / 6.0f);
+			points2[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));
+			points2[i]->m_modelMatrix = points[i]->m_modelMatrix * XMMatrixScaling(-1.0, 1.0f, 1.0f);
+		}
+		surface2->Reset();
+		vector<SimplePoint*>toCollapse;
+		toCollapse.push_back(surface1->GetNodes()[15]);
+		toCollapse.push_back(surface2->GetNodes()[15]);
+		m_modelsManager.collapseMultiSelected(toCollapse);
+
+		BezierSurface* surface3 = bezierSurfaces[2];
+		vector<SimplePoint*> points3 = surface3->GetNodes();
+		for (int i = 0; i < points3.size(); i++)
+		{
+			points3[i]->Translate(XMFLOAT4(-0.15f, -0.6f, 0.0f, 0.0f));
+		}
+		surface3->Reset();
+
+		vector<SimplePoint*>toCollapse2;
+		toCollapse2.push_back(surface2->GetNodes()[12]);//12
+		toCollapse2.push_back(surface3->GetNodes()[15]);
+		m_modelsManager.collapseMultiSelected(toCollapse2);
+
+		vector<SimplePoint*>toCollapse3;
+		toCollapse3.push_back(surface1->GetNodes()[12]);//12
+		toCollapse3.push_back(surface3->GetNodes()[3]);//3
+		m_modelsManager.collapseMultiSelected(toCollapse3);
+
+		//bezierSurfaces.push_back(surface1);
+		//bezierSurfaces.push_back(surface2);
+		//bezierSurfaces.push_back(surface3);
 	}
 
 	activeModels = m_modelsManager.GetActiveModels();
@@ -674,6 +767,20 @@ void SceneHelper::RefreshSpaces()
 				bsplinePatch->Reset();
 			}
 		}
+		else if ((*it).second->m_Type == ModelType::GregoryPatchType)
+		{
+			GregoryPatch* gregoryPatch = dynamic_cast<GregoryPatch*>((*it).second);
+			if (gregoryPatch->verticalSpaces != verticalSpaces)
+			{
+				gregoryPatch->verticalSpaces = verticalSpaces;
+				gregoryPatch->Reset();
+			}
+			if (gregoryPatch->horizontalSpaces != horizontalSpaces)
+			{
+				gregoryPatch->horizontalSpaces = horizontalSpaces;
+				gregoryPatch->Reset();
+			}
+		}
 	}
 }
 
@@ -699,5 +806,13 @@ void SceneHelper::IsBaseChanged()
 			//notify to redraw
 			redrawCurves();
 		}
+	}
+}
+
+void SceneHelper::IsCollapseClicked()
+{
+	if (m_InputClass->GetCollapseMultiselected())
+	{
+		collapseMultiSelected();
 	}
 }

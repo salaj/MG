@@ -18,6 +18,8 @@ enum ModelType{
 	BezierSurfaceType,
 	BSplinePatchType,
 	BSplineSurfaceType,
+	GregoryPatchType,
+	GregorySurfaceType,
 	Undecided
 };
 
@@ -75,9 +77,11 @@ public:
 	int GetSelectedModel();
 	int GetVerticalSpaces();
 	int GetHorizontalSpaces();
+	bool GetCollapseMultiselected();
 	void SetSelectedModel(int id);
 	void SetVerticalSpaces(int verticalSpaces);
 	void SetHorizontalSpaces(int horizontalSpaces);
+	void collapseMultiSelected();
 
 private:
 	POINT m_MousePosition;
@@ -90,6 +94,7 @@ private:
 	int m_selectedTreeViewItem;
 	int m_previousSelectedTreeViewItem;
 	bool change = false;
+	bool m_isCollapseActive = false;
 	int m_verticalSpaces = 4;
 	int m_horizontalSpaces = 4;
 };

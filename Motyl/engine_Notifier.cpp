@@ -38,6 +38,11 @@ ModelClass* EngineNotifier::OnTorusAdded()
 	return m_ModelsManager->AddModel(ModelType::TorusType);
 }
 
+ModelClass* EngineNotifier::OnGregoryPatchAdded()
+{
+	return m_ModelsManager->AddModel(ModelType::GregoryPatchType);
+}
+
 ModelClass* EngineNotifier::OnBezierPatchAdded()
 {
 	return m_ModelsManager->AddModel(ModelType::BezierPatchType);
@@ -57,6 +62,12 @@ ModelClass* EngineNotifier::OnBSplineSurfaceAdded()
 {
 	return m_ModelsManager->AddModel(ModelType::BSplineSurfaceType);
 }
+
+ModelClass* EngineNotifier::OnGregorySurfaceAdded()
+{
+	return m_ModelsManager->AddModel(ModelType::GregorySurfaceType);
+}
+
 
 void EngineNotifier::SetActiveModels(vector<int>& activeModels)
 {
@@ -117,6 +128,21 @@ void EngineNotifier::SetPatchPoints(int surfaceId, int patchId, vector<int>& ids
 	bezierSurface->AddPatch(bezierPatch);
 }
 
+void EngineNotifier::SetGregoryPatchPoints(int surfaceId, int patchId, vector<int>& ids)
+{
+	if (ids.size() == 0)
+		return;
+	GregorySurface* gregorySurface = dynamic_cast<GregorySurface*>(m_ModelsManager->GetModelById(surfaceId));
+	GregoryPatch* gregoryPatch = dynamic_cast<GregoryPatch*>(m_ModelsManager->GetModelById(patchId));
+	vector<ModelClass*> simplePoints = vector<ModelClass*>();
+	for (int i = 0; i < ids.size(); i++)
+	{
+		simplePoints.push_back(m_ModelsManager->GetModelById(ids[i]));
+	}
+	gregoryPatch->SetNodes(simplePoints);
+	gregorySurface->AddPatch(gregoryPatch);
+}
+
 void EngineNotifier::SetBSplinePatchPoints(int surfaceId, int patchId, vector<int>& ids)
 {
 	if (ids.size() == 0)
@@ -143,6 +169,14 @@ void EngineNotifier::TranslateBezierSurfacePoints(int surfaceId, bool isSurfaceP
 	BezierSurface* bezierSurface = dynamic_cast<BezierSurface*>(m_ModelsManager->GetModelById(surfaceId));
 	if (isSurfacePlane)
 		bezierSurface->TranslateSurfacePoints();
+	//{
+	//	vector<SimplePoint*> nodes = bezierSurface->GetNodes();
+	//	for (int i = 0; i < 4; i++)
+	//		for (int j = 0; j < 4; j++)
+	//		{
+	//			nodes[i]->Translate(XMFLOAT4(i * 0.1f, j * 0.1f, 0, 1));
+	//		}
+	//}
 	else
 		bezierSurface->TranslateCyllinderPoints();
 }
@@ -161,6 +195,14 @@ void EngineNotifier::TranslateBSplineSurfacePoints(int surfaceId, bool isSurface
 	else
 		bsplineSurface->TranslateCyllinderPoints();
 }
+
+void EngineNotifier::TranslateGregoryPoints(int surfaceId)
+{
+	GregorySurface* gregorySurface = dynamic_cast<GregorySurface*>(m_ModelsManager->GetModelById(surfaceId));
+	gregorySurface->SetBezierSurfaces(m_ModelsManager->GetBezierSurfaces());
+	gregorySurface->TranslatePoints(TranslatedBezier::bottom);
+}
+
 void EngineNotifier::RemoveModel(int id)
 {
 	m_ModelsManager->RemoveModel(id);

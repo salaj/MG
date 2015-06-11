@@ -13,6 +13,7 @@
 #include "shader_bezier_curve.h"
 #include "shader_bezier_patch.h"
 #include "shader_bspline_patch.h"
+#include "shader_gregory_patch.h"
 #include "torus.h"
 #include "elipsoid.h"
 
@@ -118,6 +119,7 @@ namespace gk2
 		BezierCurveShader* m_shader_bezier_curve;
 		BezierPatchShader* m_shader_bezier_patch;
 		BSplinePatchShader* m_shader_bspline_patch;
+		GregoryPatchShader* m_shader_gregory_patch;
 
 		vector<ShaderBase*> m_shaders;
 

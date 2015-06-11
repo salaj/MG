@@ -140,6 +140,11 @@ void InputClass::SetHorizontalSpaces(int horizontalSpaces)
 	m_horizontalSpaces = horizontalSpaces;
 }
 
+void InputClass::collapseMultiSelected()
+{
+	m_isCollapseActive = true;
+}
+
 int InputClass::GetVerticalSpaces()
 {
 	return m_verticalSpaces;
@@ -149,6 +154,15 @@ int InputClass::GetHorizontalSpaces()
 {
 	return m_horizontalSpaces;
 }
+
+bool InputClass::GetCollapseMultiselected()
+{	
+	bool toRet = m_isCollapseActive;
+	if (m_isCollapseActive)
+		m_isCollapseActive = false;
+	return toRet;
+}
+
 
 void InputClass::SetSelectedModel(int id)
 {
