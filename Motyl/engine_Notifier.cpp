@@ -169,14 +169,6 @@ void EngineNotifier::TranslateBezierSurfacePoints(int surfaceId, bool isSurfaceP
 	BezierSurface* bezierSurface = dynamic_cast<BezierSurface*>(m_ModelsManager->GetModelById(surfaceId));
 	if (isSurfacePlane)
 		bezierSurface->TranslateSurfacePoints();
-	//{
-	//	vector<SimplePoint*> nodes = bezierSurface->GetNodes();
-	//	for (int i = 0; i < 4; i++)
-	//		for (int j = 0; j < 4; j++)
-	//		{
-	//			nodes[i]->Translate(XMFLOAT4(i * 0.1f, j * 0.1f, 0, 1));
-	//		}
-	//}
 	else
 		bezierSurface->TranslateCyllinderPoints();
 }
@@ -200,7 +192,7 @@ void EngineNotifier::TranslateGregoryPoints(int surfaceId)
 {
 	GregorySurface* gregorySurface = dynamic_cast<GregorySurface*>(m_ModelsManager->GetModelById(surfaceId));
 	gregorySurface->SetBezierSurfaces(m_ModelsManager->GetBezierSurfaces());
-	gregorySurface->TranslatePoints(TranslatedBezier::bottom);
+	gregorySurface->TranslatePoints(TranslatedBezier::right);
 }
 
 void EngineNotifier::RemoveModel(int id)

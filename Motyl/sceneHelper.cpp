@@ -497,6 +497,11 @@ void SceneHelper::CheckInput()
 		{
 			activeModels[i]->m_modelMatrix = activeModels[i]->m_modelMatrix * XMMatrixScaling(-1.0, 1.0f, 1.0f);
 		}
+		vector<BezierSurface*> bezierSurfaces = m_modelsManager.GetBezierSurfaces();
+		for (int i = 0; i < bezierSurfaces.size(); i++)
+		{
+			bezierSurfaces[i]->Reset();
+		}
 	}
 	if (m_InputClass->IsKeyDown(0x4C) && once) //L
 	{
@@ -541,10 +546,6 @@ void SceneHelper::CheckInput()
 		toCollapse3.push_back(surface1->GetNodes()[12]);//12
 		toCollapse3.push_back(surface3->GetNodes()[3]);//3
 		m_modelsManager.collapseMultiSelected(toCollapse3);
-
-		//bezierSurfaces.push_back(surface1);
-		//bezierSurfaces.push_back(surface2);
-		//bezierSurfaces.push_back(surface3);
 	}
 
 	activeModels = m_modelsManager.GetActiveModels();

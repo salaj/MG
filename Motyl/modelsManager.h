@@ -64,6 +64,7 @@ public:
 
 	static void setModelToPosition(ModelClass*, XMFLOAT3);
 	void collapseMultiSelected(vector<SimplePoint*>& multiSelected);
+	bool isGregorySurfaceReadyToCreate();
 
 	ModelClass* GetCursor();
 	ModelClass* selected = NULL;

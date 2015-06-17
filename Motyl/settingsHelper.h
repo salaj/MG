@@ -53,6 +53,9 @@ namespace gk2
 		Win::ControllerMain m_controller;
 		void CopyItem(HTREEITEM source, HTREEITEM target);
 		bool isSurfacePlane = true;
+
+
+		bool isGregorySurfaceToAdd(wchar_t* buf);
 	private:
 
 	};

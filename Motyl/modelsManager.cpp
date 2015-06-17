@@ -182,42 +182,116 @@ vector<BezierSurface*> ModelsManager::createTripleSurfaceHole()
 	BezierSurface* surface1 = createFakeSurfaceC0();
 	vector<SimplePoint*> points = surface1->GetNodes();
 	for (int i = 0; i < points.size(); i++)
-	{
+	{ 
+		//15->3
+		//points[i]->RotateZ(XM_PI / 2.0f);
+		//points[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));
+
+		//3->15
+		//points[i]->m_modelMatrix = points[i]->m_modelMatrix * XMMatrixScaling(-1.0, 1.0f, 1.0f);//3->15
+		//points[i]->RotateZ(XM_PI / 2.0f);//3->15
+		//points[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));//3->15
+
+		//0->12
+		//points[i]->RotateZ(-XM_PI / 2.0f);
+		//points[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));
+
+		//12->0
+		//points[i]->RotateZ(-XM_PI / 2.0f);
+		//points[i]->m_modelMatrix = points[i]->m_modelMatrix * XMMatrixScaling(1.0, -1.0f, 1.0f);
+		//points[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));
+
+		//0->3
+		//points[i]->m_modelMatrix = points[i]->m_modelMatrix * XMMatrixScaling(-1.0, 1.0f, 1.0f);
+		//points[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));
+
+		//3->0
+		//points[i]->m_modelMatrix = points[i]->m_modelMatrix * XMMatrixScaling(-1.0, -1.0f, 1.0f);
+		//points[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));
+
+		//12->15
 		points[i]->RotateZ(XM_PI / 6.0f);
 		points[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));
+
+		//15->12
+		//points[i]->m_modelMatrix = points[i]->m_modelMatrix * XMMatrixScaling(1.0, -1.0f, 1.0f);
+		//points[i]->RotateZ(-XM_PI / 6.0f);
+		//points[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));
 	}
 	surface1->Reset();
 	BezierSurface* surface2 = createFakeSurfaceC0();
 	vector<SimplePoint*> points2 = surface2->GetNodes();
 	for (int i = 0; i < points2.size(); i++)
 	{
-		points2[i]->RotateZ(XM_PI / 6.0f);
+		//12->15
+		/*points2[i]->RotateZ(XM_PI / 6.0f);
 		points2[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));
-		points2[i]->m_modelMatrix = points[i]->m_modelMatrix * XMMatrixScaling(-1.0, 1.0f, 1.0f);
+		points2[i]->m_modelMatrix = points2[i]->m_modelMatrix * XMMatrixScaling(-1.0, 1.0f, 1.0f);*/
+
+		//0->3
+		//points2[i]->RotateZ(-XM_PI / 6.0f); 
+		//points2[i]->Translate(XMFLOAT4(0.6f, 0.0f, 0.0f, 0.0f)); //0->3
+
+
+		//3->0
+		//points2[i]->RotateZ(-XM_PI / 6.0f); //0->3
+		//points2[i]->m_modelMatrix = points2[i]->m_modelMatrix * XMMatrixScaling(1.0, -1.0f, 1.0f);
+		//points2[i]->Translate(XMFLOAT4(0.6f, 0.0f, 0.0f, 0.0f)); //0->3
+
+		////12->0
+		//points2[i]->RotateZ(2 * XM_PI / 6.0f);
+		//points2[i]->Translate(XMFLOAT4(0.6f, 0.3f, 0.0f, 0.0f));
+
+		//0->12
+		points2[i]->m_modelMatrix = points2[i]->m_modelMatrix * XMMatrixScaling(1.0, -1.0f, 1.0f);
+		points2[i]->RotateZ(-XM_PI / 2.0f);
+		points2[i]->Translate(XMFLOAT4(0.6f, 0.3f, 0.0f, 0.0f));
 	}
 
 	surface2->Reset();
 	vector<SimplePoint*>toCollapse;
-	toCollapse.push_back(surface1->GetNodes()[15]);
-	toCollapse.push_back(surface2->GetNodes()[15]);
-	collapseMultiSelected(toCollapse);
+	//toCollapse.push_back(surface1->GetNodes()[15]); //3->15
+	//toCollapse.push_back(surface1->GetNodes()[3]); //15->3
+	//toCollapse.push_back(surface1->GetNodes()[12]);//0->12
+	//toCollapse.push_back(surface1->GetNodes()[3]);//0->3
+	toCollapse.push_back(surface1->GetNodes()[15]);//12->15
+	//toCollapse.push_back(surface1->GetNodes()[12]);//15->12
+	//toCollapse.push_back(surface1->GetNodes()[0]);//3->0
+	//toCollapse.push_back(surface1->GetNodes()[0]);//12->0
 
+	//toCollapse.push_back(surface2->GetNodes()[3]);
+
+	//toCollapse.push_back(surface1->GetNodes()[15]);
+	toCollapse.push_back(surface2->GetNodes()[12]);
+	collapseMultiSelected(toCollapse);
+	//return bezierSurfaces;
 	BezierSurface* surface3 = createFakeSurfaceC0();
 	vector<SimplePoint*> points3 = surface3->GetNodes();
 	for (int i = 0; i < points3.size(); i++)
 	{
+		//points3[i]->m_modelMatrix = points3[i]->m_modelMatrix * XMMatrixScaling(1.0, -1.0f, 1.0f);
 		points3[i]->Translate(XMFLOAT4(-0.15f, -0.6f, 0.0f, 0.0f));
 	}
 	surface3->Reset();
 
 	vector<SimplePoint*>toCollapse2;
-	toCollapse2.push_back(surface2->GetNodes()[12]);
+	toCollapse2.push_back(surface2->GetNodes()[0]);
+	//toCollapse2.push_back(surface2->GetNodes()[0]);
 	toCollapse2.push_back(surface3->GetNodes()[15]);
 	collapseMultiSelected(toCollapse2);
 
 
 	vector<SimplePoint*>toCollapse3;
-	toCollapse3.push_back(surface1->GetNodes()[12]);
+	//toCollapse3.push_back(surface1->GetNodes()[0]); //0->12
+	//toCollapse3.push_back(surface1->GetNodes()[0]);//0->3
+	toCollapse3.push_back(surface1->GetNodes()[12]);//12->15
+	//toCollapse3.push_back(surface1->GetNodes()[15]);//15->12
+	//toCollapse3.push_back(surface1->GetNodes()[3]);//3->0
+	//toCollapse3.push_back(surface1->GetNodes()[3]); //3->15
+	//toCollapse3.push_back(surface1->GetNodes()[15]); //15->3
+	//toCollapse3.push_back(surface1->GetNodes()[12]); //12->0
+
+	//toCollapse3.push_back(surface1->GetNodes()[12]);
 	toCollapse3.push_back(surface3->GetNodes()[3]);
 	collapseMultiSelected(toCollapse3);
 
@@ -398,7 +472,7 @@ void ModelsManager::CreateModels()
 	//createFakeSurfaceC0();
 
 	//createFakeGregoryPatch();
-	createFakeGregorySurface();
+	//createFakeGregorySurface();
 
 	//createTripleSurfaceHole();
 
@@ -409,19 +483,176 @@ void ModelsManager::CreateModels()
 	//AddBezierCurve(bezierCurve);
 }
 
+bool ModelsManager::isGregorySurfaceReadyToCreate()
+{
+	vector<BezierSurface*> bezierSurfaces = GetBezierSurfaces();
+	if (bezierSurfaces.size() < 3)
+		return false;
+	if (bezierSurfaces[0]->firstCollapse != 0 && bezierSurfaces[0]->firstCollapse != 3 && bezierSurfaces[0]->firstCollapse != 12 && bezierSurfaces[0]->firstCollapse != 15)
+	{
+		return false;
+	}
+	if (bezierSurfaces[1]->firstCollapse != 0 && bezierSurfaces[1]->firstCollapse != 3 && bezierSurfaces[1]->firstCollapse != 12 && bezierSurfaces[1]->firstCollapse != 15)
+	{
+		return false;
+	}
+	if (bezierSurfaces[2]->firstCollapse != 0 && bezierSurfaces[2]->firstCollapse != 3 && bezierSurfaces[2]->firstCollapse != 12 && bezierSurfaces[2]->firstCollapse != 15)
+	{
+		return false;
+	}
+
+	if (bezierSurfaces[0]->secondCollapse != 0 && bezierSurfaces[0]->secondCollapse != 3 && bezierSurfaces[0]->secondCollapse != 12 && bezierSurfaces[0]->secondCollapse != 15)
+	{
+		return false;
+	}
+	if (bezierSurfaces[1]->secondCollapse != 0 && bezierSurfaces[1]->secondCollapse != 3 && bezierSurfaces[1]->secondCollapse != 12 && bezierSurfaces[1]->secondCollapse != 15)
+	{
+		return false;
+	}
+	if (bezierSurfaces[2]->secondCollapse != 0 && bezierSurfaces[2]->secondCollapse != 3 && bezierSurfaces[2]->secondCollapse != 12 && bezierSurfaces[2]->secondCollapse != 15)
+	{
+		return false;
+	}
+	return true;
+}
+
 void ModelsManager::collapseMultiSelected(vector<SimplePoint*>& multiSelected)
 {
 	if (multiSelected.size() < 2)
 		return;
+
+	bool sentinel = false;
 	XMVECTOR meanPos = (XMLoadFloat3(&(multiSelected[0]->GetPosition3())) + XMLoadFloat3(&(multiSelected[1]->GetPosition3()))) / 2.0f;
 	vector<BezierSurface*> surfaces = GetBezierSurfaces();
+
+	vector<SimplePoint*> points = surfaces[0]->GetNodes();
+	for (int j = 0; j < points.size(); j++)
+	{
+		if (points[j]->m_id == multiSelected[0]->m_id)
+		{
+			if (j != 0 && j != 3 && j != 12 && j != 15)
+			{
+				sentinel = true;
+				break;
+			}
+			if (surfaces[0]->firstCollapse == -1)
+			{
+				surfaces[0]->firstCollapse = j;
+			}
+			else
+			{
+				surfaces[0]->secondCollapse = j;
+			}
+		}
+		if (points[j]->m_id == multiSelected[1]->m_id)
+		{
+			if (j != 0 && j != 3 && j != 12 && j != 15)
+			{
+				sentinel = true;
+				break;
+			}
+			if (surfaces[0]->firstCollapse == -1)
+			{
+				surfaces[0]->firstCollapse = j;
+			}
+			else
+			{
+				surfaces[0]->secondCollapse = j;
+			}
+		}
+	}
+
+	points = surfaces[1]->GetNodes();
+	for (int j = 0; j < points.size(); j++)
+	{
+		if (points[j]->m_id == multiSelected[0]->m_id)
+		{
+			if (j != 0 && j != 3 && j != 12 && j != 15)
+			{
+				sentinel = true;
+				break;
+			}
+			if (surfaces[1]->firstCollapse == -1)
+			{
+				surfaces[1]->firstCollapse = j;
+			}
+			else
+			{
+				surfaces[1]->secondCollapse = j;
+			}
+		}
+		if (points[j]->m_id == multiSelected[1]->m_id)
+		{
+			if (j != 0 && j != 3 && j != 12 && j != 15)
+			{
+				sentinel = true;
+				break;
+			}
+			if (surfaces[1]->firstCollapse == -1)
+			{
+				surfaces[1]->firstCollapse = j;
+			}
+			else
+			{
+				surfaces[1]->secondCollapse = j;
+			}
+		}
+	}
+	if (surfaces.size() > 2)
+	{
+		points = surfaces[2]->GetNodes();
+		for (int j = 0; j < points.size(); j++)
+		{
+			if (points[j]->m_id == multiSelected[0]->m_id)
+			{
+				if (j != 0 && j != 3 && j != 12 && j != 15)
+				{
+					sentinel = true;
+					break;
+				}
+				if (surfaces[2]->firstCollapse == -1)
+				{
+					surfaces[2]->firstCollapse = j;
+				}
+				else
+				{
+					surfaces[2]->secondCollapse = j;
+				}
+			}
+			if (points[j]->m_id == multiSelected[1]->m_id)
+			{
+				if (j != 0 && j != 3 && j != 12 && j != 15)
+				{
+					sentinel = true;
+					break;
+				}
+				if (surfaces[2]->firstCollapse == -1)
+				{
+					surfaces[2]->firstCollapse = j;
+				}
+				else
+				{
+					surfaces[2]->secondCollapse = j;
+				}
+			}
+		}
+	}
+	if (sentinel)
+	{
+		multiSelected[0]->ScaleDown();
+		multiSelected[1]->ScaleDown();
+		multiSelected.clear();
+		return;
+	}
 	multiSelected[0]->SetPosition(meanPos);
 	multiSelected[1]->SetPosition(meanPos);
 	multiSelected[0]->ScaleDown();
 	multiSelected[1]->ScaleDown();
+
 	for (int i = 0; i < surfaces.size(); i++)
 	{
 		surfaces[i]->ReplaceNode(multiSelected[0], multiSelected[1]);
+
 		surfaces[i]->Reset();
 	}
 	RemoveModel(multiSelected[0]->m_id);

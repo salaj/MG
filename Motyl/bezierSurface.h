@@ -29,6 +29,7 @@ public:
 	bool isCyllindrical;
 	double m_sizeX = 0.2, m_sizeY = 0.4;
 	int m_rows = 4, m_cols = 4;
+	int firstCollapse = -1, secondCollapse= -1;
 private:
 	vector<BezierPatch*> m_bezierPatches;
 	map<int, SimplePoint*> m_nodes;

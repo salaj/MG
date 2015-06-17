@@ -295,6 +295,17 @@ InsertionParams* SettingsHelper::insertItemFreely(const wchar_t* str, ItemType t
 {
 	return m_controller.insertItemFreely(str, type, parent, TVI_LAST, 0, 1);
 }
+bool SettingsHelper::isGregorySurfaceToAdd(wchar_t* buf)
+{
+	wstring modelToAddName(buf);
+	if (modelToAddName.compare(GregorySurface) == 0)
+	{
+		return true;
+	}
+	else
+		return false;
+
+}
 
 void SettingsHelper::CopyItem(HTREEITEM source, HTREEITEM target)
 {

@@ -676,7 +676,16 @@ LRESULT Settings::WndProc(UINT msg, WPARAM wParam, LPARAM lParam)
 			ctrl->view.m_surfaceHeight = _wtof(surfaceHeight) <= 0.05 ? 0.05 : _wtof(surfaceHeight);
 
 			ctrl->view.m_rows = _wtoi(bufferHeight) <= 0 ? 1 : _wtoi(bufferHeight);
-			m_settingsHelper.AddNewModelToTreeView(buf, m_list);
+
+			if (m_settingsHelper.isGregorySurfaceToAdd(buf))
+			{
+				if (m_ParserManager.modelsManager->isGregorySurfaceReadyToCreate())
+					m_settingsHelper.AddNewModelToTreeView(buf, m_list);
+				//popup
+			}
+			else{
+				m_settingsHelper.AddNewModelToTreeView(buf, m_list);
+			}
 			return false;
 		case APPLY_BUTTON:
 			m_ParserManager.SaveScene(pathToWriteFile);
