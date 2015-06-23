@@ -140,7 +140,7 @@ void calculate(float t, float b[])
 
 void GregoryPatch::generateLines(list<VertexPos*>& vertices)
 {
-	int numberOfDots = 100;
+	int numberOfDots = 200;
 	XMMATRIX matrix_X, matrix_Y, matrix_Z;
 	for (int k = 0; k < horizontalSpaces; k++)
 	{

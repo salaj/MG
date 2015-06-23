@@ -103,7 +103,45 @@ void BezierSurface::TranslateSurfacePoints()
 
 XMFLOAT4 BezierSurface::Q(float u, float v)
 {
-	return m_bezierPatches[0]->Q(u, v);
+	//FOR GREGORY TO ALLWAYS WORK
+	if (m_bezierPatches.size() == 1)
+		return m_bezierPatches[0]->Q(u, v);
+
+	int n, m;
+	//m = /*m_cols;*/m_bezierPatches.size();
+
+	//float step_v = 1.0f / m;
+	//int index_v = v / step_v;
+	//if (v == 1.0f)
+	//	index_v--;
+	////if (index_v * step_v == v) //czyli podzieli³o siê bez reszty
+	////	index_v--;
+	//float valueScalled_v = (v - index_v * step_v) / step_v;
+	//return m_bezierPatches[index_v]->Q(u, valueScalled_v);
+
+
+	m = m_cols;
+
+	float step_v = 1.0f / m;
+	int index_v = v / step_v;
+	if (index_v != 0 && index_v * step_v == v) //czyli podzieli³o siê bez reszty
+		index_v--;
+	float valueScalled_v = (v - index_v * step_v) / step_v;
+
+
+	n = m_rows;
+	float step_u = 1.0f / n;
+	int index_u = u / step_u;
+	if (index_u != 0 && index_u * step_u == u)
+		index_u--;
+	float valueScalled_u = (u - index_u * step_u) / step_u;
+
+	int index = index_u * m_rows + index_v;
+
+
+	return m_bezierPatches[index]->Q(valueScalled_u, valueScalled_v);
+
+
 }
 
 void BezierSurface::TranslateCyllinderPoints()

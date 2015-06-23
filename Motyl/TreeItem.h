@@ -16,7 +16,8 @@ enum ItemType{
 	ItemBezierSurface,
 	ItemBSplineSurface,
 	ItemGregorySurface,
-	ItemGregoryPatch
+	ItemGregoryPatch,
+	ItemIntersectionCurve
 };
 
 enum Origin{

@@ -16,6 +16,7 @@ public:
 	ModelClass* OnBezierSurfaceAdded();
 	ModelClass* OnBSplineSurfaceAdded();
 	ModelClass* OnGregorySurfaceAdded();
+	ModelClass* OnIntersectionCurveAdded();
 	ModelClass* OnBezierPatchAdded();
 	ModelClass* OnGregoryPatchAdded();
 	ModelClass* OnBSplinePatchAdded();

@@ -24,7 +24,7 @@ void Scene::operator delete(void* ptr)
 
 Scene::Scene(HINSTANCE hInstance, InputClass* inputClass, GUIUpdater* guiUpdater)
 	: ApplicationBase(hInstance),
-	m_camera(/*-100.0f*/0.0f, 100.0f),
+	m_camera(-100.0f/*0.0f*/, 100.0f),
 	m_input_class(inputClass),
 	m_GUIUpdater(guiUpdater)
 {
@@ -88,6 +88,10 @@ bool Scene::LoadContent()
 	m_shaders.push_back(m_shader_bspline_patch);
 	m_shader_gregory_patch = new GregoryPatchShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	m_shaders.push_back(m_shader_gregory_patch);
+	m_shader_intersection_surface = new IntersectionSurfaceShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	m_shaders.push_back(m_shader_intersection_surface);
+	m_shader_intersection_square = new IntersectionSquareShader(m_context, m_device, D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	m_shaders.push_back(m_shader_intersection_square);
 
 	Service service;
 	service.Context = m_context;
@@ -95,7 +99,7 @@ bool Scene::LoadContent()
 	service.Device = m_device;
 	service.Mouse = m_mouse;
 	service.InputClass = m_input_class;
-	service.Shader = new ShaderBase*[8]
+	service.Shader = new ShaderBase*[10]
 	{
 		m_shader_torus,
 		m_shader_elipsoid,
@@ -104,7 +108,9 @@ bool Scene::LoadContent()
 		m_shader_bezier_curve,
 		m_shader_bezier_patch,
 		m_shader_bspline_patch,
-		m_shader_gregory_patch
+		m_shader_gregory_patch,
+		m_shader_intersection_surface,
+		m_shader_intersection_square
 	};
 	m_sceneHelper.Initialize(service, m_GUIUpdater);
 	m_sceneHelper.CreateModels();
@@ -189,6 +195,8 @@ void Scene::Update(float dt)
 	m_sceneHelper.IsBaseChanged();
 	m_sceneHelper.RefreshSpaces();
 	m_sceneHelper.IsCollapseClicked();
+	m_sceneHelper.isMultiSelectActive();
+	m_sceneHelper.checkPrecision();
 	//m_sceneHelper.CheckSelectedByTreeView();
 }
 

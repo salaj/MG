@@ -67,6 +67,7 @@ namespace Win
 		int m_rows, m_cols;
 		double m_surfaceWidth, m_surfaceHeight;
 		bool isSurfacePlane = true;
+		void SetMultiSelect(bool isActive);
     private:
         // member functions
         void moveTreeViewItem(TreeView* tv, HTREEITEM dragged, HTREEITEM target);
@@ -102,6 +103,9 @@ namespace Win
 		//HTREEITEM treeItems[100];
 		vector<TreeItem> allItems[3000];
 		EngineNotifier* m_engineNotifier;
+
+		bool isMultiSelectActive = false;
+		vector<int> previouslySelectedItems;
 
     };
 }

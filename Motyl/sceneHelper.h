@@ -43,6 +43,8 @@ class SceneHelper
 
 		void findClosestWithMouse(XMVECTOR orig, XMVECTOR dir);
 		void collapseMultiSelected();
+		void isMultiSelectActive();
+		void checkPrecision();
 
 	private:
 		InputClass*  m_InputClass;

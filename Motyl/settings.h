@@ -25,7 +25,7 @@ namespace gk2
 		inline HWND getHandle() const { return m_hWnd; }
 		LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 		InputClass* GetInputClass();
-		HWND m_dialog, hWndComboBox, m_baseComboBox, m_surfaceCombo, m_trackBarVertical, m_trackBarHorizontal,
+		HWND m_dialog, hWndComboBox, m_baseComboBox, m_surfaceCombo, m_trackBarVertical, m_trackBarHorizontal, m_trackBarPrecision,
 			m_PatchesWidth, m_PatchesHeight, m_SurfaceWidth, m_SurfaceHeight;
 
 		//HTREEITEM insertItemInternally(const wchar_t* str, HTREEITEM parent = TVI_ROOT, HTREEITEM insertAfter = TVI_LAST, int imageIndex = 0, int selectedImageIndex = 0);

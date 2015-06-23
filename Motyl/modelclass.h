@@ -87,7 +87,11 @@ public:
 	bool m_isGenuine;
 protected:
 	std::shared_ptr<ID3D11Buffer> m_vertexBuffer, m_indexBuffer;
-	int m_vertexCount, m_indexCount;
+	std::shared_ptr<ID3D11Buffer> m_vertexBuffer_SquareFirst, m_indexBuffer_SquareFirst;
+	std::shared_ptr<ID3D11Buffer> m_vertexBuffer_SquareSecond, m_indexBuffer_SquareSecond;
+	std::shared_ptr<ID3D11Buffer> m_vertexBuffer_ParametrizationFirst, m_indexBuffer_ParametrizationFirst;
+	std::shared_ptr<ID3D11Buffer> m_vertexBuffer_ParametrizationSecond, m_indexBuffer_ParametrizationSecond;
+	int m_vertexCount, m_indexCount, m_parametrizationFirst_indexCount, m_parametrizationSecond_indexCount;
 	gk2::DeviceHelper m_device;
 	std::shared_ptr<ID3D11DeviceContext> m_context;
 	ShaderBase* m_shader_base;

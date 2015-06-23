@@ -14,6 +14,7 @@ const std::wstring SettingsHelper::BSplinePatch = L"BSpline patch ";
 const std::wstring SettingsHelper::GregoryPatch = L"Gregory patch ";
 const std::wstring SettingsHelper::BSplineSurface = L"BSpline surface ";
 const std::wstring SettingsHelper::GregorySurface = L"Gregory surface ";
+const std::wstring SettingsHelper::IntersectionCurve = L"Intersection curve ";
 
 
 const std::wstring SettingsHelper::BernsteinBase = L"Bernstein base ";
@@ -33,6 +34,7 @@ int SettingsHelper::BSplineSurfaceCounter = 0;
 int SettingsHelper::BSplinePatchCounter = 0;
 int SettingsHelper::GregorySurfaceCounter = 0;
 int SettingsHelper::GregoryPatchCounter = 0;
+int SettingsHelper::IntersectionCurveCounter = 0;
 
 SettingsHelper::SettingsHelper()
 {
@@ -71,6 +73,11 @@ InsertionParams* SettingsHelper::AddNewModelToTreeView(wchar_t* buf, HWND handle
 	{
 		std::swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", BezierCurveCounter++);
 		insertionParamsOrigin = insertItemFreely((BezierC2Interpolated + wstring(digitBuf)).c_str(), ItemType::ItemC2Interpolated, nullptr);
+	}
+	else if (modelToAddName.compare(IntersectionCurve) == 0)
+	{
+		std::swprintf(digitBuf, sizeof(digitBuf) / sizeof(*digitBuf), L"%d", IntersectionCurveCounter++);
+		insertionParamsOrigin = insertItemFreely((IntersectionCurve + wstring(digitBuf)).c_str(), ItemType::ItemIntersectionCurve, nullptr);
 	}
 	else if (modelToAddName.compare(GregorySurface) == 0)
 	{

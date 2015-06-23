@@ -36,6 +36,7 @@ int Settings::m_defaultWindowHeight = 720;
 #define SAVE_BUTTON 221
 #define RADIO_MULTISELECT 222
 #define COLLAPSE_BUTTON 223
+#define ID_TRACKBARPRECISION 224
 
 //InputClass* input;
 
@@ -312,6 +313,7 @@ void Settings::CreateWindowHandle(int width, int height, const wstring& title, b
 	SendMessage(hWndComboBox, CB_ADDSTRING, 0, (LPARAM)(SettingsHelper::BezierSurface).c_str());
 	SendMessage(hWndComboBox, CB_ADDSTRING, 0, (LPARAM)(SettingsHelper::BSplineSurface).c_str());
 	SendMessage(hWndComboBox, CB_ADDSTRING, 0, (LPARAM)(SettingsHelper::GregorySurface).c_str());
+	SendMessage(hWndComboBox, CB_ADDSTRING, 0, (LPARAM)(SettingsHelper::IntersectionCurve).c_str());
 
 	SendMessage(hWndComboBox, CB_SETCURSEL, 0, 0); //highlight/select the first option
 
@@ -479,8 +481,44 @@ void Settings::CreateWindowHandle(int width, int height, const wstring& title, b
 		m_hInstance,
 		NULL);
 
-	//CheckDlgButton(m_hWnd, RADIO_MULTISELECT, BST_CHECKED);
+	CreateWindowEx(0,
+		TEXT("STATIC"),
+		TEXT("Intersection precision"),
+		WS_CHILD | WS_VISIBLE,
+		350, 490, 180, 20,
+		m_hWnd,
+		NULL,
+		m_hInstance,
+		NULL);
 
+	m_trackBarPrecision = CreateWindowEx(
+		0,                               // no extended styles 
+		TRACKBAR_CLASS,                  // class name 
+		TEXT("Trackbar Control"),              // title (caption) 
+		WS_CHILD |
+		WS_VISIBLE |
+		TBS_AUTOTICKS |
+		TBS_ENABLESELRANGE,              // style 
+		300, 530, 180, 40,
+		m_hWnd,                         // parent window 
+		(HMENU)ID_TRACKBARPRECISION,                     // control identifier 
+		m_hInstance,                         // instance 
+		NULL                             // no WM_CREATE parameter 
+		);
+
+	iMin = 1;     // minimum value in trackbar range 
+	iMax = 30;     // maximum value in trackbar range 
+	iSelMin = 5;  // minimum value in trackbar selection 
+	////UINT iSelMax = 10;
+
+	SendMessage(m_trackBarPrecision, TBM_SETRANGE,
+		(WPARAM)TRUE,                   // redraw flag 
+		(LPARAM)MAKELONG(iMin, iMax));  // min. & max. positions
+	SendMessage(m_trackBarPrecision, TBM_SETPAGESIZE,
+		0, (LPARAM)4);                  // new page size 
+	SendMessage(m_trackBarPrecision, TBM_SETPOS,
+		(WPARAM)TRUE,                   // redraw flag 
+		(LPARAM)iSelMin);
 
 	/////////BASE COMBOBOX//////////////
 	m_baseComboBox = CreateWindow(TEXT("combobox"), NULL,
@@ -605,6 +643,28 @@ void Settings::insertItemExternally()
 	//TreeView_SelectItem(m_hWnd, item);
 }
 
+// Procedura dialogowa
+BOOL CALLBACK DlgProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
+{
+	switch (Msg)
+	{
+	case WM_COMMAND:
+	{
+		// reakcja na przyciski
+		switch (LOWORD(wParam))
+		{
+		case IDOK: EndDialog(hwnd, IDOK); break;
+		case IDCANCEL: EndDialog(hwnd, IDCANCEL); break;
+		}
+	}
+	break;
+
+	default: return FALSE;
+	}
+
+	return TRUE;
+}
+
 
 LRESULT Settings::WndProc(UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -614,7 +674,7 @@ LRESULT Settings::WndProc(UINT msg, WPARAM wParam, LPARAM lParam)
 	Win::ControllerMain* ctrl = &m_settingsHelper.m_controller;
 	int selected = m_settingsHelper.m_controller.getSelectetTreeViewItem();
 	int selectedComboBoxItemIndex;
-	int horizontalSpaces, verticalSpaces;
+	int horizontalSpaces, verticalSpaces, precision;
 	wstring modelToAddName;
 	wchar_t buf[30];
 	TCHAR bufferWidth[32];
@@ -628,6 +688,7 @@ LRESULT Settings::WndProc(UINT msg, WPARAM wParam, LPARAM lParam)
 	TCHAR szFilePathName[_MAX_PATH] = TEXT("");
 	OPENFILENAME ofn = { 0 };
 	wstring s;
+	int ret;
 	if (selected != -1)
 	{
 		m_input->SetSelectedModel(selected);
@@ -663,6 +724,20 @@ LRESULT Settings::WndProc(UINT msg, WPARAM wParam, LPARAM lParam)
 			}
 			return false;
 
+		case RADIO_MULTISELECT:
+			if (IsDlgButtonChecked(m_hWnd, RADIO_MULTISELECT))
+			{
+				CheckDlgButton(m_hWnd, RADIO_MULTISELECT, BST_UNCHECKED);
+				m_input->toggleMultiSelect(false);
+				m_settingsHelper.m_controller.view.SetMultiSelect(false);
+			}
+			else
+			{
+				CheckDlgButton(m_hWnd, RADIO_MULTISELECT, BST_CHECKED);
+				m_input->toggleMultiSelect(true);
+				m_settingsHelper.m_controller.view.SetMultiSelect(true);
+			}
+			return false;
 		case ADD_POINT_BUTTON:
 			selectedComboBoxItemIndex = SendMessage(hWndComboBox, CB_GETCURSEL, 0, 0);
 			SendMessage(hWndComboBox, CB_GETLBTEXT, selectedComboBoxItemIndex, (LPARAM)buf);
@@ -682,6 +757,10 @@ LRESULT Settings::WndProc(UINT msg, WPARAM wParam, LPARAM lParam)
 				if (m_ParserManager.modelsManager->isGregorySurfaceReadyToCreate())
 					m_settingsHelper.AddNewModelToTreeView(buf, m_list);
 				//popup
+				else
+				{
+					ret = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(200), m_hWnd, DlgProc);
+				}
 			}
 			else{
 				m_settingsHelper.AddNewModelToTreeView(buf, m_list);
@@ -790,6 +869,10 @@ LRESULT Settings::WndProc(UINT msg, WPARAM wParam, LPARAM lParam)
 		case ID_TRACKBARHORIZONTAL:
 			horizontalSpaces = SendMessage(m_trackBarHorizontal, TBM_GETPOS, 0, 0);
 			m_input->SetHorizontalSpaces(horizontalSpaces);
+			return false;
+		case ID_TRACKBARPRECISION:
+			precision = SendMessage(m_trackBarPrecision, TBM_GETPOS, 0, 0);
+			m_input->SetPrecision(precision);
 			return false;
 		}
 		ctrl->notify((int)wParam, lParam);                      // controllerID, lParam

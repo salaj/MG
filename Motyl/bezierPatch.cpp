@@ -131,6 +131,16 @@ XMFLOAT4 BezierPatch::InterpolatedControlPoint(float u, float v)
 
 XMFLOAT4 BezierPatch::Q(float u, float v)
 {
+	if (u > 1.0f)
+		u = 1.0f;
+	else if (u < 0.0f)
+		u = 0.0f;
+
+	if (v > 1.0f)
+		v = 1.0f;
+	else if (v < 0.0f)
+		v = 0.0f;
+
 	XMMATRIX B_u = createBernteinBaseVector(u, false);
 	XMMATRIX B_v = createBernteinBaseVector(v, true);
 		resultX = B_u * matrixOfX * B_v;
@@ -146,7 +156,7 @@ XMFLOAT4 BezierPatch::Q(float u, float v)
 
 void BezierPatch::generateLines(list<VertexPos*>& vertices)
 {
-	double numberOfDots = 300;
+	double numberOfDots = 400;//300;
 
 	vector<int> bezier_Indices;
 

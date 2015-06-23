@@ -23,6 +23,7 @@ namespace gk2
 		static const std::wstring GregoryPatch;
 		static const std::wstring BSplineSurface;
 		static const std::wstring GregorySurface;
+		static const std::wstring IntersectionCurve;
 
 
 		static const std::wstring BernsteinBase;
@@ -42,6 +43,7 @@ namespace gk2
 		static int BSplinePatchCounter;
 		static int GregoryPatchCounter;
 		static int GregorySurfaceCounter;
+		static int IntersectionCurveCounter;
 
 
 		InsertionParams* AddNewModelToTreeView(wchar_t*, HWND handle = 0);

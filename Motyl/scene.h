@@ -14,6 +14,8 @@
 #include "shader_bezier_patch.h"
 #include "shader_bspline_patch.h"
 #include "shader_gregory_patch.h"
+#include "shader_intersection_surface.h"
+#include "shader_intersection_square.h"
 #include "torus.h"
 #include "elipsoid.h"
 
@@ -120,6 +122,8 @@ namespace gk2
 		BezierPatchShader* m_shader_bezier_patch;
 		BSplinePatchShader* m_shader_bspline_patch;
 		GregoryPatchShader* m_shader_gregory_patch;
+		IntersectionSurfaceShader* m_shader_intersection_surface;
+		IntersectionSquareShader* m_shader_intersection_square;
 
 		vector<ShaderBase*> m_shaders;
 

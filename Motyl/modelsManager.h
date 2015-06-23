@@ -18,6 +18,7 @@
 #include "bsplineSurface.h"
 #include "gregoryPatch.h"
 #include "gregorySurface.h"
+#include "intersectionSurface.h"
 #include "interpolatedC2_curve.h"
 #include "shader_torus.h"
 #include "shader_elipsoid.h"
@@ -68,6 +69,8 @@ public:
 
 	ModelClass* GetCursor();
 	ModelClass* selected = NULL;
+
+	IntersectionSurface* createFakeIntersectionManual();
 private:
 	map<int, ModelClass*> m_models;
 	map<int, ModelClass*> m_active_models;
@@ -75,15 +78,31 @@ private:
 	map<int, BezierSurface*> m_bezier_surfaces;
 	map<int, BSplineSurface*> m_bspline_surfaces;
 	map<int, GregorySurface*> m_gregory_surfaces;
+	map<int, BezierSurface*> m_activeBezier_surfaces;
 	Service m_service;
 
 	void createFakeC2Curve();
 	void createFakeInterpolatedC2Curve();
 	BezierPatch* createFakePatchC0();
+	BezierPatch* createFakePatchC0_ForGregory();
+	BezierPatch* createFakeCyllindricalPatchC0();
+	BezierPatch* createFakeCyllindricalDoublePatchC0();
+	vector<BezierPatch*> createFakeCyllindricalPatches_N_M_C0(int rows,int cols);
 	void createFakePatchC2();
 	GregoryPatch* createFakeGregoryPatch();
 	void createFakeGregorySurface();
 	BezierSurface* createFakeSurfaceC0();
+	BezierSurface* createFakeSurfaceC0_ForGregory();
+	BezierSurface* createFakeCyllindricalSurfaceC0();
+	BezierSurface* createFakeCyllindricalSurfaceDoubleIntersectionC0();
+	BezierSurface* createFakeCyllindricalSurface_N_M_C0();
+	IntersectionSurface* createFakeIntersection();
+	IntersectionSurface* createFakeIntersectionPlaneCyllinderSurface();
+	IntersectionSurface* createFakeIntersectionPlaneHalfCyllinderSurface();
+	IntersectionSurface* createFakeIntersectionPlanePlaneSurface();
+	IntersectionSurface* createFakeIntersection_N_M_PlaneCyllinderSurface();
+	IntersectionSurface* createFakeIntersectionPlane_Double_CyllinderSurface();
+
 	vector<BezierSurface*> createTripleSurfaceHole();
 	/*void createFakeSurfaceC2();*/
 };

@@ -279,6 +279,18 @@
     <ClCompile Include="gregorySurface.cpp">
       <Filter>Source Files\models\surfaces</Filter>
     </ClCompile>
+    <ClCompile Include="intersectionSurface.cpp">
+      <Filter>Source Files\models\surfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="line.cpp">
+      <Filter>Source Files\models</Filter>
+    </ClCompile>
+    <ClCompile Include="shader_intersection_surface.cpp">
+      <Filter>Source Files\shaders\surfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="shader_intersection_square.cpp">
+      <Filter>Source Files\shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="modelclass.h">
@@ -446,6 +458,18 @@
     <ClInclude Include="gregorySurface.h">
       <Filter>Header Files\models\surfaces</Filter>
     </ClInclude>
+    <ClInclude Include="intersectionSurface.h">
+      <Filter>Header Files\models\surfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="line.h">
+      <Filter>Header Files\models</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_intersection_surface.h">
+      <Filter>Header Files\shaders\surfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_intersection_square.h">
+      <Filter>Header Files\shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ribbon1.mfcribbon-ms">
@@ -494,6 +518,12 @@
       <Filter>Resource Files\shaders</Filter>
     </FxCompile>
     <FxCompile Include="resources\shaders\GregoryPatch.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\IntersectionSurface.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\IntersectionSquare.hlsl">
       <Filter>Resource Files\shaders</Filter>
     </FxCompile>
   </ItemGroup>

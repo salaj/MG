@@ -44,6 +44,25 @@ BezierPatch* ModelsManager::createFakePatchC0()
 		for (int j = 0; j < 4; j++)
 		{
 			point = AddModel(ModelType::SimplePointType);
+			point->Translate(XMFLOAT4(i * 0.3f, j * 0.3f, 0, 0));
+			nodes.push_back(point);
+		}
+	m_service.shaderIndex = 5;
+	BezierPatch* bezierPatch = new BezierPatch(m_service);
+	bezierPatch->Initialize();
+	dynamic_cast<BezierPatch*>(bezierPatch)->SetNodes(nodes);
+	m_models.insert(pair<int, ModelClass*>(bezierPatch->m_id, bezierPatch));
+	return bezierPatch;
+}
+
+BezierPatch* ModelsManager::createFakePatchC0_ForGregory()
+{
+	ModelClass* point;
+	vector<ModelClass*> nodes = vector<ModelClass*>();
+	for (int i = 0; i < 4; i++)
+		for (int j = 0; j < 4; j++)
+		{
+			point = AddModel(ModelType::SimplePointType);
 			point->Translate(XMFLOAT4(i * 0.1f, j * 0.1f, 0, 1));
 			nodes.push_back(point);
 		}
@@ -53,6 +72,105 @@ BezierPatch* ModelsManager::createFakePatchC0()
 	dynamic_cast<BezierPatch*>(bezierPatch)->SetNodes(nodes);
 	m_models.insert(pair<int, ModelClass*>(bezierPatch->m_id, bezierPatch));
 	return bezierPatch;
+}
+
+BezierPatch* ModelsManager::createFakeCyllindricalPatchC0()
+{
+	ModelClass* point;
+	vector<ModelClass*> nodes = vector<ModelClass*>();
+	ModelClass* pam;
+	for (int i = 0; i < 4; i++)
+		for (int j = 0; j < 4; j++)
+		{
+			point = AddModel(ModelType::SimplePointType);
+			if (j == 0)
+				pam = point;
+			if (j == 3)
+			{
+				nodes.push_back(pam);
+			}else
+				nodes.push_back(point);
+		}
+	m_service.shaderIndex = 5;
+	BezierPatch* bezierPatch = new BezierPatch(m_service);
+	bezierPatch->Initialize();
+	dynamic_cast<BezierPatch*>(bezierPatch)->SetNodes(nodes);
+	m_models.insert(pair<int, ModelClass*>(bezierPatch->m_id, bezierPatch));
+	return bezierPatch;
+}
+
+BezierPatch* ModelsManager::createFakeCyllindricalDoublePatchC0()
+{
+	ModelClass* point;
+	vector<ModelClass*> nodes = vector<ModelClass*>();
+	ModelClass* pam;
+	for (int i = 0; i < 4; i++)
+		for (int j = 0; j < 4; j++)
+		{
+			point = AddModel(ModelType::SimplePointType);
+			if (j == 0)
+				pam = point;
+			if (j == 3)
+			{
+				nodes.push_back(pam);
+			}
+			else
+				nodes.push_back(point);
+		}
+	m_service.shaderIndex = 5;
+	BezierPatch* bezierPatch = new BezierPatch(m_service);
+	bezierPatch->Initialize();
+	dynamic_cast<BezierPatch*>(bezierPatch)->SetNodes(nodes);
+	m_models.insert(pair<int, ModelClass*>(bezierPatch->m_id, bezierPatch));
+	return bezierPatch;
+}
+
+vector<BezierPatch*> ModelsManager::createFakeCyllindricalPatches_N_M_C0(int rows, int cols)
+{
+	vector<BezierPatch*> bezierPatches;
+	ModelClass* point;
+	vector<ModelClass*> nodes = vector<ModelClass*>();
+
+	ModelClass*** items = new ModelClass**[rows * 3 + 1];
+
+	for (int i = 0; i < rows * 3 + 1; i++)
+	{
+		items[i] = new ModelClass*[cols * 3];
+		for (int j = 0; j < cols * 3; j++)
+		{
+			items[i][j] = AddModel(ModelType::SimplePointType);
+		}
+	}
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < cols; j++)
+		{
+			m_service.shaderIndex = 5;
+			BezierPatch* bezierPatch = new BezierPatch(m_service);
+			bezierPatch->Initialize();
+			nodes.clear();
+
+			int row = i * 3;
+			for (int n = 0; n < 4; n++)
+			{
+				int col = j * 3;
+				for (int m = 0; m < 4; m++)
+				{
+					if (col == cols * 3)
+						nodes.push_back(items[row][0]);
+					else
+						nodes.push_back(items[row][col]);
+					col++;
+				}
+				row++;
+			}
+
+			dynamic_cast<BezierPatch*>(bezierPatch)->SetNodes(nodes);
+			m_models.insert(pair<int, ModelClass*>(bezierPatch->m_id, bezierPatch));
+			bezierPatches.push_back(bezierPatch);
+		}
+	}
+	return bezierPatches;
 }
 
 GregoryPatch* ModelsManager::createFakeGregoryPatch()
@@ -176,10 +294,417 @@ BezierSurface* ModelsManager::createFakeSurfaceC0()
 	return bezierSurface;
 }
 
+BezierSurface* ModelsManager::createFakeSurfaceC0_ForGregory()
+{
+	BezierPatch* bezierPatch = createFakePatchC0_ForGregory();
+	BezierSurface* bezierSurface = new BezierSurface();
+	bezierSurface->AddPatch(bezierPatch);
+	m_models.insert(pair<int, ModelClass*>(bezierSurface->m_id, bezierSurface));
+	AddBezierSurface(bezierSurface);
+	return bezierSurface;
+}
+
+BezierSurface* ModelsManager::createFakeCyllindricalSurfaceC0()
+{
+	BezierPatch* bezierPatch = createFakeCyllindricalPatchC0();
+	BezierSurface* bezierSurface = new BezierSurface();
+	bezierSurface->AddPatch(bezierPatch);
+	bezierSurface->SetDimensions(1, 1, 0.6f, 0.6f);
+	bezierSurface->TranslateCyllinderPoints();
+	bezierSurface->Reset();
+	m_models.insert(pair<int, ModelClass*>(bezierSurface->m_id, bezierSurface));
+	AddBezierSurface(bezierSurface);
+	return bezierSurface;
+}
+
+BezierSurface* ModelsManager::createFakeCyllindricalSurfaceDoubleIntersectionC0()
+{
+	BezierPatch* bezierPatch = createFakeCyllindricalDoublePatchC0();
+	BezierSurface* bezierSurface = new BezierSurface();
+	bezierSurface->AddPatch(bezierPatch);
+	bezierSurface->SetDimensions(1, 1, 0.2f, 1.0f);
+	bezierSurface->TranslateCyllinderPoints();
+
+	vector<SimplePoint*> points = bezierSurface->GetNodes();
+
+	float xTranslation = 0.4f;
+
+	points[9]->SetPosition(points[0]->GetPosition());
+	points[9]->Translate(XMFLOAT4(xTranslation, 0.0f, 0.0f, 0.0f));
+	points[10]->SetPosition(points[1]->GetPosition());
+	points[10]->Translate(XMFLOAT4(xTranslation, 0.0f, 0.0f, 0.0f));
+	points[11]->SetPosition(points[2]->GetPosition());
+	points[11]->Translate(XMFLOAT4(xTranslation, 0.0f, 0.0f, 0.0f));
+
+	bezierSurface->Reset();
+	m_models.insert(pair<int, ModelClass*>(bezierSurface->m_id, bezierSurface));
+	AddBezierSurface(bezierSurface);
+	return bezierSurface;
+}
+
+BezierSurface* ModelsManager::createFakeCyllindricalSurface_N_M_C0()
+{
+	int rows, cols;
+	rows = 1;
+	cols = 5;
+	vector<BezierPatch*> bezierPatches = createFakeCyllindricalPatches_N_M_C0(rows, cols);
+	BezierSurface* bezierSurface = new BezierSurface();
+	for (int i = 0; i < bezierPatches.size(); i++)
+		bezierSurface->AddPatch(bezierPatches[i]);
+
+	bezierSurface->SetDimensions(rows, cols, 0.4f, 0.4f);
+	bezierSurface->TranslateCyllinderPoints();
+	bezierSurface->Reset();
+	m_models.insert(pair<int, ModelClass*>(bezierSurface->m_id, bezierSurface));
+	AddBezierSurface(bezierSurface);
+	return bezierSurface;
+}
+
+IntersectionSurface* ModelsManager::createFakeIntersectionManual()
+{
+	m_service.shaderIndex = 8;
+	IntersectionSurface* intersecionSurface = new IntersectionSurface(m_service);
+
+	vector<BezierSurface*> bezierSurfaces = GetBezierSurfaces();
+	vector<ModelClass*> activeModels = GetActiveModels();
+	int counter = 0;
+	//for (int i = 0; i < activeModels.size(); i++)
+	//{
+	//	if (activeModels[i]->m_Type == ModelType::BezierSurfaceType)
+	//	{
+	//		intersecionSurface->AddSurface(bezierSurfaces[i]);
+	//		counter++;
+	//	}
+	//}
+
+	for (map<int, BezierSurface*>::iterator it = m_activeBezier_surfaces.begin(); it != m_activeBezier_surfaces.end(); it++)
+	{
+		intersecionSurface->AddSurface((*it).second);
+		counter++;
+	}
+
+	//for (int i = 0; i < m_activeBezier_surfaces.size(); i++)
+	//{
+	//	intersecionSurface->AddSurface(m_activeBezier_surfaces[i]);
+	//	counter++;
+	//}
+
+	if (counter != 2)
+	{
+		delete intersecionSurface;
+		if (bezierSurfaces.size() < 2)
+			return nullptr;
+		intersecionSurface = new IntersectionSurface(m_service);
+		intersecionSurface->AddSurface(bezierSurfaces[0]);
+		intersecionSurface->AddSurface(bezierSurfaces[1]);
+	}
+	m_models.insert(pair<int, ModelClass*>(intersecionSurface->m_id, intersecionSurface));
+
+	float u, v, s, t;
+	intersecionSurface->FindFirstPoint(u, v, s, t, GetCursor()->GetPosition());
+
+	intersecionSurface->SetOrigin(u, v, s, t);
+
+	intersecionSurface->FindIntersection(u, v, s, t);
+
+	return intersecionSurface;
+}
+
+
+IntersectionSurface* ModelsManager::createFakeIntersectionPlanePlaneSurface()
+{
+	m_service.shaderIndex = 8;
+	IntersectionSurface* intersecionSurface = new IntersectionSurface(m_service);
+	m_models.insert(pair<int, ModelClass*>(intersecionSurface->m_id, intersecionSurface));
+
+	BezierSurface* bezierSurface = createFakeSurfaceC0();
+	vector<SimplePoint*> points = bezierSurface->GetNodes();
+	for (int i = 0; i < points.size(); i++)
+	{
+
+		////OK CALOSC
+		points[i]->RotateY(-0.5f);
+		points[i]->Translate(XMFLOAT4(0.05f, -0.2f, +0.6f, 0.0f));
+
+		////OK CALOSC
+		//points[i]->RotateY(0.5f);
+		//points[i]->Translate(XMFLOAT4(0.05f, -0.2f, +0.4f, 0.0f));
+
+		//OK WYCHYLENIE W PRAWO
+		//points[i]->RotateY(0.5f);
+		//points[i]->Translate(XMFLOAT4(0.4f, -0.2f, +0.4f, 0.0f));
+
+		//OK WYCHYLENIE W LEWO
+		//points[i]->RotateY(0.5f);
+		//points[i]->Translate(XMFLOAT4(-0.4f, -0.2f, +0.4f, 0.0f));
+	}
+	bezierSurface->Reset();
+
+
+	BezierSurface* bezierSurface1 = createFakeSurfaceC0();
+	vector<SimplePoint*> points3 = bezierSurface1->GetNodes();
+	for (int i = 0; i < points3.size(); i++)
+	{
+
+
+		points3[i]->RotateX(-XM_PIDIV2);
+		//points3[i]->Translate(XMFLOAT4(-0.15f, -0.6f, 0.0f, 0.0f));
+	}
+	bezierSurface1->Reset();
+	//GetCursor()->SetPosition(0.2f, 0.2f, 0.0f);
+	intersecionSurface->AddSurface(bezierSurface);
+	intersecionSurface->AddSurface(bezierSurface1);
+
+	//intersecionSurface->FindIntersection();
+
+	float u, v, s, t;
+	//u = 0.9f;
+	//v = 0.1f;
+	//s = 0.1f;
+	//t = 0.9f;
+
+	u = 0.5f;
+	v = 0.2f;
+	s = 0.5f;
+	t = 0.5f;
+
+	//bezierSurface->GetNodes()[0]->SetPosition(bezierSurface->Q(u, v));
+
+	//bezierSurface1->GetNodes()[0]->SetPosition(bezierSurface1->Q(s, t));
+
+	intersecionSurface->SetOrigin(u, v, s, t);
+
+	intersecionSurface->FindIntersection(u, v, s, t);
+
+	return intersecionSurface;
+}
+
+
+
+IntersectionSurface* ModelsManager::createFakeIntersectionPlaneCyllinderSurface()
+{
+	m_service.shaderIndex = 8;
+	IntersectionSurface* intersecionSurface = new IntersectionSurface(m_service);
+	m_models.insert(pair<int, ModelClass*>(intersecionSurface->m_id, intersecionSurface));
+
+	BezierSurface* bezierSurface = createFakeSurfaceC0();
+	vector<SimplePoint*> points3 = bezierSurface->GetNodes();
+	for (int i = 0; i < points3.size(); i++)
+	{
+		points3[i]->Translate(XMFLOAT4(0.0f, -0.3f, 0.0f, 0.0f));
+		points3[i]->RotateX(-0.5f);
+
+		//points3[i]->Translate(XMFLOAT4(-0.15f, -0.6f, 0.0f, 0.0f));
+	}
+	bezierSurface->Reset();
+	//GetCursor()->SetPosition(0.2f, 0.2f, 0.0f);
+	intersecionSurface->AddSurface(bezierSurface);
+
+	BezierSurface* cyllindricalSurface = createFakeCyllindricalSurfaceC0();
+	intersecionSurface->AddSurface(cyllindricalSurface);
+	vector<SimplePoint*> points = cyllindricalSurface->GetNodes();
+	for (int i = 0; i < points.size(); i++)
+	{
+		points[i]->RotateX(XM_PI / 2.0f);
+		points[i]->Translate(XMFLOAT4(0.05f, 0.15f, 0.0f, 0.0f));
+	}
+	cyllindricalSurface->Reset();
+
+	float u, v, s, t;
+	//u = 0.9f;
+	//v = 0.1f;
+	//s = 0.1f;
+	//t = 0.9f;
+
+	u = 0.1f;
+	v = 0.1f;
+	s = 0.1f;
+	t = 0.1f;
+
+	cyllindricalSurface->GetNodes()[0]->SetPosition(cyllindricalSurface->Q(s, t));
+
+	intersecionSurface->SetOrigin(u, v, s, t);
+
+	intersecionSurface->FindIntersection(u, v, s, t);
+
+	return intersecionSurface;
+}
+
+IntersectionSurface* ModelsManager::createFakeIntersectionPlane_Double_CyllinderSurface()
+{
+	m_service.shaderIndex = 8;
+	IntersectionSurface* intersecionSurface = new IntersectionSurface(m_service);
+	m_models.insert(pair<int, ModelClass*>(intersecionSurface->m_id, intersecionSurface));
+
+	BezierSurface* bezierSurface = createFakeSurfaceC0();
+	vector<SimplePoint*> points3 = bezierSurface->GetNodes();
+	for (int i = 0; i < points3.size(); i++)
+	{
+		//points3[i]->Translate(XMFLOAT4(0.0f, -0.3f, 0.0f, 0.0f));
+		points3[i]->RotateX(XM_PIDIV2);
+
+		//points3[i]->Translate(XMFLOAT4(-0.15f, -0.6f, 0.0f, 0.0f));
+	}
+	bezierSurface->Reset();
+	//GetCursor()->SetPosition(0.2f, 0.2f, 0.0f);
+	intersecionSurface->AddSurface(bezierSurface);
+
+	BezierSurface* cyllindricalSurface = createFakeCyllindricalSurfaceDoubleIntersectionC0();
+	intersecionSurface->AddSurface(cyllindricalSurface);
+	vector<SimplePoint*> points = cyllindricalSurface->GetNodes();
+	for (int i = 0; i < points.size(); i++)
+	{
+		//points[i]->RotateX(XM_PI / 2.0f);
+		points[i]->Translate(XMFLOAT4(0.2f, 0.4f, -0.4f, 0.0f));
+	}
+	cyllindricalSurface->Reset();
+
+	float u, v, s, t;
+	//DO JEDNEGO
+	u = 0.1f;
+	v = 0.1f;
+	s = 0.1f;
+	t = 0.1f;
+
+
+	//DO DRUGIEGO
+	//u = 0.9f;
+	//v = 0.9f;
+	//s = 0.9f;
+	//t = 0.9f;
+
+	//cyllindricalSurface->GetNodes()[0]->SetPosition(cyllindricalSurface->Q(s, t));
+
+	intersecionSurface->SetOrigin(u, v, s, t);
+
+	intersecionSurface->FindIntersection(u, v, s, t);
+
+	return intersecionSurface;
+}
+
+
+IntersectionSurface* ModelsManager::createFakeIntersection_N_M_PlaneCyllinderSurface()
+{
+	m_service.shaderIndex = 8;
+	IntersectionSurface* intersecionSurface = new IntersectionSurface(m_service);
+	m_models.insert(pair<int, ModelClass*>(intersecionSurface->m_id, intersecionSurface));
+
+	BezierSurface* bezierSurface = createFakeSurfaceC0();
+	vector<SimplePoint*> points3 = bezierSurface->GetNodes();
+	for (int i = 0; i < points3.size(); i++)
+	{
+		points3[i]->RotateX(XM_PIDIV2);
+		points3[i]->Translate(XMFLOAT4(-0.45f, 0.0f, 0.4f, 0.0f));
+		//points3[i]->Translate(XMFLOAT4(-0.15f, -0.6f, 0.0f, 0.0f));
+	}
+	bezierSurface->Reset();
+	//GetCursor()->SetPosition(0.2f, 0.2f, 0.0f);
+	intersecionSurface->AddSurface(bezierSurface);
+
+
+
+	BezierSurface* cyllindricalSurface = createFakeCyllindricalSurface_N_M_C0();
+	intersecionSurface->AddSurface(cyllindricalSurface);
+	vector<SimplePoint*> points = cyllindricalSurface->GetNodes();
+	for (int i = 0; i < points.size(); i++)
+	{
+		//points[i]->RotateX(XM_PI / 2.0f);
+		//points[i]->Translate(XMFLOAT4(0.05f, 0.15f, 0.0f, 0.0f));
+	}
+	cyllindricalSurface->Reset();
+
+	float u, v, s, t;
+	//u = 0.9f;
+	//v = 0.1f;
+	//s = 0.1f;
+	//t = 0.9f;
+
+	u = 0.1f;
+	v = 0.1f;
+	s = 0.33f;
+	t = 0.33f;
+
+	//cyllindricalSurface->GetNodes()[0]->SetPosition(cyllindricalSurface->Q(s, t));
+
+	intersecionSurface->SetOrigin(u, v, s, t);
+
+
+	intersecionSurface->FindIntersection(u, v, s, t);
+
+	return intersecionSurface;
+}
+
+IntersectionSurface* ModelsManager::createFakeIntersectionPlaneHalfCyllinderSurface()
+{
+	m_service.shaderIndex = 8;
+	IntersectionSurface* intersecionSurface = new IntersectionSurface(m_service);
+	m_models.insert(pair<int, ModelClass*>(intersecionSurface->m_id, intersecionSurface));
+
+	BezierSurface* bezierSurface = createFakeSurfaceC0();
+	vector<SimplePoint*> points3 = bezierSurface->GetNodes();
+	for (int i = 0; i < points3.size(); i++)
+	{
+		points3[i]->RotateX(-XM_PIDIV2);
+	}
+	bezierSurface->Reset();
+	intersecionSurface->AddSurface(bezierSurface);
+
+	BezierSurface* cyllindricalSurface = createFakeCyllindricalSurfaceC0();
+	intersecionSurface->AddSurface(cyllindricalSurface);
+	vector<SimplePoint*> points = cyllindricalSurface->GetNodes();
+	for (int i = 0; i < points.size(); i++)
+	{
+		points[i]->RotateZ(XM_PI);
+		points[i]->Translate(XMFLOAT4(0.05f, 0.15f, 0.3f, 0.0f));
+	}
+	cyllindricalSurface->Reset();
+
+	float u, v, s, t;
+	u = 0.1f;
+	v = 0.1f;
+	s = 0.4f;
+	t = 0.4f;
+
+	cyllindricalSurface->GetNodes()[0]->SetPosition(cyllindricalSurface->Q(s, t));
+
+	intersecionSurface->SetOrigin(u, v, s, t);
+
+	intersecionSurface->FindIntersection(u, v, s, t);
+
+	return intersecionSurface;
+}
+
+IntersectionSurface* ModelsManager::createFakeIntersection()
+{
+	IntersectionSurface* intersecionSurface = new IntersectionSurface();
+	m_service.shaderIndex = 3;//shall be changed;
+	Line* line = new Line(m_service);
+	line->X = 0.2;
+	line->Y = 0.2;
+	intersecionSurface->P = line;
+	m_models.insert(pair<int, ModelClass*>(line->m_id, line));
+
+	BezierSurface* bezierSurface = createFakeSurfaceC0();
+	XMFLOAT4 p = bezierSurface->Q(0.2, 0.0f);
+	vector<SimplePoint*> points3 = bezierSurface->GetNodes();
+	for (int i = 0; i < points3.size(); i++)
+	{
+		points3[i]->RotateX(-0.5f);
+		//points3[i]->Translate(XMFLOAT4(-0.15f, -0.6f, 0.0f, 0.0f));
+	}
+	bezierSurface->Reset();
+	GetCursor()->SetPosition(0.2f, 0.2f, 0.0f);
+	intersecionSurface->AddSurface(bezierSurface);
+
+	intersecionSurface->NewtonLineSurface();
+
+	return intersecionSurface;
+}
+
 vector<BezierSurface*> ModelsManager::createTripleSurfaceHole()
 {
 	vector<BezierSurface*> bezierSurfaces;
-	BezierSurface* surface1 = createFakeSurfaceC0();
+	BezierSurface* surface1 = createFakeSurfaceC0_ForGregory();
 	vector<SimplePoint*> points = surface1->GetNodes();
 	for (int i = 0; i < points.size(); i++)
 	{ 
@@ -219,14 +744,14 @@ vector<BezierSurface*> ModelsManager::createTripleSurfaceHole()
 		//points[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));
 	}
 	surface1->Reset();
-	BezierSurface* surface2 = createFakeSurfaceC0();
+	BezierSurface* surface2 = createFakeSurfaceC0_ForGregory();
 	vector<SimplePoint*> points2 = surface2->GetNodes();
 	for (int i = 0; i < points2.size(); i++)
 	{
 		//12->15
-		/*points2[i]->RotateZ(XM_PI / 6.0f);
+		points2[i]->RotateZ(XM_PI / 6.0f);
 		points2[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));
-		points2[i]->m_modelMatrix = points2[i]->m_modelMatrix * XMMatrixScaling(-1.0, 1.0f, 1.0f);*/
+		points2[i]->m_modelMatrix = points2[i]->m_modelMatrix * XMMatrixScaling(-1.0, 1.0f, 1.0f);
 
 		//0->3
 		//points2[i]->RotateZ(-XM_PI / 6.0f); 
@@ -243,9 +768,9 @@ vector<BezierSurface*> ModelsManager::createTripleSurfaceHole()
 		//points2[i]->Translate(XMFLOAT4(0.6f, 0.3f, 0.0f, 0.0f));
 
 		//0->12
-		points2[i]->m_modelMatrix = points2[i]->m_modelMatrix * XMMatrixScaling(1.0, -1.0f, 1.0f);
-		points2[i]->RotateZ(-XM_PI / 2.0f);
-		points2[i]->Translate(XMFLOAT4(0.6f, 0.3f, 0.0f, 0.0f));
+		//points2[i]->m_modelMatrix = points2[i]->m_modelMatrix * XMMatrixScaling(1.0, -1.0f, 1.0f);
+		//points2[i]->RotateZ(-XM_PI / 2.0f);
+		//points2[i]->Translate(XMFLOAT4(0.6f, 0.3f, 0.0f, 0.0f));
 	}
 
 	surface2->Reset();
@@ -262,10 +787,10 @@ vector<BezierSurface*> ModelsManager::createTripleSurfaceHole()
 	//toCollapse.push_back(surface2->GetNodes()[3]);
 
 	//toCollapse.push_back(surface1->GetNodes()[15]);
-	toCollapse.push_back(surface2->GetNodes()[12]);
+	toCollapse.push_back(surface2->GetNodes()[15]);
 	collapseMultiSelected(toCollapse);
 	//return bezierSurfaces;
-	BezierSurface* surface3 = createFakeSurfaceC0();
+	BezierSurface* surface3 = createFakeSurfaceC0_ForGregory();
 	vector<SimplePoint*> points3 = surface3->GetNodes();
 	for (int i = 0; i < points3.size(); i++)
 	{
@@ -275,7 +800,7 @@ vector<BezierSurface*> ModelsManager::createTripleSurfaceHole()
 	surface3->Reset();
 
 	vector<SimplePoint*>toCollapse2;
-	toCollapse2.push_back(surface2->GetNodes()[0]);
+	toCollapse2.push_back(surface2->GetNodes()[12]);
 	//toCollapse2.push_back(surface2->GetNodes()[0]);
 	toCollapse2.push_back(surface3->GetNodes()[15]);
 	collapseMultiSelected(toCollapse2);
@@ -476,6 +1001,13 @@ void ModelsManager::CreateModels()
 
 	//createTripleSurfaceHole();
 
+	//createFakeIntersection();
+	//createFakeIntersectionPlaneCyllinderSurface();
+	//createFakeIntersectionPlanePlaneSurface();
+	//createFakeIntersectionPlaneHalfCyllinderSurface();
+	//createFakeIntersection_N_M_PlaneCyllinderSurface();
+	//createFakeIntersectionPlane_Double_CyllinderSurface();
+
 	//BezierCurve* bezierCurve = new BezierCurve(m_service);
 	//dynamic_cast<BezierCurve*>(bezierCurve)->SetNodes(nodes);
 	//bezierCurve->Initialize();
@@ -655,7 +1187,8 @@ void ModelsManager::collapseMultiSelected(vector<SimplePoint*>& multiSelected)
 
 		surfaces[i]->Reset();
 	}
-	RemoveModel(multiSelected[0]->m_id);
+	multiSelected[0]->SetPosition(XMFLOAT4(1000.0f, 0.0f, 0.0f, 0.0f));
+	//RemoveModel(multiSelected[0]->m_id);
 	multiSelected.clear();
 
 }
@@ -686,6 +1219,8 @@ void ModelsManager::SetActiveModels(vector<int>& activeModels)
 {
 	//first scale down
 	vector<ModelClass*> oldActiveModels = GetActiveModels();
+	map<int, BezierSurface*> tmp_activeBezier_surfaces;
+	bool firstOccurence = true;
 	for (int i = 0; i < oldActiveModels.size(); i++)
 	{
 		if (oldActiveModels[i]->m_Type == ModelType::SimplePointType)
@@ -700,7 +1235,28 @@ void ModelsManager::SetActiveModels(vector<int>& activeModels)
 		if (m_models[activeModels[i]]->m_Type == ModelType::SimplePointType)
 		{
 			m_models[activeModels[i]]->ScaleUp();
+
+
+			ModelClass* model = m_models[activeModels[i]];
+			vector<BezierSurface*> surfaces = GetBezierSurfaces();
+			for (int i = 0; i < surfaces.size(); i++)
+			{
+				vector<SimplePoint*> nodes = surfaces[i]->GetNodes();
+				for (int j = 0; j < nodes.size(); j++)
+				{
+					if (nodes[j]->m_id == model->m_id)
+					{
+						tmp_activeBezier_surfaces.insert(pair<int, BezierSurface*>(surfaces[i]->m_id, surfaces[i]));
+						break;
+					}
+				}
+			}
 		}
+	}
+
+	if (tmp_activeBezier_surfaces.size() == 2)
+	{
+		m_activeBezier_surfaces = tmp_activeBezier_surfaces;
 	}
 
 	if (activeModels.size() == 0)
@@ -759,11 +1315,30 @@ void ModelsManager::RemoveBezierCurve(int id)
 void ModelsManager::RemoveModel(int id)
 {
 	ModelType type = m_models[id]->m_Type;
-	m_models.erase(id);
 	if (type == ModelType::BezierSurfaceType)
+	{
+		BezierSurface* surface = dynamic_cast<BezierSurface*>(m_models[id]);
+		map<int, ModelClass*> models = GetModels();
+		int idToRemove = -1;
+		for (map<int, ModelClass*> ::iterator it = m_models.begin(); it != m_models.end(); it++)
+		{
+			if ((*it).second->m_Type == ModelType::IntersectionSurfaceType)
+			{
+				IntersectionSurface* intersectionSurface = dynamic_cast<IntersectionSurface*>((*it).second);
+				vector<BezierSurface*> surfaces = intersectionSurface->GetSurfaces();
+				if (surfaces[0]->m_id == surface->m_id)
+					idToRemove = intersectionSurface->m_id;
+				if (surfaces[1]->m_id == surface->m_id)
+					idToRemove = intersectionSurface->m_id;
+			}
+		}
+		if (idToRemove != -1)
+			m_models.erase(idToRemove);
 		m_bezier_surfaces.erase(id);
+	}
 	if (type == ModelType::BSplineSurfaceType)
 		m_bspline_surfaces.erase(id);
+	m_models.erase(id);
 }
 
 vector<ModelClass*> ModelsManager::GetActiveModels()
@@ -843,6 +1418,7 @@ ModelClass* ModelsManager::AddModel(ModelType type)
 	GregoryPatch* gregoryPatch;
 	GregorySurface* gregorySurface;
 	vector<SimplePoint*> points;
+	IntersectionSurface* intersecionSurface;
 
 	ModelClass* cursor = GetCursor();
 	//chcemy przestawiæ w dok³adnie to miejsce na ekranie, cursor wczeœniej mia³ nadan¹ skalê
@@ -923,6 +1499,9 @@ ModelClass* ModelsManager::AddModel(ModelType type)
 		m_models.insert(pair<int, ModelClass*>(gregorySurface->m_id, gregorySurface));
 		m_gregory_surfaces.insert(pair<int, GregorySurface*>(gregorySurface->m_id, gregorySurface));
 		return gregorySurface;
+	case IntersectionSurfaceType:
+		return createFakeIntersectionManual();
+
 	//case ElipsoidType:
 	//	m_service.shaderIndex = 1;
 	//	m_models.push_back(new Elipsoid(m_service));

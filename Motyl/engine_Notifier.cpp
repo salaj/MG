@@ -68,6 +68,10 @@ ModelClass* EngineNotifier::OnGregorySurfaceAdded()
 	return m_ModelsManager->AddModel(ModelType::GregorySurfaceType);
 }
 
+ModelClass* EngineNotifier::OnIntersectionCurveAdded()
+{
+	return m_ModelsManager->AddModel(ModelType::IntersectionSurfaceType);
+}
 
 void EngineNotifier::SetActiveModels(vector<int>& activeModels)
 {

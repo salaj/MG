@@ -140,9 +140,19 @@ void InputClass::SetHorizontalSpaces(int horizontalSpaces)
 	m_horizontalSpaces = horizontalSpaces;
 }
 
+void InputClass::SetPrecision(int precision)
+{
+	m_precision = precision;
+}
+
 void InputClass::collapseMultiSelected()
 {
 	m_isCollapseActive = true;
+}
+
+void InputClass::toggleMultiSelect(bool isMultiSelectActive)
+{
+	m_isMultiSelectActive = isMultiSelectActive;
 }
 
 int InputClass::GetVerticalSpaces()
@@ -161,6 +171,16 @@ bool InputClass::GetCollapseMultiselected()
 	if (m_isCollapseActive)
 		m_isCollapseActive = false;
 	return toRet;
+}
+
+bool InputClass::GetIsMultiSelectActive()
+{
+	return m_isMultiSelectActive;
+}
+
+float InputClass::GetPrecision()
+{
+	return m_precision;
 }
 
 

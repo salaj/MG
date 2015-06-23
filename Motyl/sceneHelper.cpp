@@ -189,6 +189,11 @@ void SceneHelper::collapseMultiSelected()
 	m_modelsManager.collapseMultiSelected(multiSelected);
 }
 
+void SceneHelper::isMultiSelectActive()
+{
+	isMultiSelect = m_InputClass->GetIsMultiSelectActive();
+}
+
 void SceneHelper::findClosestModelWithCursor()
 {
 	ModelClass* cursor = m_modelsManager.GetCursor();
@@ -330,6 +335,23 @@ void SceneHelper::translatePostActions(vector<ModelClass*>& models)
 			}
 		}
 	}
+}
+
+void SceneHelper::checkPrecision()
+{
+	
+		float precision = m_InputClass->GetPrecision();
+		float expectedMinValue = 0.01;
+		float expectedMaxValue = 0.3;
+
+		float minValue = 1;
+		float maxValue = 30;
+		float expectedLength = expectedMaxValue - expectedMinValue;
+		float length = maxValue - minValue;
+
+		float scaledValue = precision * expectedLength / length;
+
+		IntersectionSurface::precision = scaledValue;
 }
 
 void SceneHelper::scaleModels(vector<ModelClass*>& models, float scale)
@@ -505,47 +527,50 @@ void SceneHelper::CheckInput()
 	}
 	if (m_InputClass->IsKeyDown(0x4C) && once) //L
 	{
-		once = false;
-		vector<BezierSurface*> bezierSurfaces = m_modelsManager.GetBezierSurfaces();
-		BezierSurface* surface1 = bezierSurfaces[0];
-		vector<SimplePoint*> points = surface1->GetNodes();
-		for (int i = 0; i < points.size(); i++)
-		{
-			points[i]->RotateZ(XM_PI / 6.0f);
-			points[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));
-		}
-		surface1->Reset();
-		BezierSurface* surface2 = bezierSurfaces[1];
-		vector<SimplePoint*> points2 = surface2->GetNodes();
-		for (int i = 0; i < points2.size(); i++)
-		{
-			points2[i]->RotateZ(XM_PI / 6.0f);
-			points2[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));
-			points2[i]->m_modelMatrix = points[i]->m_modelMatrix * XMMatrixScaling(-1.0, 1.0f, 1.0f);
-		}
-		surface2->Reset();
-		vector<SimplePoint*>toCollapse;
-		toCollapse.push_back(surface1->GetNodes()[15]);
-		toCollapse.push_back(surface2->GetNodes()[15]);
-		m_modelsManager.collapseMultiSelected(toCollapse);
 
-		BezierSurface* surface3 = bezierSurfaces[2];
-		vector<SimplePoint*> points3 = surface3->GetNodes();
-		for (int i = 0; i < points3.size(); i++)
-		{
-			points3[i]->Translate(XMFLOAT4(-0.15f, -0.6f, 0.0f, 0.0f));
-		}
-		surface3->Reset();
+		m_modelsManager.createFakeIntersectionManual();
 
-		vector<SimplePoint*>toCollapse2;
-		toCollapse2.push_back(surface2->GetNodes()[12]);//12
-		toCollapse2.push_back(surface3->GetNodes()[15]);
-		m_modelsManager.collapseMultiSelected(toCollapse2);
+		//once = false;
+		//vector<BezierSurface*> bezierSurfaces = m_modelsManager.GetBezierSurfaces();
+		//BezierSurface* surface1 = bezierSurfaces[0];
+		//vector<SimplePoint*> points = surface1->GetNodes();
+		//for (int i = 0; i < points.size(); i++)
+		//{
+		//	points[i]->RotateZ(XM_PI / 6.0f);
+		//	points[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));
+		//}
+		//surface1->Reset();
+		//BezierSurface* surface2 = bezierSurfaces[1];
+		//vector<SimplePoint*> points2 = surface2->GetNodes();
+		//for (int i = 0; i < points2.size(); i++)
+		//{
+		//	points2[i]->RotateZ(XM_PI / 6.0f);
+		//	points2[i]->Translate(XMFLOAT4(-0.6f, 0.0f, 0.0f, 0.0f));
+		//	points2[i]->m_modelMatrix = points[i]->m_modelMatrix * XMMatrixScaling(-1.0, 1.0f, 1.0f);
+		//}
+		//surface2->Reset();
+		//vector<SimplePoint*>toCollapse;
+		//toCollapse.push_back(surface1->GetNodes()[15]);
+		//toCollapse.push_back(surface2->GetNodes()[15]);
+		//m_modelsManager.collapseMultiSelected(toCollapse);
 
-		vector<SimplePoint*>toCollapse3;
-		toCollapse3.push_back(surface1->GetNodes()[12]);//12
-		toCollapse3.push_back(surface3->GetNodes()[3]);//3
-		m_modelsManager.collapseMultiSelected(toCollapse3);
+		//BezierSurface* surface3 = bezierSurfaces[2];
+		//vector<SimplePoint*> points3 = surface3->GetNodes();
+		//for (int i = 0; i < points3.size(); i++)
+		//{
+		//	points3[i]->Translate(XMFLOAT4(-0.15f, -0.6f, 0.0f, 0.0f));
+		//}
+		//surface3->Reset();
+
+		//vector<SimplePoint*>toCollapse2;
+		//toCollapse2.push_back(surface2->GetNodes()[12]);//12
+		//toCollapse2.push_back(surface3->GetNodes()[15]);
+		//m_modelsManager.collapseMultiSelected(toCollapse2);
+
+		//vector<SimplePoint*>toCollapse3;
+		//toCollapse3.push_back(surface1->GetNodes()[12]);//12
+		//toCollapse3.push_back(surface3->GetNodes()[3]);//3
+		//m_modelsManager.collapseMultiSelected(toCollapse3);
 	}
 
 	activeModels = m_modelsManager.GetActiveModels();

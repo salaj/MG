@@ -193,6 +193,9 @@ InsertionParams* View::insertItem(const wchar_t* str, ItemType type, HTREEITEM p
 	case ItemGregorySurface:
 		model = m_engineNotifier->OnGregorySurfaceAdded();
 		break;
+	case ItemIntersectionCurve:
+		model = m_engineNotifier->OnIntersectionCurveAdded();
+		break;
 	default:
 		break;
 	}
@@ -291,7 +294,12 @@ void View::ReconstructSurface(HTREEITEM surface)
 
 void View::OnSelectedChanged()
 {
-	vector<int> selectedItems = vector<int>();
+	/*vector<int> selectedItems = vector<int>();*/
+	vector<int> selectedItems;
+	if (isMultiSelectActive)
+		selectedItems = previouslySelectedItems;
+	else
+		selectedItems = vector<int>();
 	HTREEITEM selected = treeView.getSelected();
 	int selectedId = FindIdByViewItem(selected);
 	//there are following scenarios:
@@ -363,6 +371,7 @@ void View::OnSelectedChanged()
 		selectedItems.push_back(selectedId);
 		m_engineNotifier->SetActiveModels(selectedItems);
 	}
+	previouslySelectedItems = selectedItems;
 }
 
 
@@ -502,7 +511,7 @@ void View::removeItem(HTREEITEM item)
 		int indexToRemove = GetIndexOfTreeItemInVector(treeItem);
 		allItems[treeItemId].erase(allItems[treeItemId].begin() + indexToRemove);
 	}
-	else if (treeItem.type == ItemType::ItemPatch || treeItem.type == ItemType::ItemTorus || treeItem.type == ItemType::ItemBSplinePatch ||treeItem.type == ItemType::ItemGregoryPatch)
+	else if (treeItem.type == ItemType::ItemPatch || treeItem.type == ItemType::ItemTorus || treeItem.type == ItemType::ItemBSplinePatch || treeItem.type == ItemType::ItemGregoryPatch || treeItem.type == ItemType::ItemIntersectionCurve)
 	{
 		
 		vector<HTREEITEM>selectedItems;
@@ -857,6 +866,16 @@ void View::moveTreeViewItem(TreeView* tv, HTREEITEM draggedItem, HTREEITEM targe
 HTREEITEM View::getSelected()
 {
 	return treeView.getSelected();
+}
+
+void View::SetMultiSelect(bool isActive)
+{
+	isMultiSelectActive = isActive;
+	if (!isMultiSelectActive)
+	{
+		vector<int> selectedItems = vector<int>();
+		m_engineNotifier->SetActiveModels(selectedItems);
+	}
 }
 
 
